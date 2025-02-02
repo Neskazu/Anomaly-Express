@@ -15,6 +15,8 @@ public class ConnectionManager : MonoBehaviour
     private Button hostButton;
     [SerializeField]
     private Button joinButton;
+    [SerializeField]
+    private TMP_InputField playerNameField;
     private ushort Port => ushort.Parse(portField.text);
     private string Address => addressField.text;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -38,12 +40,14 @@ public class ConnectionManager : MonoBehaviour
     private void OnHostClicked()
     {
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(Address, Port);
+        MultiplayerSessionManager.Instance.SetPlayerName(playerNameField.text);
         MultiplayerSessionManager.Instance.StartHost();
         SceneLoader.LoadNetwork(SceneLoader.Scene.Lobby);
     }
     private void OnJoinClicked()
     {
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(Address, Port);
+        MultiplayerSessionManager.Instance.SetPlayerName(playerNameField.text);
         MultiplayerSessionManager.Instance.StartClient();
     }
 }
