@@ -1,22 +1,31 @@
 using System;
 using Unity.Netcode;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class MultiplayerSessionManager : NetworkBehaviour
 {
-    public const int MaxPlayerAmount = 2;
+    public const int MaxPlayerAmount = 4;
     public static MultiplayerSessionManager Instance { get; private set; }
+    public EventHandler OnPlayerDataNetworkListChanged;
 
     public event EventHandler OnTryingToJoinGame;
     [SerializeField]
     private NetworkList<PlayerData> playerDataNetworkList;
+    private string playerName;
+
     private void Awake()
     {
         Instance = this;
         DontDestroyOnLoad(gameObject);
         playerDataNetworkList = new NetworkList<PlayerData>();
+        playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
     }
+
+    private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent)
+    {
+        OnPlayerDataNetworkListChanged?.Invoke(this, EventArgs.Empty);
+    }
+
     public void StartHost()
     {
         NetworkManager.Singleton.ConnectionApprovalCallback += NetworkManager_ConnectionApprovalCallback;
@@ -41,12 +50,11 @@ public class MultiplayerSessionManager : NetworkBehaviour
     private void NetworkManager_OnClientConnectedCallback(ulong clientId)
     {
         playerDataNetworkList.Add(new PlayerData { clientId = clientId });
-        Debug.Log("player Connected: " + clientId);
+        SetPlayerNameServerRpc(GetPlayerName());
     }
 
     private void NetworkManager_ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
-        Debug.Log("approve count:" + NetworkManager.Singleton.ConnectedClientsIds.Count + "  max: " + MaxPlayerAmount);
         if (NetworkManager.Singleton.ConnectedClientsIds.Count >= MaxPlayerAmount)
         {
             response.Approved = false;
@@ -69,11 +77,54 @@ public class MultiplayerSessionManager : NetworkBehaviour
 
     private void NetworkManager_Client_OnClientConnectedCallback(ulong obj)
     {
+        SetPlayerNameServerRpc(GetPlayerName());
         Debug.Log("Client connect");
     }
 
     private void NetworkManager_Client_OnClientDisconnectCallback(ulong obj)
     {
         Debug.Log("Client disconnect: " + NetworkManager.Singleton.DisconnectReason);
+    }
+    public bool IsPlayerIndexConnected(int playerIndex)
+    {
+        return playerIndex < playerDataNetworkList.Count;
+    }
+    public int GetConnectedPlayersCount()
+    {
+        return playerDataNetworkList.Count;
+    }
+    public PlayerData GetPlayerDataFromPlayerIndex(int clientId)
+    {
+        return playerDataNetworkList[clientId];
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void SetPlayerNameServerRpc(string playerName, ServerRpcParams serverRpcParams = default)
+    {
+        int playerDataIndex = GetPlayerDataIndexFromClientId(serverRpcParams.Receive.SenderClientId);
+
+        PlayerData playerData = playerDataNetworkList[playerDataIndex];
+
+        playerData.playerName = playerName;
+
+        playerDataNetworkList[playerDataIndex] = playerData;
+    }
+    public int GetPlayerDataIndexFromClientId(ulong clientId)
+    {
+        for (int i = 0; i < playerDataNetworkList.Count; i++)
+        {
+            if (playerDataNetworkList[i].clientId == clientId)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+    public string GetPlayerName()
+    {
+        return playerName;
+    }
+    public void SetPlayerName(string playerName)
+    {
+        this.playerName = playerName;
     }
 }
