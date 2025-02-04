@@ -160,4 +160,10 @@ public class MultiplayerSessionManager : NetworkBehaviour
     {
         SceneLoader.LoadNetwork(SceneLoader.Scene.Game);
     }
+    public void KickPlayer(ulong clientId)
+    {
+        Debug.Log("Kicking player: " + clientId);
+        NetworkManager.Singleton.DisconnectClient(clientId);
+        NetworkManager_Client_OnClientDisconnectCallback(clientId);
+    }
 }
