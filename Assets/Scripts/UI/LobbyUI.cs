@@ -39,7 +39,6 @@ public class LobbyUI : MonoBehaviour
     }
     private void OnStartClicked()
     {
-        SceneLoader.LoadNetwork(SceneLoader.Scene.Game);
-        // Start the game
+        MultiplayerSessionManager.Instance.StartGame();
     }
 }
