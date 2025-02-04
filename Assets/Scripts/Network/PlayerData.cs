@@ -7,6 +7,7 @@ public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable
     public ulong clientId;
     public FixedString64Bytes playerName;
     public FixedString64Bytes playerId;
+    public bool isReady;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public bool Equals(PlayerData other)
     {
@@ -17,5 +18,6 @@ public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable
         serializer.SerializeValue(ref clientId);
         serializer.SerializeValue(ref playerName);
         serializer.SerializeValue(ref playerId);
+        serializer.SerializeValue(ref isReady);
     }
 }

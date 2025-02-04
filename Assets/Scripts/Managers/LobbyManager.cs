@@ -1,6 +1,7 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -8,14 +9,25 @@ public class LobbyManager : MonoBehaviour
     private GameObject[] playerUI;
     [SerializeField]
     private PlayerInfoUI[] playerInfoUI;
+    [SerializeField]
+    private Button readyButton;
     private int playerCount;
+    private void Awake()
+    {
+        readyButton.onClick.AddListener(OnReadyClicked);
+    }
+
+
     private void Start()
     {
         MultiplayerSessionManager.Instance.OnPlayerDataNetworkListChanged += MultiplayerSessionManager_OnPlayerDataNetworkListChanged;
         Debug.Log("listChanged");
         SetPlayer();
     }
-
+    private void OnDestroy()
+    {
+        MultiplayerSessionManager.Instance.OnPlayerDataNetworkListChanged -= MultiplayerSessionManager_OnPlayerDataNetworkListChanged;
+    }
     private void MultiplayerSessionManager_OnPlayerDataNetworkListChanged(object sender, EventArgs e)
     {
         SetPlayer();
@@ -42,5 +54,9 @@ public class LobbyManager : MonoBehaviour
     private void UpdatePlayerCount()
     {
         playerCount = MultiplayerSessionManager.Instance.GetConnectedPlayersCount();
+    }
+    private void OnReadyClicked()
+    {
+        MultiplayerSessionManager.Instance.TogglePlayerReadyServerRpc();
     }
 }
