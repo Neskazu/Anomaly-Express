@@ -127,4 +127,43 @@ public class MultiplayerSessionManager : NetworkBehaviour
     {
         this.playerName = playerName;
     }
+    public void TogglePlayerReady(ulong clientId)
+    {
+        int playerIndex = GetPlayerDataIndexFromClientId(clientId);
+        PlayerData playerData = GetPlayerDataFromPlayerIndex(playerIndex);
+        playerData.isReady = !playerData.isReady;
+        playerDataNetworkList[playerIndex] = playerData;
+        CheckReadyAndStart();
+    }
+    [ServerRpc(RequireOwnership = false)]
+    public void TogglePlayerReadyServerRpc(ServerRpcParams rpcParams = default)
+    {
+        ulong senderClientId = rpcParams.Receive.SenderClientId;
+        TogglePlayerReady(senderClientId);
+    }
+    private void CheckReadyAndStart()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        foreach (PlayerData playerData in playerDataNetworkList)
+        {
+            if (!playerData.isReady)
+            {
+                return;
+            }
+        }
+        StartGame();
+    }
+    public void StartGame()
+    {
+        SceneLoader.LoadNetwork(SceneLoader.Scene.Game);
+    }
+    public void KickPlayer(ulong clientId)
+    {
+        Debug.Log("Kicking player: " + clientId);
+        NetworkManager.Singleton.DisconnectClient(clientId);
+        NetworkManager_Client_OnClientDisconnectCallback(clientId);
+    }
 }
