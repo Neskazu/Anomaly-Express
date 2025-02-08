@@ -1,4 +1,5 @@
 using Camera;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,8 +14,11 @@ namespace Player
         [SerializeField] private Rigidbody rb;
         public static PlayerController LocalInstance { get; private set; }
         private Vector3 moveDir;
+        public event Action<bool> OnMovementStateChanged;
+        private bool isMoving;
+        private float moveEpsilon = 0.1f;
 
-
+         
         public override void OnNetworkSpawn()
         {
             if (IsOwner)
@@ -33,6 +37,17 @@ namespace Player
             if (!IsOwner)
             {
                 return;
+            }
+            CheckMovementState();
+        }
+
+        private void CheckMovementState()
+        {
+            bool newMovingState = moveDir.sqrMagnitude > 0.01f;
+            if (newMovingState != isMoving)
+            {
+                isMoving = newMovingState;
+                OnMovementStateChanged?.Invoke(isMoving);
             }
         }
 
