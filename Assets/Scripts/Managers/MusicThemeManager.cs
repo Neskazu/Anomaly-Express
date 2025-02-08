@@ -21,7 +21,7 @@ public class MusicThemeManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
-            SceneManager.sceneLoaded+= OnSceneLoaded;
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -32,7 +32,7 @@ public class MusicThemeManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        foreach(var sceneMusic in sceneMusics)
+        foreach (var sceneMusic in sceneMusics)
         {
             if (sceneMusic.sceneName.ToString() == scene.name)
             {
