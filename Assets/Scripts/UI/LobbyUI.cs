@@ -20,7 +20,7 @@ namespace UI
 
         private void OnMainMenuClicked()
         {
-            NetworkManager.Singleton.Shutdown();
+            MultiplayerSessionManager.Instance.ShutDown();
             SceneLoader.Load(SceneLoader.Scene.Menu);
         }
 
