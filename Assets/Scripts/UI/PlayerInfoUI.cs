@@ -1,4 +1,5 @@
 
+using Network;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +15,7 @@ public class PlayerInfoUI : MonoBehaviour
 
     public void UpdateInfo(PlayerData playerData)
     {
-        playerName.text = playerData.playerName.ToString();
-        readyImage.sprite = playerData.isReady ? readySprite : notReadySprite;
+        playerName.text = playerData.PlayerName.ToString();
+        readyImage.sprite = playerData.IsReady ? readySprite : notReadySprite;
     }
 }

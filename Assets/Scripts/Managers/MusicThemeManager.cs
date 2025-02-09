@@ -1,57 +1,60 @@
-using System;
+using Music;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MusicThemeManager : MonoBehaviour
+namespace Managers
 {
-    [System.Serializable]
-    public struct SceneMusic
+    public class MusicThemeManager : MonoBehaviour
     {
-        public SceneLoader.Scene sceneName;
-        public MusicSettings musicSettings;
-    }
-    public SceneMusic[] sceneMusics;
-    private static MusicThemeManager instance;
-    [SerializeField]
-    private AudioSource musicThemeSource;
-
-    private void Awake()
-    {
-        if (instance == null)
+        [System.Serializable]
+        public struct SceneMusic
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            public SceneLoader.Scene sceneName;
+            public MusicSettings musicSettings;
         }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-    }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        foreach (var sceneMusic in sceneMusics)
+        public SceneMusic[] sceneMusics;
+        private static MusicThemeManager _instance;
+        [SerializeField] private AudioSource musicThemeSource;
+
+        private void Awake()
         {
-            if (sceneMusic.sceneName.ToString() == scene.name)
+            if (_instance == null)
             {
-                PlayMusic(sceneMusic.musicSettings);
+                _instance = this;
+                DontDestroyOnLoad(gameObject);
+                SceneManager.sceneLoaded += OnSceneLoaded;
+            }
+            else
+            {
+                Destroy(gameObject);
                 return;
             }
         }
-    }
 
-    private void PlayMusic(MusicSettings musicSettings)
-    {
-        if (musicThemeSource.clip == musicSettings.clip)
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            return;
+            foreach (var sceneMusic in sceneMusics)
+            {
+                if (sceneMusic.sceneName.ToString() == scene.name)
+                {
+                    PlayMusic(sceneMusic.musicSettings);
+                    return;
+                }
+            }
         }
-        musicThemeSource.clip = musicSettings.clip;
-        musicThemeSource.volume = musicSettings.volume;
-        musicThemeSource.loop = true;
-        musicThemeSource.Play();
+
+        private void PlayMusic(MusicSettings musicSettings)
+        {
+            if (musicThemeSource.clip == musicSettings.clip)
+            {
+                return;
+            }
+
+            musicThemeSource.clip = musicSettings.clip;
+            musicThemeSource.volume = musicSettings.volume;
+            musicThemeSource.loop = true;
+            musicThemeSource.Play();
+        }
     }
 }
-

@@ -1,44 +1,37 @@
+using Managers;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class LobbyUI : MonoBehaviour
+namespace UI
 {
-    [SerializeField]
-    private Button mainMenuButton;
-    [SerializeField]
-    private Button readyButton;
-    [SerializeField]
-    private Button startButton;
-    private void Awake()
+    public class LobbyUI : MonoBehaviour
     {
-        mainMenuButton.onClick.AddListener(OnMainMenuClicked);
-        readyButton.onClick.AddListener(OnReadyClicked);
-        startButton.onClick.AddListener(OnStartClicked);
-    }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+        [SerializeField] private Button mainMenuButton;
+        [SerializeField] private Button readyButton;
+        [SerializeField] private Button startButton;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    private void OnMainMenuClicked()
-    {
-        NetworkManager.Singleton.Shutdown();
-        SceneLoader.Load(SceneLoader.Scene.Menu);
-    }
-    private void OnReadyClicked()
-    {
-        // Set the player ready
-    }
-    private void OnStartClicked()
-    {
-        MultiplayerSessionManager.Instance.StartGame();
+        private void Awake()
+        {
+            mainMenuButton.onClick.AddListener(OnMainMenuClicked);
+            readyButton.onClick.AddListener(OnReadyClicked);
+            startButton.onClick.AddListener(OnStartClicked);
+        }
+
+        private void OnMainMenuClicked()
+        {
+            NetworkManager.Singleton.Shutdown();
+            SceneLoader.Load(SceneLoader.Scene.Menu);
+        }
+
+        private void OnReadyClicked()
+        {
+            // Set the player ready
+        }
+
+        private void OnStartClicked()
+        {
+            MultiplayerSessionManager.Instance.StartGame();
+        }
     }
 }

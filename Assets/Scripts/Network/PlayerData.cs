@@ -2,22 +2,27 @@ using System;
 using Unity.Collections;
 using Unity.Netcode;
 
-public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable
+namespace Network
 {
-    public ulong clientId;
-    public FixedString64Bytes playerName;
-    public FixedString64Bytes playerId;
-    public bool isReady;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public bool Equals(PlayerData other)
+    public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable
     {
-        return clientId == other.clientId;
-    }
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        serializer.SerializeValue(ref clientId);
-        serializer.SerializeValue(ref playerName);
-        serializer.SerializeValue(ref playerId);
-        serializer.SerializeValue(ref isReady);
+        public ulong ClientId;
+        public FixedString64Bytes PlayerName;
+        public FixedString64Bytes PlayerId;
+
+        public bool IsReady;
+
+        public bool Equals(PlayerData other)
+        {
+            return ClientId == other.ClientId;
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref ClientId);
+            serializer.SerializeValue(ref PlayerName);
+            serializer.SerializeValue(ref PlayerId);
+            serializer.SerializeValue(ref IsReady);
+        }
     }
 }
