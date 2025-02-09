@@ -12,13 +12,13 @@ namespace Player
         [SerializeField] private InputSystem_Actions inputSystem;
         [SerializeField] private Transform cameraHandler;
         [SerializeField] private Rigidbody rb;
+
         public static PlayerController LocalInstance { get; private set; }
         private Vector3 moveDir;
         public event Action<bool> OnMovementStateChanged;
         private bool isMoving;
         private float moveEpsilon = 0.1f;
 
-         
         public override void OnNetworkSpawn()
         {
             if (IsOwner)
@@ -38,12 +38,14 @@ namespace Player
             {
                 return;
             }
+
             CheckMovementState();
         }
 
         private void CheckMovementState()
         {
             bool newMovingState = moveDir.sqrMagnitude > 0.01f;
+
             if (newMovingState != isMoving)
             {
                 isMoving = newMovingState;

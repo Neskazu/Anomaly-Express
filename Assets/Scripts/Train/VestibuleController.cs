@@ -1,57 +1,61 @@
+using Managers;
 using Unity.Netcode;
 using UnityEngine;
 
-public class VestibuleController : NetworkBehaviour
+namespace Train
 {
-    //test
-    public bool isLoad = false;
-    [SerializeField]
-    private VestibuleType VestibuleDirection = VestibuleType.Forward;
-    [SerializeField]
-    private bool isBackward = false;
-    [SerializeField]
-    private Transform spawnpointForward;
-    [SerializeField]
-    private Transform spawnpointBackward;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-
-    // Update is called once per frame
-    void Update()
+    public class VestibuleController : NetworkBehaviour
     {
-        if (!IsServer)
+        //test
+        public bool isLoad = false;
+        [SerializeField]
+        private VestibuleType VestibuleDirection = VestibuleType.Forward;
+        [SerializeField]
+        private bool isBackward = false;
+        [SerializeField]
+        private Transform spawnpointForward;
+        [SerializeField]
+        private Transform spawnpointBackward;
+        // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+        // Update is called once per frame
+        void Update()
         {
-            return;
+            if (!IsServer)
+            {
+                return;
+            }
+            if (isLoad)
+            {
+                isLoad = false;
+                if (VestibuleDirection == VestibuleType.Forward)
+                {
+                    TrainManager.Instance.SpawnWagon(VestibuleDirection, spawnpointForward.position, isBackward);
+                    VestibuleDirection = VestibuleType.Backward;
+                }
+                else
+                {
+                    TrainManager.Instance.SpawnWagon(VestibuleDirection, spawnpointBackward.position, isBackward);
+                    VestibuleDirection = VestibuleType.Forward;
+                }
+                isBackward = true;
+
+            }
         }
-        if (isLoad)
+        public Vector3 GetOffset(VestibuleType vestibuleType)
         {
-            isLoad = false;
-            if (VestibuleDirection == VestibuleType.Forward)
+            if (vestibuleType == VestibuleType.Backward)
             {
-                TrainManager.Instance.SpawnWagon(VestibuleDirection, spawnpointForward.position, isBackward);
-                VestibuleDirection = VestibuleType.Backward;
+                return spawnpointForward.position - spawnpointBackward.position;
+
             }
-            else
-            {
-                TrainManager.Instance.SpawnWagon(VestibuleDirection, spawnpointBackward.position, isBackward);
-                VestibuleDirection = VestibuleType.Forward;
-            }
-            isBackward = true;
+            return Vector3.zero;
 
         }
     }
-    public Vector3 GetOffset(VestibuleType vestibuleType)
+    public enum VestibuleType
     {
-        if (vestibuleType == VestibuleType.Backward)
-        {
-            return spawnpointForward.position - spawnpointBackward.position;
-
-        }
-        return Vector3.zero;
-
+        Forward,
+        Backward
     }
-}
-public enum VestibuleType
-{
-    Forward,
-    Backward
 }
