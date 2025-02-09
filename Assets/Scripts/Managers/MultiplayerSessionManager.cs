@@ -35,9 +35,17 @@ namespace Managers
             NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
             NetworkManager.Singleton.StartHost();
         }
+        public void ShutDown()
+        {
+            NetworkManager.Singleton.ConnectionApprovalCallback -= NetworkManager_ConnectionApprovalCallback;
+            NetworkManager.Singleton.OnClientConnectedCallback -= NetworkManager_OnClientConnectedCallback;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
+            NetworkManager.Singleton.Shutdown();
+        }
 
         private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
         {
+            Debug.Log("u been kicked");
             for (int i = 0; i < playerDataNetworkList.Count; i++)
             {
                 PlayerData playerData = playerDataNetworkList[i];
