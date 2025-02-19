@@ -8,9 +8,9 @@ namespace Network
     {
         public ulong ClientId;
         public FixedString64Bytes PlayerName;
-        public FixedString64Bytes PlayerId;
 
         public bool IsReady;
+        public bool IsDead;
 
         public bool Equals(PlayerData other)
         {
@@ -21,8 +21,8 @@ namespace Network
         {
             serializer.SerializeValue(ref ClientId);
             serializer.SerializeValue(ref PlayerName);
-            serializer.SerializeValue(ref PlayerId);
             serializer.SerializeValue(ref IsReady);
+            serializer.SerializeValue(ref IsDead);
         }
     }
 }

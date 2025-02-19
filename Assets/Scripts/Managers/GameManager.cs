@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Network;
+using Player;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,7 +11,10 @@ namespace Managers
     {
         public static GameManager Instance { get; private set; }
 
-        [SerializeField] private Transform playerPrefab;
+        [SerializeField] private PlayerController playerPrefab;
+
+        private static PlayerDataProvider Players =>
+            MultiplayerManager.Instance.Players;
 
         private void Awake()
         {
@@ -29,9 +34,32 @@ namespace Managers
         {
             foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
-                Transform playerTransform = Instantiate(playerPrefab);
-                playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+                PlayerController playerControllerTransform = Instantiate(playerPrefab);
+
+                playerControllerTransform
+                    .GetComponent<NetworkObject>()
+                    .SpawnAsPlayerObject(clientId, true);
             }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void KillPlayerServerRpc(ulong clientId)
+        {
+            if (!Players.Find(clientId, out var index, out var player))
+                return;
+
+            player.IsDead = true;
+            Players[index] = player;
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void RevivePlayerServerRpc(ulong clientId)
+        {
+            if (!Players.Find(clientId, out var index, out var player))
+                return;
+
+            player.IsDead = false;
+            Players[index] = player;
         }
     }
 }

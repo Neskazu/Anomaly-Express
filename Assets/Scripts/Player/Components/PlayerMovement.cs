@@ -1,9 +1,8 @@
-﻿using System;
-using Managers;
+﻿using Managers;
 using Unity.Netcode.Components;
 using UnityEngine;
 
-namespace Player
+namespace Player.Components
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody))]
@@ -16,9 +15,8 @@ namespace Player
         [SerializeField] private Rigidbody rb;
 
         // Settings
-        [SerializeField] private float acceleration = 10f;
+        [SerializeField] private float speed = 10f;
 
-        private Vector3 force;
         private Vector2 axis;
 
         private static InputManager Input
@@ -41,8 +39,10 @@ namespace Player
 
         private void FixedUpdate()
         {
-            force = (transform.right * axis.x + transform.forward * axis.y) * acceleration;
-            rb.AddForce(force, ForceMode.Acceleration);
+            var velocity = (transform.right * axis.x + transform.forward * axis.y) * speed;
+            velocity.y = rb.linearVelocity.y;
+
+            rb.linearVelocity = velocity;
         }
     }
 }

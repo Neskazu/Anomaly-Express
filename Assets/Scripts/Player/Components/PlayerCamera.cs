@@ -1,7 +1,7 @@
 ﻿using Managers;
 using UnityEngine;
 
-namespace Player
+namespace Player.Components
 {
     public class PlayerCamera : MonoBehaviour
     {
