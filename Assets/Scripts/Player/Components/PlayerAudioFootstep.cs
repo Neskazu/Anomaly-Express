@@ -1,9 +1,8 @@
-using Unity.Netcode;
 using UnityEngine;
 
-namespace Player
+namespace Player.Components
 {
-    public class PlayerAudioFootstep : NetworkBehaviour
+    public class PlayerAudioFootstep : MonoBehaviour
     {
         // Dependencies
         [SerializeField] private Rigidbody rb;

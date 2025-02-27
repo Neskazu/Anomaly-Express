@@ -1,4 +1,5 @@
 using Music;
+using Scene;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -32,7 +33,7 @@ namespace Managers
             }
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode mode)
         {
             foreach (var sceneMusic in sceneMusics)
             {
@@ -46,7 +47,7 @@ namespace Managers
 
         private void PlayMusic(MusicSettings musicSettings)
         {
-            if (musicThemeSource.clip == musicSettings.clip)
+            if (!musicThemeSource && musicThemeSource.clip == musicSettings.clip)
             {
                 return;
             }

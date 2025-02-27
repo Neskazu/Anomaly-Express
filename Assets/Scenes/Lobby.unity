@@ -879,8 +879,9 @@ GameObject:
   m_Component:
   - component: {fileID: 224765436}
   - component: {fileID: 224765437}
+  - component: {fileID: 224765438}
   m_Layer: 0
-  m_Name: LobbyManager
+  m_Name: '[ Controller ]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -895,7 +896,7 @@ Transform:
   m_GameObject: {fileID: 224765435}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.50384074, y: 1.3625886, z: -1.2083955}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -910,24 +911,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 224765435}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95222c05c9bbfb04eb4b9116f458998d, type: 3}
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerUI:
-  - {fileID: 289104364}
-  - {fileID: 540604076}
-  - {fileID: 1515564485}
-  - {fileID: 718636711}
-  playerInfoUI:
-  - {fileID: 289104366}
-  - {fileID: 540604078}
-  - {fileID: 1515564487}
-  - {fileID: 718636713}
-  readyButton: {fileID: 995548275}
-  kickButtons:
-  - {fileID: 1157581909}
-  - {fileID: 960336547}
-  - {fileID: 1021920081}
+  GlobalObjectIdHash: 1670431648
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &224765438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224765435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43db6e5dbead45078b498bfff682aa98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &239412951
 GameObject:
   m_ObjectHideFlags: 0
@@ -946,7 +958,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &239412952
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2279,6 +2291,12 @@ MonoBehaviour:
   mainMenuButton: {fileID: 91982970}
   readyButton: {fileID: 995548275}
   startButton: {fileID: 239412953}
+  playersView:
+  - {fileID: 289104366}
+  - {fileID: 540604078}
+  - {fileID: 1515564487}
+  - {fileID: 718636713}
+  controller: {fileID: 224765438}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -4908,14 +4926,14 @@ Canvas:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 224765436}
+  - {fileID: 806943875}
+  - {fileID: 103525242}
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 527156146}
-  - {fileID: 806943875}
-  - {fileID: 103525242}
   - {fileID: 179988207}
   - {fileID: 340167033}
   - {fileID: 455713285}
   - {fileID: 207847420}
-  - {fileID: 224765436}
