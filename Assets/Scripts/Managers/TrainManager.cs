@@ -8,110 +8,106 @@ namespace Managers
     public class TrainManager : NetworkBehaviour
     {
         public static TrainManager Instance { get; private set; }
-        public int currentWagonIndex = 0;
-        [SerializeField] private GameObject DeffaultWagon;
-        [SerializeField] private GameObject[] AnomalyWagons;
+        private int currentWagonIndex = 0;
+        [SerializeField] private GameObject defaultWagon;
+        [SerializeField] private GameObject[] anomalyWagons;
         [SerializeField] private GameObject vestibulePrefab;
+        [SerializeField] private List<GameObject> trainPool = new List<GameObject>();
 
-        [SerializeField] private List<GameObject> trainPool;
-
-        //offsets
+        // Offsets for wagon and vestibule positioning
         private Vector3 wagonOffset;
         private Vector3 wagonReversedOffset;
-
         private Vector3 vestibuleOffset;
 
-        //current data
+        // Current wagon anomaly flag
         [SerializeField] private bool currentWagonHasAnomaly = false;
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
             Instance = this;
         }
 
-        public void SpawnWagon(VestibuleType VestibuleDirection, Vector3 position, bool isBackward)
+        public void SpawnWagon(VestibuleType vestibuleType, Vector3 position, bool isBackward)
         {
             if (!IsServer)
             {
                 return;
             }
 
-            //todo make it random and non repeating
-            currentWagonIndex++;
+            // TODO: сделать выбор случайным и без повторов
+            currentWagonIndex = (currentWagonIndex + 1) % anomalyWagons.Length;
 
-            if (currentWagonIndex >= AnomalyWagons.Length)
+            bool shouldSpawnDefault = (currentWagonHasAnomaly && !isBackward) || (!currentWagonHasAnomaly && isBackward);
+            if (shouldSpawnDefault)
             {
-                currentWagonIndex = 0;
-            }
-
-            if (currentWagonHasAnomaly && !isBackward)
-            {
-                SpawnFirsWagon(VestibuleDirection, position);
-                return;
-            }
-
-            if (!currentWagonHasAnomaly && isBackward)
-            {
-                SpawnFirsWagon(VestibuleDirection, position);
-                return;
-            }
-
-            SpawnNextWagon(VestibuleDirection, position);
-        }
-
-        void SpawnNextWagon(VestibuleType VestibuleDirection, Vector3 position)
-        {
-            InstantiateWagon(AnomalyWagons[currentWagonIndex], VestibuleDirection, position);
-        }
-
-        void SpawnFirsWagon(VestibuleType vestibuleType, Vector3 position)
-        {
-            InstantiateWagon(DeffaultWagon, vestibuleType, position);
-        }
-
-        void DespawnWagons(VestibuleType vestibuleType)
-        {
-            if (vestibuleType == VestibuleType.Forward)
-            {
-                trainPool[0].GetComponent<NetworkObject>().Despawn(true);
-                trainPool[1].GetComponent<NetworkObject>().Despawn(true);
-                trainPool.RemoveRange(0, 2);
+                SpawnFirstWagon(vestibuleType, position);
             }
             else
             {
-                trainPool[1].GetComponent<NetworkObject>().Despawn(true);
-                trainPool[2].GetComponent<NetworkObject>().Despawn(true);
-                trainPool.RemoveRange(1, 2);
-                trainPool.Reverse();
+                SpawnAnomalyWagon(vestibuleType, position);
             }
         }
 
-        void InstantiateWagon(GameObject wagonPrefab, VestibuleType vestibuleType, Vector3 position)
+        private void SpawnAnomalyWagon(VestibuleType vestibuleType, Vector3 position)
+        {
+            InstantiateWagon(anomalyWagons[currentWagonIndex], vestibuleType, position);
+        }
+
+        private void SpawnFirstWagon(VestibuleType vestibuleType, Vector3 position)
+        {
+            InstantiateWagon(defaultWagon, vestibuleType, position);
+        }
+
+        private void InstantiateWagon(GameObject wagonPrefab, VestibuleType vestibuleType, Vector3 position)
         {
             GameObject wagon = Instantiate(wagonPrefab);
             GameObject vestibule = Instantiate(vestibulePrefab);
+
             WagonController wagonController = wagon.GetComponent<WagonController>();
-            SetOffsets(wagonController, vestibule.GetComponent<VestibuleController>(), vestibuleType);
-            //set spawn postion based on offsets
+            VestibuleController vestibuleController = vestibule.GetComponent<VestibuleController>();
+            SetOffsets(wagonController, vestibuleController, vestibuleType);
+
             wagon.transform.position = position - wagonOffset;
             wagon.name = "wagon" + currentWagonIndex;
             wagon.GetComponent<NetworkObject>().Spawn();
+
             vestibule.transform.position = position + wagonReversedOffset - wagonOffset - vestibuleOffset;
+            vestibule.name = "vestibule" + currentWagonIndex;
             vestibule.GetComponent<NetworkObject>().Spawn();
-            //add to pool
+
             trainPool.Add(wagon);
             trainPool.Add(vestibule);
             DespawnWagons(vestibuleType);
-            //set anomaly
+
             currentWagonHasAnomaly = wagonController.hasAnomaly;
         }
 
-        void SetOffsets(WagonController wagonController, VestibuleController vestibuleController,
-            VestibuleType vestibuleType)
+        private void SetOffsets(WagonController wagonController, VestibuleController vestibuleController, VestibuleType vestibuleType)
         {
             wagonOffset = wagonController.GetOffest(vestibuleType);
             wagonReversedOffset = wagonController.GetReversedOffset(vestibuleType);
             vestibuleOffset = vestibuleController.GetOffset(vestibuleType);
+        }
+
+        private void DespawnWagons(VestibuleType vestibuleType)
+        {
+            int startIndex = vestibuleType == VestibuleType.Forward ? 0 : 1;
+
+            for (int i = startIndex; i < startIndex + 2 && i < trainPool.Count; i++)
+            {
+                trainPool[i].GetComponent<NetworkObject>().Despawn(true);
+            }
+            trainPool.RemoveRange(startIndex, Mathf.Min(2, trainPool.Count - startIndex));
+
+            if (vestibuleType != VestibuleType.Forward)
+            {
+                trainPool.Reverse();
+            }
         }
     }
 }

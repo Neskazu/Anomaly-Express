@@ -6,53 +6,59 @@ namespace Train
 {
     public class VestibuleController : NetworkBehaviour
     {
-        //test
-        public bool isLoad = false;
         [SerializeField]
-        private VestibuleType VestibuleDirection = VestibuleType.Forward;
+        private bool isLoad = false;
+
+        [SerializeField]
+        private VestibuleType vestibuleDirection = VestibuleType.Forward;
+
         [SerializeField]
         private bool isBackward = false;
+
         [SerializeField]
         private Transform spawnpointForward;
+
         [SerializeField]
         private Transform spawnpointBackward;
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-        // Update is called once per frame
         void Update()
         {
             if (!IsServer)
             {
                 return;
             }
+
             if (isLoad)
             {
                 isLoad = false;
-                if (VestibuleDirection == VestibuleType.Forward)
-                {
-                    TrainManager.Instance.SpawnWagon(VestibuleDirection, spawnpointForward.position, isBackward);
-                    VestibuleDirection = VestibuleType.Backward;
-                }
-                else
-                {
-                    TrainManager.Instance.SpawnWagon(VestibuleDirection, spawnpointBackward.position, isBackward);
-                    VestibuleDirection = VestibuleType.Forward;
-                }
+                SpawnWagonBasedOnDirection();
                 isBackward = true;
-
             }
         }
+        private void SpawnWagonBasedOnDirection()
+        {
+            if (vestibuleDirection == VestibuleType.Forward)
+            {
+                TrainManager.Instance.SpawnWagon(vestibuleDirection, spawnpointForward.position, isBackward);
+                vestibuleDirection = VestibuleType.Backward;
+            }
+            else
+            {
+                TrainManager.Instance.SpawnWagon(vestibuleDirection, spawnpointBackward.position, isBackward);
+                vestibuleDirection = VestibuleType.Forward;
+            }
+        }
+
         public Vector3 GetOffset(VestibuleType vestibuleType)
         {
             if (vestibuleType == VestibuleType.Backward)
             {
                 return spawnpointForward.position - spawnpointBackward.position;
-
             }
             return Vector3.zero;
-
         }
     }
+
     public enum VestibuleType
     {
         Forward,

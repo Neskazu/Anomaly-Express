@@ -1008,9 +1008,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  currentWagonIndex: 0
-  DeffaultWagon: {fileID: 5009111389878023802, guid: 0006a2c1bfba9084d9444851a13879e3, type: 3}
-  AnomalyWagons:
+  defaultWagon: {fileID: 5009111389878023802, guid: 0006a2c1bfba9084d9444851a13879e3, type: 3}
+  anomalyWagons:
+  - {fileID: 1550445195671863296, guid: 9421ab37c3bf8ff41b37ee95d876851f, type: 3}
+  - {fileID: 1550445195671863296, guid: 9421ab37c3bf8ff41b37ee95d876851f, type: 3}
   - {fileID: 1550445195671863296, guid: 9421ab37c3bf8ff41b37ee95d876851f, type: 3}
   vestibulePrefab: {fileID: 4502063100727784435, guid: 261b42aac30d9414593c2c62e7f35a96, type: 3}
   trainPool:
