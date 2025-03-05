@@ -1,4 +1,5 @@
 ﻿using Managers;
+using System;
 using UnityEngine;
 
 namespace Player.Components
@@ -15,6 +16,7 @@ namespace Player.Components
 
         private Vector2 mouseAxis;
         private float verticalRotation;
+        private float horizontalRotation;
 
         private static InputManager Input
             => InputManager.Singleton;
@@ -22,8 +24,6 @@ namespace Player.Components
         private void OnEnable()
         {
             Input.OnMouseMove += OnMouseMove;
-            
-            UnityEngine.Camera.main?.transform.SetParent(head, false);
 
             if (lockCursor)
                 Cursor.lockState = CursorLockMode.Locked;
@@ -32,27 +32,35 @@ namespace Player.Components
         private void OnDisable()
         {
             Input.OnMouseMove -= OnMouseMove;
-
-            UnityEngine.Camera.main?.transform.SetParent(null);
-
             if (lockCursor)
                 Cursor.lockState = CursorLockMode.None;
         }
 
         private void LateUpdate()
         {
-            // Vertical rotation
-            verticalRotation -= mouseAxis.y;
-            verticalRotation = Mathf.Clamp(verticalRotation, -rotationLimit, rotationLimit);
-            head.transform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);
+            FollowPlayer();
+            HandleRotation();
 
-            // Horizontal rotation
-            body.Rotate(Vector3.up * mouseAxis.x);
+        }
+
+        private void FollowPlayer()
+        {
+            if(head != null)
+            Camera.main.transform.position = head.position;
+        }
+
+        private void HandleRotation()
+        {
+            verticalRotation -= mouseAxis.y;
+            horizontalRotation += mouseAxis.x;
+            verticalRotation = Mathf.Clamp(verticalRotation, -rotationLimit, rotationLimit);
+            Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
         }
 
         private void OnMouseMove(Vector2 value)
         {
             mouseAxis = value;
         }
+
     }
 }
