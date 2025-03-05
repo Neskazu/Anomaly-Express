@@ -272,6 +272,7 @@ MonoBehaviour:
   networkObject: {fileID: 8626299152645079788}
   localComponents:
   - {fileID: -3165505915988723258}
+  - {fileID: 4930454702381990741}
   Motor: {fileID: 4930454702381990741}
   MaxStableMoveSpeed: 10
   StableMovementSharpness: 15
@@ -282,6 +283,7 @@ MonoBehaviour:
   RotationObstruction: 0
   Gravity: {x: 0, y: -30, z: 0}
   MeshRoot: {fileID: 0}
+  cameraTransform: {fileID: 0}
 --- !u!114 &-3165505915988723258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,7 +343,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1770505051402491123}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d1bc5515e3ab954e80599c538834774, type: 3}
   m_Name: 

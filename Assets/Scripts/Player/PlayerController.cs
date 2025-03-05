@@ -76,6 +76,8 @@ namespace Player
 
         private void Update()
         {
+            if (!networkObject.IsOwner)
+                return;
             HandleMoveDirection();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (Input.GetKeyDown(KeyCode.G) && networkObject.IsOwner)
