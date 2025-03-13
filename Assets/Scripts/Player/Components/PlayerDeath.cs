@@ -1,10 +1,8 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Managers;
 using Network;
 using UI.Base;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Player.Components
@@ -19,7 +17,9 @@ namespace Player.Components
 
         [SerializeField] private NetworkObject networkObject;
 
-        private IView DeathScreen => 
+        private bool _isDead;
+
+        private IView DeathScreen =>
             UI.DeathScreen.Instance;
 
         private static PlayerDataProvider Players =>
@@ -28,6 +28,9 @@ namespace Player.Components
         private void Awake()
         {
             Players.OnChange += ChangePlayerState;
+
+            Players.Find(networkObject.OwnerClientId, out var _, out var data);
+            _isDead = data.IsDead;
         }
 
         public void OnDestroy()
@@ -39,6 +42,11 @@ namespace Player.Components
         {
             if (playerData.ClientId != networkObject.OwnerClientId)
                 return;
+
+            if (playerData.IsDead == _isDead)
+                return;
+
+            _isDead = playerData.IsDead;
 
             if (networkObject.IsOwner)
             {
@@ -52,7 +60,7 @@ namespace Player.Components
                 if (playerData.IsDead)
                     Death();
                 else
-                    Revive(); 
+                    Revive();
             }
         }
 

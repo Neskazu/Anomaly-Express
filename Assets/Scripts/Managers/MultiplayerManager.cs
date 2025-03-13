@@ -67,6 +67,13 @@ namespace Managers
             Players.Change(player);
         }
 
+        [ServerRpc(RequireOwnership = true)]
+        private void KickServerRpc(ulong id, ServerRpcParams serverRpcParams = default)
+        {
+            // TODO: Добавить возможность локализации
+            NetworkManager.Singleton.DisconnectClient(id, "You have been kicked.");
+        }
+
         public struct Settings
         {
             public string Name;

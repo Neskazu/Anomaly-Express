@@ -1,6 +1,7 @@
 using System;
 using Unity.Collections;
 using Unity.Netcode;
+using UnityEngine;
 
 namespace Network
 {
@@ -11,6 +12,9 @@ namespace Network
 
         public bool IsReady;
         public bool IsDead;
+
+        public Vector3 Velocity;
+        public Vector3 Punch;
 
         public bool Equals(PlayerData other)
         {
@@ -23,6 +27,8 @@ namespace Network
             serializer.SerializeValue(ref PlayerName);
             serializer.SerializeValue(ref IsReady);
             serializer.SerializeValue(ref IsDead);
+            serializer.SerializeValue(ref Velocity);
+            serializer.SerializeValue(ref Punch);
         }
     }
 }

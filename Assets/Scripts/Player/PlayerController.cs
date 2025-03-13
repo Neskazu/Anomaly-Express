@@ -1,6 +1,5 @@
 ﻿using KinematicCharacterController;
 using Managers;
-using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,23 +7,25 @@ using UnityEngine;
 namespace Player
 {
     [DisallowMultipleComponent]
-    public sealed class PlayerController : MonoBehaviour,ICharacterController 
+    public sealed class PlayerController : MonoBehaviour, ICharacterController
     {
+        [SerializeField] private Rigidbody rb;
+
         [SerializeField] private NetworkObject networkObject;
         [SerializeField] private Behaviour[] localComponents;
+
+
         public KinematicCharacterMotor Motor;
-        [Header("Stable Movement")]
-        public float MaxStableMoveSpeed = 10f;
+        [Header("Stable Movement")] public float MaxStableMoveSpeed = 10f;
         public float StableMovementSharpness = 15;
         public float OrientationSharpness = 10;
 
-        [Header("Air Movement")]
-        public float MaxAirMoveSpeed = 10f;
+        [Header("Air Movement")] public float MaxAirMoveSpeed = 10f;
         public float AirAccelerationSpeed = 5f;
         public float Drag = 0.1f;
+        public float AirScalableForwardSpeed = 10f;
 
-        [Header("Misc")]
-        public bool RotationObstruction;
+        [Header("Misc")] public bool RotationObstruction;
         public Vector3 Gravity = new Vector3(0, -30f, 0);
         public Transform MeshRoot;
 
@@ -32,8 +33,11 @@ namespace Player
         private Vector3 _moveInputVector;
         private Vector3 _lookInputVector;
 
-        private static InputManager inputManager
+        public Vector3 PunchVelocity;
+
+        private static InputManager InputManager
             => InputManager.Singleton;
+
         [SerializeField] private Transform cameraTransform;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -46,31 +50,37 @@ namespace Player
 
             foreach (Behaviour localComponent in localComponents)
                 localComponent.enabled = true;
+
             //KCC
             Motor.CharacterController = this;
-            inputManager.OnMoveAxisChanged += HandleInput;
+            InputManager.OnMoveAxisChanged += HandleInput;
             cameraTransform = Camera.main.transform;
         }
+
         private void HandleInput(Vector2 vector)
         {
             _rawInput = vector;
         }
+
         private void HandleMoveDirection()
         {
             Vector3 moveInputVector = new Vector3(_rawInput.x, 0f, _rawInput.y);
             moveInputVector = Vector3.ClampMagnitude(moveInputVector, 1f);
 
-            if (cameraTransform != null)
+            if (cameraTransform)
             {
                 Vector3 cameraPlanarDirection = Vector3.ProjectOnPlane(cameraTransform.forward, Motor.CharacterUp).normalized;
+
                 if (cameraPlanarDirection.sqrMagnitude == 0f)
                 {
                     cameraPlanarDirection = Vector3.ProjectOnPlane(cameraTransform.up, Motor.CharacterUp).normalized;
                 }
+
                 Quaternion cameraPlanarRotation = Quaternion.LookRotation(cameraPlanarDirection, Motor.CharacterUp);
                 moveInputVector = cameraPlanarRotation * moveInputVector;
                 _lookInputVector = cameraPlanarDirection;
             }
+
             _moveInputVector = moveInputVector;
         }
 
@@ -78,7 +88,9 @@ namespace Player
         {
             if (!networkObject.IsOwner)
                 return;
+
             HandleMoveDirection();
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (Input.GetKeyDown(KeyCode.G) && networkObject.IsOwner)
             {
@@ -91,6 +103,7 @@ namespace Player
             }
 #endif
         }
+
         // ICharacterController implementation
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
         {
@@ -106,7 +119,8 @@ namespace Player
 
         public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
         {
-            Vector3 targetMovementVelocity = Vector3.zero;
+            Vector3 targetMovementVelocity;
+
             if (Motor.GroundingStatus.IsStableOnGround)
             {
                 // Reorient source velocity on current ground slope (this is because we don't want our smoothing to cause any velocity losses in slope changes)
@@ -135,7 +149,7 @@ namespace Player
                     }
 
                     Vector3 velocityDiff = Vector3.ProjectOnPlane(targetMovementVelocity - currentVelocity, Gravity);
-                    currentVelocity += velocityDiff * AirAccelerationSpeed * deltaTime;
+                    currentVelocity += velocityDiff * (AirAccelerationSpeed * deltaTime);
                 }
 
                 // Gravity
@@ -144,39 +158,36 @@ namespace Player
                 // Drag
                 currentVelocity *= (1f / (1f + (Drag * deltaTime)));
             }
+
+            if (PunchVelocity.magnitude > 0.1f)
+            {
+                Motor.ForceUnground();
+
+                currentVelocity += (PunchVelocity) - Vector3.Project(currentVelocity, Motor.CharacterUp);
+                currentVelocity += (_moveInputVector * AirScalableForwardSpeed);
+                GameManager.Instance.ResetPlayerPunchVelocityServerRpc(networkObject.OwnerClientId);
+            }
+
+            GameManager.Instance.UpdatePlayerVelocityServerRpc(networkObject.OwnerClientId, Motor.Velocity);
         }
 
-        public void BeforeCharacterUpdate(float deltaTime)
-        {
-        }
+        public void BeforeCharacterUpdate(float deltaTime) { }
 
-        public void PostGroundingUpdate(float deltaTime)
-        {
-        }
+        public void PostGroundingUpdate(float deltaTime) { }
 
-        public void AfterCharacterUpdate(float deltaTime)
-        {
-        }
+        public void AfterCharacterUpdate(float deltaTime) { }
 
         public bool IsColliderValidForCollisions(Collider coll)
         {
             return true;
         }
 
-        public void OnGroundHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, ref HitStabilityReport hitStabilityReport)
-        {
-        }
+        public void OnGroundHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, ref HitStabilityReport hitStabilityReport) { }
 
-        public void OnMovementHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, ref HitStabilityReport hitStabilityReport)
-        {
-        }
+        public void OnMovementHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, ref HitStabilityReport hitStabilityReport) { }
 
-        public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, Vector3 atCharacterPosition, Quaternion atCharacterRotation, ref HitStabilityReport hitStabilityReport)
-        {
-        }
+        public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, Vector3 atCharacterPosition, Quaternion atCharacterRotation, ref HitStabilityReport hitStabilityReport) { }
 
-        public void OnDiscreteCollisionDetected(Collider hitCollider)
-        {
-        }
+        public void OnDiscreteCollisionDetected(Collider hitCollider) { }
     }
 }

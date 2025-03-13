@@ -25,7 +25,6 @@ namespace UI
 
         private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
         {
-            Debug.Log("client id + is server id: " + clientId + " " + NetworkManager.ServerClientId);
             if (clientId == NetworkManager.Singleton.LocalClientId)
             {
                 Show();

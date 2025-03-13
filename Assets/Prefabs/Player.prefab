@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 6867427706136141896}
   - component: {fileID: -3165505915988723258}
   - component: {fileID: -1900071020872394229}
+  - component: {fileID: 6355190121646887306}
   - component: {fileID: 142075352269120589}
   - component: {fileID: 4930454702381990741}
   m_Layer: 6
@@ -269,10 +270,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dbc447829d341199d4e170d8fd07565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb: {fileID: 1168412783720211212}
   networkObject: {fileID: 8626299152645079788}
   localComponents:
   - {fileID: -3165505915988723258}
   - {fileID: 4930454702381990741}
+  - {fileID: 6355190121646887306}
   Motor: {fileID: 4930454702381990741}
   MaxStableMoveSpeed: 10
   StableMovementSharpness: 15
@@ -280,9 +283,11 @@ MonoBehaviour:
   MaxAirMoveSpeed: 10
   AirAccelerationSpeed: 5
   Drag: 0.1
+  AirScalableForwardSpeed: 10
   RotationObstruction: 0
   Gravity: {x: 0, y: -30, z: 0}
   MeshRoot: {fileID: 0}
+  PunchVelocity: {x: 0, y: 0, z: 0}
   cameraTransform: {fileID: 0}
 --- !u!114 &-3165505915988723258
 MonoBehaviour:
@@ -320,6 +325,26 @@ MonoBehaviour:
   ghostLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  networkObject: {fileID: 8626299152645079788}
+--- !u!114 &6355190121646887306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1770505051402491123}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2d645714a4442e3a9c66b82d28d4790, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldown: 2
+  range: 250
+  force: 10
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  player: {fileID: 6867427706136141896}
   networkObject: {fileID: 8626299152645079788}
 --- !u!114 &142075352269120589
 MonoBehaviour:

@@ -12,6 +12,7 @@ namespace Managers
 
         public event Action<Vector2> OnMouseMove;
         public event Action<Vector2> OnMoveAxisChanged;
+        public event Action OnPunch;
 
         private InputSystem_Actions inputActions;
 
@@ -29,6 +30,9 @@ namespace Managers
             inputActions.Player.Look.performed
                 += context => OnMouseMove?
                     .Invoke(Vector2.Scale(context.ReadValue<Vector2>(), mouseSensitivity));
+
+            inputActions.Player.Attack.started
+                += context => OnPunch?.Invoke();
 
             Singleton = this;
         }

@@ -61,5 +61,35 @@ namespace Managers
             player.IsDead = false;
             Players[index] = player;
         }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void UpdatePlayerVelocityServerRpc(ulong clientId, Vector3 velocity)
+        {
+            if (!Players.Find(clientId, out var index, out var player))
+                return;
+
+            player.Velocity = velocity;
+            Players[index] = player;
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void PunchPlayerServerRpc(ulong clientId, Vector3 velocity)
+        {
+            if (!Players.Find(clientId, out var index, out var player))
+                return;
+
+            player.Punch += velocity;
+            Players[index] = player;
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void ResetPlayerPunchVelocityServerRpc(ulong clientId)
+        {
+            if (!Players.Find(clientId, out var index, out var player))
+                return;
+
+            player.Punch = Vector3.zero;
+            Players[index] = player;
+        }
     }
 }
