@@ -7,15 +7,14 @@ namespace UI
 {
     public class DisconnectUI : MonoBehaviour
     {
+        [SerializeField] private Button mainMenuButton;
+        [SerializeField] private SceneTransitionSequence toMenu;
 
-        [SerializeField]
-        private Button mainMenuButton;
         private void Awake()
         {
-            mainMenuButton.onClick.AddListener(() => {
-                SceneLoader.Load(SceneLoader.Scene.Menu);
-            });
+            mainMenuButton.onClick.AddListener(() => { SceneTransitionController.Instance.Play(toMenu); });
         }
+
         private void Start()
         {
             NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
@@ -40,6 +39,7 @@ namespace UI
         {
             gameObject.SetActive(false);
         }
+
         private void OnDestroy()
         {
             NetworkManager.Singleton.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;

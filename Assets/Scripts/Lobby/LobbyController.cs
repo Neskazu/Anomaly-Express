@@ -3,11 +3,14 @@ using Managers;
 using Network;
 using Scene;
 using Unity.Netcode;
+using UnityEngine;
 
 namespace Lobby
 {
     public class LobbyController : NetworkBehaviour
     {
+        [SerializeField] private SceneTransitionSequence toMenu;
+
         private static PlayerDataProvider Players =>
             MultiplayerManager.Instance.Players;
 
@@ -30,9 +33,9 @@ namespace Lobby
             StartGame();
         }
 
-        public void StartGame()
+        public async void StartGame()
         {
-            SceneLoader.LoadNetwork(SceneLoader.Scene.Game);
+            await SceneTransitionController.Instance.Play(toMenu);
         }
 
         [ServerRpc(RequireOwnership = false)]

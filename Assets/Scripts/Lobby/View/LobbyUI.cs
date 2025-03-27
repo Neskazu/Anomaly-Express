@@ -16,6 +16,7 @@ namespace Lobby.View
         [SerializeField] private PlayerUI[] playersView;
 
         [SerializeField] private LobbyController controller;
+        [SerializeField] private SceneTransitionSequence toMenu;
 
         private static PlayerDataProvider Players =>
             MultiplayerManager.Instance.Players;
@@ -64,10 +65,10 @@ namespace Lobby.View
             }
         }
 
-        private void OnMainMenuClicked()
+        private async void OnMainMenuClicked()
         {
             MultiplayerManager.Instance.Disconnect();
-            SceneLoader.Load(SceneLoader.Scene.Menu);
+            await SceneTransitionController.Instance.Play(toMenu);
         }
 
         private void OnReadyClicked()

@@ -21,22 +21,18 @@ namespace Player.UI
 
         public async UniTask Show()
         {
-            deathScreen
+            await deathScreen
                 .DOAnchorPos(Vector2.zero, animationDuration)
                 .From(new Vector2(resolution.x, 0))
                 .SetEase(Ease.InOutCubic);
-
-            await UniTask.WaitForSeconds(animationDuration);
         }
 
-        public UniTask Hide()
+        public async UniTask Hide()
         {
-            deathScreen
+            await deathScreen
                 .DOAnchorPos(new Vector2(-resolution.x, 0), animationDuration)
                 .SetEase(Ease.InOutCubic)
                 .From(Vector2.zero);
-
-            return UniTask.WaitForSeconds(animationDuration);
         }
     }
 }

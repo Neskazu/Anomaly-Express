@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 1440700849}
   - component: {fileID: 1440700848}
   m_Layer: 0
-  m_Name: Network Manager
+  m_Name: '[ Network Manager ]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -234,7 +234,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1645569652698429995, guid: 625827d653930db48b0cfa32d4b79d45, type: 3}
       propertyPath: m_Name
-      value: MultiplayerSession Manager
+      value: '[ Multiplayer Session Manager ]'
       objectReference: {fileID: 0}
     - target: {fileID: 2300052400894184780, guid: 625827d653930db48b0cfa32d4b79d45, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -293,5 +293,5 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1930038388}
   - {fileID: 1440700850}
+  - {fileID: 1930038388}

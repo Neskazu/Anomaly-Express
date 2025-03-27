@@ -8,6 +8,8 @@ namespace UI
 {
     public class ConnectionView : MonoBehaviour
     {
+        [SerializeField] private SceneTransitionSequence toLobby;
+
         [SerializeField] private TMP_InputField addressField;
         [SerializeField] private TMP_InputField portField;
         [SerializeField] private Button hostButton;
@@ -23,7 +25,7 @@ namespace UI
             joinButton.onClick.AddListener(OnJoinClicked);
         }
 
-        private void OnHostClicked()
+        private async void OnHostClicked()
         {
             var settings = new MultiplayerManager.Settings
             {
@@ -33,8 +35,7 @@ namespace UI
             };
 
             MultiplayerManager.Instance.Host(settings);
-
-            SceneLoader.LoadNetwork(SceneLoader.Scene.Lobby);
+            await SceneTransitionController.Instance.Play(toLobby);
         }
 
         private void OnJoinClicked()

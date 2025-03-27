@@ -1,59 +1,38 @@
-using Music;
 using Scene;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Managers
 {
     public class MusicThemeManager : MonoBehaviour
     {
-        [System.Serializable]
-        public struct SceneMusic
-        {
-            public SceneLoader.Scene sceneName;
-            public MusicSettings musicSettings;
-        }
-
-        public SceneMusic[] sceneMusics;
-        private static MusicThemeManager _instance;
         [SerializeField] private AudioSource musicThemeSource;
+
+        private static MusicThemeManager _instance;
 
         private void Awake()
         {
-            if (_instance == null)
-            {
-                _instance = this;
-                DontDestroyOnLoad(gameObject);
-                SceneManager.sceneLoaded += OnSceneLoaded;
-            }
-            else
-            {
+            if (_instance)
                 Destroy(gameObject);
-                return;
-            }
+
+            DontDestroyOnLoad(gameObject);
+            _instance = this;
+
+            SceneTransitionController.Instance.Loaded += PlayMusic;
         }
 
-        private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode mode)
+        private void PlayMusic(SceneTransitionSequence sequence)
         {
-            foreach (var sceneMusic in sceneMusics)
+            if (!sequence.bgm)
             {
-                if (sceneMusic.sceneName.ToString() == scene.name)
-                {
-                    PlayMusic(sceneMusic.musicSettings);
-                    return;
-                }
-            }
-        }
-
-        private void PlayMusic(MusicSettings musicSettings)
-        {
-            if (!musicThemeSource && musicThemeSource.clip == musicSettings.clip)
-            {
+                musicThemeSource.Stop();
                 return;
             }
 
-            musicThemeSource.clip = musicSettings.clip;
-            musicThemeSource.volume = musicSettings.volume;
+            if (musicThemeSource.clip == sequence.bgm)
+                return;
+
+            musicThemeSource.clip = sequence.bgm;
+            musicThemeSource.volume = sequence.volume;
             musicThemeSource.loop = true;
             musicThemeSource.Play();
         }

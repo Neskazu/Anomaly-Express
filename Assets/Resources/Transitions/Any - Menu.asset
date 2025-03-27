@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89cd72efa4b14635b1538cdf8d0e9f46, type: 3}
+  m_Name: Any - Menu
+  m_EditorClassIdentifier: 
+  bgm: {fileID: 8300000, guid: 6320be7dd9f6e184cab787111869792e, type: 3}
+  volume: 1
+  steps:
+  - scene:
+      asset: {fileID: 102900000, guid: ae40f6b2188a4f7439e3af89db81d6f9, type: 3}
+      guid: ae40f6b2188a4f7439e3af89db81d6f9
+    loadMode: 0
+    networkMode: 0

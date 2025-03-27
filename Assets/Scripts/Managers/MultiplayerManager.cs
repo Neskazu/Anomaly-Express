@@ -4,6 +4,7 @@ using Session;
 using Session.Validators;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using UnityEngine;
 
 namespace Managers
 {
@@ -19,7 +20,6 @@ namespace Managers
         {
             DontDestroyOnLoad(gameObject);
             Instance = this;
-
             playersData = new NetworkList<PlayerData>();
         }
 
@@ -53,6 +53,7 @@ namespace Managers
 
         public void Disconnect()
         {
+            Players.Dispose();
             session.Stop();
             session.Dispose();
         }
