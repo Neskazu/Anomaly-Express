@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Scene
 {
-    public class SceneTransitionWindow : MonoBehaviour, IView
+    public class SceneTransitionWindow : MonoBehaviour, IWindow
     {
         [SerializeField] private MonoTweenSequence tweenSequence;
 

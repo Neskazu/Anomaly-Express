@@ -1,10 +1,9 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using UnityEngine;
 
 namespace UI.Base
 {
-    public interface IView
+    public interface IView : IWindow
     {
-        public UniTask Show();
-        public UniTask Hide();
+        public void Bind(Object model);
     }
 }

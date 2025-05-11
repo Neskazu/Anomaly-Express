@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Managers;
+using Mono;
 using Network;
+using Network.Players;
 using Scene;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,20 +12,25 @@ namespace Lobby
 {
     public class LobbyController : NetworkBehaviour
     {
-        [SerializeField] private SceneTransitionSequence toMenu;
+        [SerializeField] private SceneTransitionSequence toGame;
 
         private static PlayerDataProvider Players =>
-            MultiplayerManager.Instance.Players;
+            MultiplayerManager.Players;
 
         private void Awake()
         {
             if (NetworkManager.IsServer)
-                Players.OnChange += IsAllReady;
+                MultiplayerManager.Players.OnUpdated += IsAllReady;
+        }
+
+        private void Start()
+        {
+            MultiplayerManager.Instance.SetNameServerRpc("Name");
         }
 
         public override void OnDestroy()
         {
-            Players.OnChange -= IsAllReady;
+            MultiplayerManager.Players.OnUpdated -= IsAllReady;
         }
 
         private void IsAllReady(PlayerData _)
@@ -35,17 +43,16 @@ namespace Lobby
 
         public async void StartGame()
         {
-            await SceneTransitionController.Instance.Play(toMenu);
+            await SceneTransitionController.Instance.Play(toGame);
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void SetReadyServerRpc(bool isReady, ServerRpcParams serverRpcParams = default)
         {
-            var player = Players.First(player => player.ClientId == serverRpcParams.Receive.SenderClientId);
+            var data = Players.Get(serverRpcParams.Receive.SenderClientId);
 
-            player.IsReady = isReady;
-
-            Players.Change(player);
+            data.IsReady = isReady;
+            Players.Update(data);
         }
     }
 }

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Mono;
 using Network;
+using Network.Players;
 using Player;
 using Unity.Netcode;
 using UnityEngine;
@@ -14,7 +16,7 @@ namespace Managers
         [SerializeField] private PlayerController playerPrefab;
 
         private static PlayerDataProvider Players =>
-            MultiplayerManager.Instance.Players;
+            MultiplayerManager.Players;
 
         private void Awake()
         {
@@ -45,51 +47,46 @@ namespace Managers
         [ServerRpc(RequireOwnership = false)]
         public void KillPlayerServerRpc(ulong clientId)
         {
-            if (!Players.Find(clientId, out var index, out var player))
-                return;
+            var data = Players.Get(clientId);
 
-            player.IsDead = true;
-            Players[index] = player;
+            data.IsDead = true;
+            Players.Update(data);
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void RevivePlayerServerRpc(ulong clientId)
         {
-            if (!Players.Find(clientId, out var index, out var player))
-                return;
+            var data = Players.Get(clientId);
 
-            player.IsDead = false;
-            Players[index] = player;
+            data.IsDead = false;
+            Players.Update(data);
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void UpdatePlayerVelocityServerRpc(ulong clientId, Vector3 velocity)
         {
-            if (!Players.Find(clientId, out var index, out var player))
-                return;
+            var data = Players.Get(clientId);
 
-            player.Velocity = velocity;
-            Players[index] = player;
+            data.Velocity = velocity;
+            Players.Update(data);
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void PunchPlayerServerRpc(ulong clientId, Vector3 velocity)
         {
-            if (!Players.Find(clientId, out var index, out var player))
-                return;
+            var data = Players.Get(clientId);
 
-            player.Punch += velocity;
-            Players[index] = player;
+            data.Punch += velocity;
+            Players.Update(data);
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void ResetPlayerPunchVelocityServerRpc(ulong clientId)
         {
-            if (!Players.Find(clientId, out var index, out var player))
-                return;
+            var data = Players.Get(clientId);
 
-            player.Punch = Vector3.zero;
-            Players[index] = player;
+            data.Punch = Vector3.zero;
+            Players.Update(data);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Managers;
+using Mono;
 using Network;
+using Sessions;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -20,12 +22,9 @@ namespace Player.Components
         private InputManager Input
             => InputManager.Singleton;
 
-        private static PlayerDataProvider Players =>
-            MultiplayerManager.Instance.Players;
-
         private void Start()
         {
-            Players.OnChange += ApplyPunch;
+            MultiplayerManager.Players.OnUpdated += ApplyPunch;
             Input.OnPunch += Punch;
         }
 
@@ -59,7 +58,7 @@ namespace Player.Components
 
         private void OnDestroy()
         {
-            Players.OnChange -= ApplyPunch;
+            MultiplayerManager.Players.OnUpdated -= ApplyPunch;
             Input.OnPunch -= Punch;
         }
     }

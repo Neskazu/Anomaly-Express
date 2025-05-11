@@ -1,6 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using Managers;
+using Mono;
 using Network;
+using Sessions;
 using UI.Base;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,23 +21,20 @@ namespace Player.Components
 
         private bool _isDead;
 
-        private IView DeathScreen =>
+        private IWindow DeathScreen =>
             UI.DeathScreen.Instance;
-
-        private static PlayerDataProvider Players =>
-            MultiplayerManager.Instance.Players;
 
         private void Awake()
         {
-            Players.OnChange += ChangePlayerState;
+            MultiplayerManager.Players.OnUpdated += ChangePlayerState;
 
-            Players.Find(networkObject.OwnerClientId, out var _, out var data);
+            var data = MultiplayerManager.Players.Get(networkObject.OwnerClientId);
             _isDead = data.IsDead;
         }
 
         public void OnDestroy()
         {
-            Players.OnChange -= ChangePlayerState;
+            MultiplayerManager.Players.OnUpdated -= ChangePlayerState;
         }
 
         private async void ChangePlayerState(PlayerData playerData)

@@ -12,9 +12,9 @@ namespace Scene
 
         public event Action<SceneTransitionSequence> Loaded;
 
-        private readonly IView _loadingScreen;
+        private readonly IWindow _loadingScreen;
 
-        public SceneTransitionController(IView loadingScreen)
+        public SceneTransitionController(IWindow loadingScreen)
         {
             _loadingScreen = loadingScreen;
 

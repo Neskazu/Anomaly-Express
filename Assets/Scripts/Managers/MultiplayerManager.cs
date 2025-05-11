@@ -1,26 +1,27 @@
-using System.Linq;
 using Network;
-using Session;
-using Session.Validators;
+using Network.Players;
+using Sessions;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Managers
 {
     public class MultiplayerManager : NetworkBehaviour
     {
         public static MultiplayerManager Instance { get; private set; }
-        public PlayerDataProvider Players { get; private set; }
+        public static Session Session { get; private set; }
+        public static PlayerDataProvider Players => Session.Players;
 
-        private Session.Base.Session session;
-        private NetworkList<PlayerData> playersData;
+        [SerializeField] private NetworkPlayersMediator playersMediatorPrefab;
+
+        private NetworkPlayersMediator playersMediatorInstance;
 
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);
             Instance = this;
-            playersData = new NetworkList<PlayerData>();
         }
 
         public void Host(Settings settings)
@@ -29,12 +30,9 @@ namespace Managers
                 .GetComponent<UnityTransport>()
                 .SetConnectionData(settings.Address, settings.Port);
 
-            session = new HostSession(new PlayerLimit(4));
-
-            Players = new PlayerDataProvider(session, playersData);
-            Players.OnAdd += _ => SetNameServerRpc(settings.Name);
-
-            session.Start();
+            playersMediatorInstance = Instantiate(playersMediatorPrefab, transform);
+            Session = new HostSession(playersMediatorInstance);
+            Session.Start();
         }
 
         public void Connect(Settings settings)
@@ -43,33 +41,28 @@ namespace Managers
                 .GetComponent<UnityTransport>()
                 .SetConnectionData(settings.Address, settings.Port);
 
-            session = new ClientSession();
-
-            Players = new PlayerDataProvider(session, playersData);
-            Players.OnAdd += _ => SetNameServerRpc(settings.Name);
-
-            session.Start();
+            playersMediatorInstance = Instantiate(playersMediatorPrefab, transform);
+            Session = new ClientSession(playersMediatorInstance);
+            Session.Start();
         }
 
         public void Disconnect()
         {
-            Players.Dispose();
-            session.Stop();
-            session.Dispose();
+            Session.Stop();
+            Destroy(playersMediatorInstance.gameObject);
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void SetNameServerRpc(string playerName, ServerRpcParams serverRpcParams = default)
+        public void SetNameServerRpc(string newName, ServerRpcParams serverRpcParams = default)
         {
-            var player = Players.First(player => player.ClientId == serverRpcParams.Receive.SenderClientId);
+            var data = Players.Get(serverRpcParams.Receive.SenderClientId);
 
-            player.PlayerName = playerName;
-
-            Players.Change(player);
+            data.PlayerName = newName;
+            Players.Update(data);
         }
 
         [ServerRpc(RequireOwnership = true)]
-        private void KickServerRpc(ulong id, ServerRpcParams serverRpcParams = default)
+        public void KickServerRpc(ulong id, ServerRpcParams serverRpcParams = default)
         {
             // TODO: Добавить возможность локализации
             NetworkManager.Singleton.DisconnectClient(id, "You have been kicked.");

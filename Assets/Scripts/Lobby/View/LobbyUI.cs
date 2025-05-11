@@ -1,5 +1,7 @@
+using System.Linq;
 using Managers;
 using Network;
+using Network.Players;
 using Scene;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,7 +21,7 @@ namespace Lobby.View
         [SerializeField] private SceneTransitionSequence toMenu;
 
         private static PlayerDataProvider Players =>
-            MultiplayerManager.Instance.Players;
+            MultiplayerManager.Players;
 
         private bool isReady;
 
@@ -34,32 +36,33 @@ namespace Lobby.View
                 startButton.onClick.AddListener(OnStartClicked);
             }
 
-            Players.OnAdd += Redraw;
-            Players.OnChange += Redraw;
-            Players.OnRemove += Redraw;
+            MultiplayerManager.Players.OnUpdated += Redraw;
+            MultiplayerManager.Players.OnConnected += Redraw;
+            MultiplayerManager.Players.OnDisconnected += Redraw;
         }
 
         private void Start()
         {
-            Redraw(default);
+            foreach (PlayerData playerData in MultiplayerManager.Players)
+                Redraw(playerData);
         }
 
         private void OnDestroy()
         {
-            Players.OnAdd -= Redraw;
-            Players.OnChange -= Redraw;
-            Players.OnRemove -= Redraw;
+            MultiplayerManager.Players.OnUpdated -= Redraw;
+            MultiplayerManager.Players.OnConnected -= Redraw;
+            MultiplayerManager.Players.OnDisconnected -= Redraw;
         }
 
         private void Redraw(PlayerData obj)
         {
-            for (var i = 0; i < Players.Count; i++)
+            for (var i = 0; i < Players.Count(); i++)
             {
                 playersView[i].gameObject.SetActive(true);
                 playersView[i].UpdateInfo(Players[i]);
             }
 
-            for (var i = Players.Count; i < playersView.Length; i++)
+            for (var i = Players.Count(); i < playersView.Length; i++)
             {
                 playersView[i].gameObject.SetActive(false);
             }

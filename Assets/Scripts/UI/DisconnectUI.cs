@@ -12,7 +12,7 @@ namespace UI
 
         private void Awake()
         {
-            mainMenuButton.onClick.AddListener(() => { SceneTransitionController.Instance.Play(toMenu); });
+            mainMenuButton.onClick.AddListener(async () => { await SceneTransitionController.Instance.Play(toMenu); });
         }
 
         private void Start()

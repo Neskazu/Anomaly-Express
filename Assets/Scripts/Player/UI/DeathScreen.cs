@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Player.UI
 {
-    public class DeathScreen : MonoBehaviour, IView
+    public class DeathScreen : MonoBehaviour, IWindow
     {
         public static DeathScreen Instance { get; private set; }
 
