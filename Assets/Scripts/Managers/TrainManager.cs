@@ -76,6 +76,7 @@ namespace Managers
             wagon.name = "wagon" + currentWagonIndex;
             wagon.GetComponent<NetworkObject>().Spawn();
 
+            vestibuleController.VestibuleDirection = vestibuleType;
             vestibule.transform.position = position + wagonReversedOffset - wagonOffset - vestibuleOffset;
             vestibule.name = "vestibule" + currentWagonIndex;
             vestibule.GetComponent<NetworkObject>().Spawn();

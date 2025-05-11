@@ -11,6 +11,7 @@ namespace Train
 
         [SerializeField]
         private VestibuleType vestibuleDirection = VestibuleType.Forward;
+        public VestibuleType VestibuleDirection {  get { return vestibuleDirection; } set { vestibuleDirection = value; } }
 
         [SerializeField]
         private bool isBackward = false;

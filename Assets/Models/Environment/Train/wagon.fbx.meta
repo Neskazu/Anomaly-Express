@@ -1,0 +1,367 @@
+fileFormatVersion: 2
+guid: f305806f78392874b969cbf591f36cc4
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: back.001
+    second: {fileID: 2100000, guid: cc3a68c0dcd82d2428a8db82d154c7a3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bad2.001
+    second: {fileID: 2100000, guid: b58ae499e77451047a694994e3acc549, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bed.001
+    second: {fileID: 2100000, guid: 218bb477774421e479367955e292fc5f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bed_leg.001
+    second: {fileID: 2100000, guid: d29ca78e23b72ea48aa65a86d83221b4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: boiler.001
+    second: {fileID: 2100000, guid: ed914a32867c9734481ebd2d7d96e4e7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: curtain.001
+    second: {fileID: 2100000, guid: 4291e26f94184e6439fa1ef0aa0cfc91, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: curtain_2.001
+    second: {fileID: 2100000, guid: b568c2c33d8c7614bbf3e8a2b4a1c4ec, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: door_2.002
+    second: {fileID: 2100000, guid: eaedf25cdab852d4c88d48045df5090f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: floor.001
+    second: {fileID: 2100000, guid: 31545cba4d3aba0439c4d76d4ce4e063, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: glass.003
+    second: {fileID: 2100000, guid: 697f2211caf2da94e9512ae99a0fc294, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ladder.001
+    second: {fileID: 2100000, guid: a3865ca8039353943a26d408879da264, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lump.002
+    second: {fileID: 2100000, guid: b329dc567fac1fd438314734904befeb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pol
+    second: {fileID: 2100000, guid: 7faafc3daa5c3794cadbe2ff48bf0575, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: seat.001
+    second: {fileID: 2100000, guid: 493b6281005d51a4f861b9d72f5dd9ce, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shelf.001
+    second: {fileID: 2100000, guid: f60f15595f6658f4baf0859f0dfdf6b5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shelf_2.001
+    second: {fileID: 2100000, guid: eb5995b8303397b469eef6ee1939c4c7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shelf_3.001
+    second: {fileID: 2100000, guid: 5d4a6c7888e59a54e96b10a3389f4b7c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: side_bed.001
+    second: {fileID: 2100000, guid: d72ed49c40efeaa4a9648eac66d1d2d5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: side_table.002
+    second: {fileID: 2100000, guid: cd479078a58a64849a12091434da76ff, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: side_table_leg.001
+    second: {fileID: 2100000, guid: c7b3a9375c57f1041851d237427c3c51, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: switches.001
+    second: {fileID: 2100000, guid: e96fff237e8ba2143b0608d578d7e90f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: table_leg.001
+    second: {fileID: 2100000, guid: 7137bcf905f34bf418403ad3ef8e78f9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: train.001
+    second: {fileID: 2100000, guid: ab3bda8922360804bbde527f280624d7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: walls.001
+    second: {fileID: 2100000, guid: 6bbd5556561c9e14a86a45fab4228c4d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: walls_2.002
+    second: {fileID: 2100000, guid: f08ab6a681a405d4bb293fb1a716a6d3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wheels.001
+    second: {fileID: 2100000, guid: 049af4f77f484c640baf5c98c9a19c72, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: work_area.001
+    second: {fileID: 2100000, guid: 15d9e645eda811647b3659b2f579eedd, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Train
+    second: {fileID: 2800000, guid: 91b3dd5f436575d4a8d6dfe191e990aa, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: back
+    second: {fileID: 2800000, guid: 8c636e6df08df0f40abe1d5642faa6f7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: bad2
+    second: {fileID: 2800000, guid: c615c21942226b24fb135f9101cad5cb, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: bed_fix
+    second: {fileID: 2800000, guid: 018e1c5d03330b249a39a441f079bb74, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: bed_leg
+    second: {fileID: 2800000, guid: 4624aed1f75fecb4d9f236b1f30d852f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: boiler
+    second: {fileID: 2800000, guid: badb7a513602efc49a68721b3b96ca34, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: curtain
+    second: {fileID: 2800000, guid: a5253c31c130bdb47970c35214ccc251, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: curtain_2
+    second: {fileID: 2800000, guid: 376739ea5aa98c647b35eb1cccf5b4a2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: door_2
+    second: {fileID: 2800000, guid: c62eaaab4413a8a489f948f7b802686d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: floor
+    second: {fileID: 2800000, guid: b0da8ce8bc0e2d04b831a84ddad474c5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: ladder
+    second: {fileID: 2800000, guid: 21605f16b6268ac4a9270c0951ec72ae, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: lump
+    second: {fileID: 2800000, guid: 54624258115b3d64d863eab3df583261, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: seat
+    second: {fileID: 2800000, guid: 4ef9ae6ad3eb131458cd549860273e54, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: shelf
+    second: {fileID: 2800000, guid: e0ece7f4050d732408c40370e492d23b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: shelf_2
+    second: {fileID: 2800000, guid: 034ba9da6f122ae4589023b93926dfe6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: shelf_3
+    second: {fileID: 2800000, guid: 5d1a671f97cebc345897ae6a6710b456, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: side_bed_fix
+    second: {fileID: 2800000, guid: 1fed588577872954db925442f06b6d1b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: side_table
+    second: {fileID: 2800000, guid: 74820b70197985f4a90c72f6aa9ec162, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: side_table_leg
+    second: {fileID: 2800000, guid: ceffbaa340b3deb4b9103674be0e90b8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: switches
+    second: {fileID: 2800000, guid: 8277f33bf723556439e3fbae5e1ca7d3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: table_leg
+    second: {fileID: 2800000, guid: 3897f6f21c8895745a69e69fffaa6a26, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: wA12a1EdUXy
+    second: {fileID: 2800000, guid: f7e417bf2e59415439f9487380407aa9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: walls
+    second: {fileID: 2800000, guid: f6021bf6398d1284d8f5f6d2a8ba81a7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: walls_2
+    second: {fileID: 2800000, guid: 74ee090b16bbdb54799d57fef8e6d70b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: work_area
+    second: {fileID: 2800000, guid: e9e5fe3ee6732ff44a8eab9cfa9dae3e, type: 3}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
