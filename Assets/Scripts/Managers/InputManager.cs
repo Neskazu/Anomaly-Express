@@ -13,6 +13,7 @@ namespace Managers
         public event Action<Vector2> OnMouseMove;
         public event Action<Vector2> OnMoveAxisChanged;
         public event Action OnPunch;
+        public event Action OnInteract;
 
         private InputSystem_Actions inputActions;
 
@@ -34,6 +35,8 @@ namespace Managers
             inputActions.Player.Attack.started
                 += context => OnPunch?.Invoke();
 
+            inputActions.Player.Interact.performed
+                += context => OnInteract?.Invoke();
             Singleton = this;
         }
 

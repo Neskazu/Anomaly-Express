@@ -21,6 +21,10 @@ namespace Train
 
         [SerializeField]
         private Transform spawnpointBackward;
+        [SerializeField]
+        private DoorController doorBackward;
+        [SerializeField]
+        private DoorController doorForward;
 
         void Update()
         {

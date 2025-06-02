@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 6355190121646887306}
   - component: {fileID: 142075352269120589}
   - component: {fileID: 4930454702381990741}
+  - component: {fileID: 2338952459286243910}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -149,7 +150,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.35
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -276,6 +277,7 @@ MonoBehaviour:
   - {fileID: -3165505915988723258}
   - {fileID: 4930454702381990741}
   - {fileID: 6355190121646887306}
+  - {fileID: 2338952459286243910}
   Motor: {fileID: 4930454702381990741}
   MaxStableMoveSpeed: 10
   StableMovementSharpness: 15
@@ -339,7 +341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 2
-  range: 250
+  range: 2
   force: 10
   layerMask:
     serializedVersion: 2
@@ -374,7 +376,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Capsule: {fileID: 6479078452582669956}
-  CapsuleRadius: 0.5
+  CapsuleRadius: 0.35
   CapsuleHeight: 2
   CapsuleYOffset: 0
   CapsulePhysicsMaterial: {fileID: 0}
@@ -389,7 +391,7 @@ MonoBehaviour:
   AllowSteppingWithoutStableGrounding: 0
   MinRequiredStepDepth: 0.1
   LedgeAndDenivelationHandling: 1
-  MaxStableDistanceFromLedge: 0.5
+  MaxStableDistanceFromLedge: 0.3
   MaxVelocityForLedgeSnap: 0
   MaxStableDenivelationAngle: 180
   InteractiveRigidbodyHandling: 1
@@ -403,6 +405,22 @@ MonoBehaviour:
   CheckMovementInitialOverlaps: 1
   KillVelocityWhenExceedMaxMovementIterations: 1
   KillRemainingMovementWhenExceedMaxMovementIterations: 1
+--- !u!114 &2338952459286243910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1770505051402491123}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b015f152c1a7cb24d8022d3957ff1a68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 3
+  interactableLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &4041265792143674144
 GameObject:
   m_ObjectHideFlags: 0
