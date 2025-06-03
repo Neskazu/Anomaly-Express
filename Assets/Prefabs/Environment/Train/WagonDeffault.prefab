@@ -3787,7 +3787,6 @@ GameObject:
   - component: {fileID: 4273395517601234164}
   - component: {fileID: 9084942053693400649}
   - component: {fileID: 4604919054922727943}
-  - component: {fileID: 1436906887969295540}
   m_Layer: 8
   m_Name: Door
   m_TagString: Untagged
@@ -3844,36 +3843,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  isOpen: 0
   openAngle: 100
   tweenDuration: 0.5
   doorCollider: {fileID: 9084942053693400649}
   doorMesh: {fileID: 5337358062812527284}
---- !u!114 &1436906887969295540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8193115807650298032}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
+  doorType: 0
+  vestibuleController: {fileID: 0}
 --- !u!1 &8681048500005197224
 GameObject:
   m_ObjectHideFlags: 0

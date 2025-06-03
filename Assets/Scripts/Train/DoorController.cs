@@ -7,13 +7,22 @@ namespace Train
 {
     public class DoorController : NetworkBehaviour, IInteractable
     {
-        [SerializeField] private float openAngle = 90f;
+        [SerializeField] private float openAngle = 100f;
         [SerializeField] private float tweenDuration = 0.5f;
         [SerializeField] private Collider doorCollider;
         [SerializeField] private Transform doorMesh;
-
+        [SerializeField] private DoorType doorType;
+        [SerializeField] private VestibuleController vestibuleController;
         private Quaternion closedRotation;
+        [SerializeField]
+        private bool isLocked=true;
 
+        // Сетевой флаг заблокированости двери
+        private NetworkVariable<bool> netIsLocked = new NetworkVariable<bool>(
+            true,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
         // Сетевой флаг состояния двери
         private NetworkVariable<bool> netIsOpen = new NetworkVariable<bool>(
             false,
@@ -48,18 +57,50 @@ namespace Train
 
         public void Interact(GameObject interactor)
         {
-            float signedAngle = DetermineSignedAngle(interactor.transform.position);
-
-            if (IsServer)
+            Debug.Log("interact");
+            if (doorType == DoorType.Ordinary)
             {
-                ChangeStateServerLogic(signedAngle);
+                float signedAngle = DetermineSignedAngle(interactor.transform.position);
+
+                if (IsServer)
+                {
+                    ChangeStateServerLogic(signedAngle);
+                }
+                else
+                {
+                    ChangeStateServerRpc(signedAngle);
+                }
             }
             else
             {
-                ChangeStateServerRpc(signedAngle);
+                if (!netIsLocked.Value)
+                {
+                    float signedAngle = DetermineSignedAngle(interactor.transform.position);
+                    if (IsServer)
+                    {
+                        ChangeStateServerLogic(signedAngle);
+                    }
+                    else
+                    {
+                        ChangeStateServerRpc(signedAngle);
+                    }
+                }
+            }
+           
+        }
+        public void ForceInteract(GameObject interactor)
+        {
+            if (IsServer)
+            {
+                ToggleLockServerRpc();
+                ChangeStateServerLogic(openAngle);
+            }
+            else
+            {
+                ToggleLockServerRpc();
+                ChangeStateServerRpc(openAngle);
             }
         }
-
         [ServerRpc(RequireOwnership = false)]
         private void ChangeStateServerRpc(float signedAngle)
         {
@@ -120,7 +161,26 @@ namespace Train
         private float DetermineSignedAngle(Vector3 interactorWorldPos)
         {
             Vector3 localPos = doorCollider.transform.InverseTransformPoint(interactorWorldPos);
+            Debug.Log(localPos);
             return (localPos.y >= 0f ? openAngle : -openAngle);
         }
+        public void ChangeLock()
+        {
+            isLocked = !isLocked;
+        }
+        public bool IsOpenNetwork()
+        {
+            return netIsOpen.Value;
+        }
+        [ServerRpc(RequireOwnership = false)]
+        public void ToggleLockServerRpc()
+        {
+            netIsLocked.Value = !netIsLocked.Value;
+        }
+    }
+    public enum DoorType
+    {
+        Ordinary,
+        Level,
     }
 }
