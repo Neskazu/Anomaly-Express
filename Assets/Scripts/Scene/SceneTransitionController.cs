@@ -21,9 +21,10 @@ namespace Scene
             Instance = this;
         }
 
-        public async UniTask Play(SceneTransitionSequence sequence)
+        public async UniTask Play(SceneTransitionSequence sequence, bool showLoadingScreen = true)
         {
-            await _loadingScreen.Show();
+            if (showLoadingScreen)
+                await _loadingScreen.Show();
 
             foreach (var sceneTransitionStep in sequence.steps)
             {
@@ -33,7 +34,9 @@ namespace Scene
                     NetworkManager.Singleton.SceneManager.LoadScene(sceneTransitionStep.scene.Path, sceneTransitionStep.loadMode);
             }
 
-            await _loadingScreen.Hide();
+            if (showLoadingScreen)
+                await _loadingScreen.Hide();
+
             Loaded?.Invoke(sequence);
         }
     }

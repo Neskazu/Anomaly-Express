@@ -2,7 +2,7 @@ using DG.Tweening;
 using Tween.Base;
 using UnityEngine;
 
-namespace Source.Tween
+namespace Tween
 {
     public class MonoTweenFade : MonoTween
     {

@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -15,6 +14,7 @@ namespace Tween.Base
         [SerializeField] private Ease backwardCurve = Ease.InOutSine;
 
         [Header("Behaviour")]
+        [SerializeField] private bool preInit;
         [SerializeField] private bool autoPlay;
 
         [SerializeField] private DisableAfter disableAfter = DisableAfter.Backward;
@@ -25,6 +25,9 @@ namespace Tween.Base
         private void Awake()
         {
             _destroyCancellation = this.GetCancellationTokenOnDestroy();
+
+            if (preInit)
+                Backward(0, Ease.Flash);
         }
 
         private async void Start()
@@ -54,5 +57,4 @@ namespace Tween.Base
             Backward
         }
     }
-
 }
