@@ -1,5 +1,6 @@
-using System.Threading;
-using Cysharp.Threading.Tasks;
+using System;
+using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Tween.Base
@@ -8,21 +9,18 @@ namespace Tween.Base
     {
         [SerializeField] private MonoTween[] tweens;
 
-        private CancellationToken _token;
+        private Sequence _sequence;
 
-        private void Awake()
+        public Sequence Play(bool reverse = false, Action onComplete = null)
         {
-            _token = this.GetCancellationTokenOnDestroy();
-        }
+            _sequence?.Kill();
+            _sequence = DOTween.Sequence();
+            _sequence.OnComplete(delegate { onComplete?.Invoke(); });
 
-        public async UniTask Play(bool reverse = false)
-        {
-            UniTask[] tweenTasks = new UniTask[tweens.Length];
+            foreach (MonoTween tween in reverse ? tweens.Reverse() : tweens)
+                _sequence.Append(tween.Play(reverse));
 
-            for (int i = 0; i < tweens.Length; i++)
-                tweenTasks[i] = tweens[i].Play(reverse);
-
-            await UniTask.WhenAll(tweenTasks);
+            return _sequence.Play();
         }
     }
 }

@@ -11,7 +11,6 @@ namespace Scene
         public static SceneTransitionController Instance { get; private set; }
 
         public event Action<SceneTransitionSequence> Loaded;
-
         private readonly IWindow _loadingScreen;
 
         public SceneTransitionController(IWindow loadingScreen)
@@ -21,10 +20,9 @@ namespace Scene
             Instance = this;
         }
 
-        public async UniTask Play(SceneTransitionSequence sequence, bool showLoadingScreen = true)
+        public async UniTask Play(SceneTransitionSequence sequence)
         {
-            if (showLoadingScreen)
-                await _loadingScreen.Show();
+            await _loadingScreen.Show();
 
             foreach (var sceneTransitionStep in sequence.steps)
             {
@@ -34,8 +32,7 @@ namespace Scene
                     NetworkManager.Singleton.SceneManager.LoadScene(sceneTransitionStep.scene.Path, sceneTransitionStep.loadMode);
             }
 
-            if (showLoadingScreen)
-                await _loadingScreen.Hide();
+            await _loadingScreen.Hide();
 
             Loaded?.Invoke(sequence);
         }

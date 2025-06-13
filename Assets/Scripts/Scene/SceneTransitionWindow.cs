@@ -25,12 +25,12 @@ namespace Scene
 
         public UniTask Show()
         {
-            return tweenSequence.Play();
+            return tweenSequence.Play().ToUniTask();
         }
 
         public UniTask Hide()
         {
-            return tweenSequence.Play(true);
+            return tweenSequence.Play(true).ToUniTask();
         }
     }
 }

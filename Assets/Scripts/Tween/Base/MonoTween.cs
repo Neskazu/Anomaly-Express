@@ -1,5 +1,4 @@
-using System.Threading;
-using Cysharp.Threading.Tasks;
+using System;
 using DG.Tweening;
 using UnityEngine;
 
@@ -20,31 +19,36 @@ namespace Tween.Base
         [SerializeField] private DisableAfter disableAfter = DisableAfter.Backward;
 
         private Tweener _tweener;
-        private CancellationToken _destroyCancellation;
+        private Component _target;
 
         private void Awake()
         {
-            _destroyCancellation = this.GetCancellationTokenOnDestroy();
-
             if (preInit)
                 Backward(0, Ease.Flash);
         }
 
-        private async void Start()
+        private void Start()
         {
-            if (autoPlay) await Play();
+            if (autoPlay) Play();
         }
 
-        public async UniTask Play(bool reverse = false)
+        public Tweener Play(bool reverse = false, Action onComplete = null)
         {
             _tweener?.Kill();
             _tweener = reverse ? Backward(duration, forwardCurve) : Forward(duration, backwardCurve);
-            gameObject.SetActive(true);
+            _target = _tweener.target as Component;
 
-            await _tweener.WithCancellation(_destroyCancellation);
+            _target?.gameObject.SetActive(true);
 
-            if (disableAfter == DisableAfter.Forward && !reverse || (disableAfter == DisableAfter.Backward && reverse))
-                gameObject.SetActive(false);
+            _tweener.OnComplete(delegate
+            {
+                if (disableAfter == DisableAfter.Forward && !reverse || disableAfter == DisableAfter.Backward && reverse)
+                    _target?.gameObject.SetActive(false);
+
+                onComplete?.Invoke();
+            });
+
+            return _tweener;
         }
 
         protected abstract Tweener Forward(float duration, Ease easy);

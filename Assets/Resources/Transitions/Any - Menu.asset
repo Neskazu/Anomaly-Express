@@ -16,7 +16,12 @@ MonoBehaviour:
   volume: 1
   steps:
   - scene:
+      asset: {fileID: 102900000, guid: 265a2693713a25a4bb1c0e050aad8991, type: 3}
+      guid: 265a2693713a25a4bb1c0e050aad8991
+    loadMode: 0
+    networkMode: 0
+  - scene:
       asset: {fileID: 102900000, guid: ae40f6b2188a4f7439e3af89db81d6f9, type: 3}
       guid: ae40f6b2188a4f7439e3af89db81d6f9
-    loadMode: 0
+    loadMode: 1
     networkMode: 0
