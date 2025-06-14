@@ -1,9 +1,9 @@
-using UnityEngine;
-
-public interface ITriggerableByPlayer : IAnomaly
+namespace Anomalies
 {
-    void OnPlayerEnterZone();
+    public interface ITriggerableByPlayer : IAnomaly
+    {
+        void OnPlayerEnterZone();
 
-
-    void OnPlayerExitZone();
+        void OnPlayerExitZone();
+    }
 }

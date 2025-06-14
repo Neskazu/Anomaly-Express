@@ -1,6 +1,7 @@
-using UnityEngine;
-
-public interface ITimeBasedAnomaly : IAnomaly
+namespace Anomalies
 {
-    float Interval { get; set; }
+    public interface ITimeBasedAnomaly : IAnomaly
+    {
+        float Interval { get; set; }
+    }
 }

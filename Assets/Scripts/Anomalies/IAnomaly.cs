@@ -1,10 +1,11 @@
-using UnityEngine;
-
-public interface IAnomaly
+namespace Anomalies
 {
-    void Activate();
+    public interface IAnomaly
+    {
+        void Activate();
 
-    void Deactivate();
+        void Deactivate();
 
-    bool IsActive { get; set; }
+        bool IsActive { get; set; }
+    }
 }

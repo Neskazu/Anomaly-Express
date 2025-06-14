@@ -1,7 +1,10 @@
 using UnityEngine;
 
-public interface IAudioAnomaly : IAnomaly
+namespace Anomalies
 {
-    AudioClip Clip { get; set; }
-    float Volume { get; set; }
+    public interface IAudioAnomaly : IAnomaly
+    {
+        AudioClip Clip { get; set; }
+        float Volume { get; set; }
+    }
 }
