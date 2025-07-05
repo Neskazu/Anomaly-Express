@@ -13,31 +13,25 @@ namespace Train
         [SerializeField] private Transform doorMesh;
         [SerializeField] private DoorType doorType;
         [SerializeField] private VestibuleController vestibuleController;
-        private Quaternion closedRotation;
-        [SerializeField]
-        private bool isLocked=true;
+        [SerializeField] private bool isLocked = true;
+
+        public event Action<DoorController, bool> OnDoorStateChanged;
 
         // Сетевой флаг заблокированости двери
-        private NetworkVariable<bool> netIsLocked = new NetworkVariable<bool>(
-            true,
-            NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server
-        );
+        private NetworkVariable<bool> _netIsLocked = new NetworkVariable<bool>(true);
         // Сетевой флаг состояния двери
-        private NetworkVariable<bool> netIsOpen = new NetworkVariable<bool>(
-            false,
-            NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server
-        );
-        public event Action<DoorController, bool> OnDoorStateChanged;
+        private NetworkVariable<bool> _netIsOpen = new NetworkVariable<bool>();
+
+        private Quaternion _closedRotation;
+
         private void Awake()
         {
-            closedRotation = doorMesh.localRotation;
+            _closedRotation = doorMesh.localRotation;
         }
 
         public override void OnNetworkSpawn()
         {
-            netIsOpen.OnValueChanged += (_, newIsOpen) =>
+            _netIsOpen.OnValueChanged += (_, newIsOpen) =>
             {
                 if (newIsOpen)
                     return;
@@ -45,7 +39,7 @@ namespace Train
                     ApplyCloseVisual();
             };
 
-            if (netIsOpen.Value)
+            if (_netIsOpen.Value)
             {
                 RequestCurrentAngleServerRpc();
             }
@@ -57,7 +51,6 @@ namespace Train
 
         public void Interact(GameObject interactor)
         {
-            Debug.Log("interact");
             if (doorType == DoorType.Ordinary)
             {
                 float signedAngle = DetermineSignedAngle(interactor.transform.position);
@@ -73,9 +66,10 @@ namespace Train
             }
             else
             {
-                if (!netIsLocked.Value)
+                if (!_netIsLocked.Value)
                 {
                     float signedAngle = DetermineSignedAngle(interactor.transform.position);
+
                     if (IsServer)
                     {
                         ChangeStateServerLogic(signedAngle);
@@ -86,8 +80,8 @@ namespace Train
                     }
                 }
             }
-           
         }
+
         public void ForceInteract(GameObject interactor)
         {
             if (IsServer)
@@ -101,6 +95,7 @@ namespace Train
                 ChangeStateServerRpc(openAngle);
             }
         }
+
         [ServerRpc(RequireOwnership = false)]
         private void ChangeStateServerRpc(float signedAngle)
         {
@@ -109,8 +104,8 @@ namespace Train
 
         private void ChangeStateServerLogic(float signedAngle)
         {
-            bool newState = !netIsOpen.Value;
-            netIsOpen.Value = newState;
+            bool newState = !_netIsOpen.Value;
+            _netIsOpen.Value = newState;
 
             if (newState)
             {
@@ -139,45 +134,46 @@ namespace Train
         [ServerRpc(RequireOwnership = false)]
         private void RequestCurrentAngleServerRpc(ServerRpcParams rpcParams = default)
         {
-            float lastAngle = DetermineSignedAngle(rpcParams.Receive.SenderClientId == 0
-                ? Vector3.zero
-                : Vector3.zero);
+            float lastAngle = DetermineSignedAngle(Vector3.zero);
             OpenDoorClientRpc(lastAngle);
         }
 
         private void ApplyOpenVisual(float signedAngle)
         {
-            Vector3 targetEuler = closedRotation.eulerAngles + new Vector3(0f, signedAngle, 0f);
+            Vector3 targetEuler = _closedRotation.eulerAngles + new Vector3(0f, signedAngle, 0f);
             doorMesh.DOLocalRotate(targetEuler, tweenDuration).SetEase(Ease.OutCubic);
             doorCollider.transform.DOLocalRotate(targetEuler, tweenDuration).SetEase(Ease.OutCubic);
         }
 
         private void ApplyCloseVisual()
         {
-            doorMesh.DOLocalRotate(closedRotation.eulerAngles, tweenDuration).SetEase(Ease.OutCubic);
-            doorCollider.transform.DOLocalRotate(closedRotation.eulerAngles, tweenDuration).SetEase(Ease.OutCubic);
+            doorMesh.DOLocalRotate(_closedRotation.eulerAngles, tweenDuration).SetEase(Ease.OutCubic);
+            doorCollider.transform.DOLocalRotate(_closedRotation.eulerAngles, tweenDuration).SetEase(Ease.OutCubic);
         }
 
         private float DetermineSignedAngle(Vector3 interactorWorldPos)
         {
             Vector3 localPos = doorCollider.transform.InverseTransformPoint(interactorWorldPos);
-            Debug.Log(localPos);
             return (localPos.y >= 0f ? openAngle : -openAngle);
         }
+
         public void ChangeLock()
         {
             isLocked = !isLocked;
         }
+
         public bool IsOpenNetwork()
         {
-            return netIsOpen.Value;
+            return _netIsOpen.Value;
         }
+
         [ServerRpc(RequireOwnership = false)]
         public void ToggleLockServerRpc()
         {
-            netIsLocked.Value = !netIsLocked.Value;
+            _netIsLocked.Value = !_netIsLocked.Value;
         }
     }
+
     public enum DoorType
     {
         Ordinary,

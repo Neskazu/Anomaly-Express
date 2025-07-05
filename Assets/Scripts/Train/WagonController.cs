@@ -5,30 +5,27 @@ namespace Train
     public class WagonController : MonoBehaviour
     {
         public bool hasAnomaly;
-        public Transform ForwardCenter;
-        public Transform BackwardCenter;
+        public Transform forwardCenter;
+        public Transform backwardCenter;
 
         public Vector3 GetOffest(VestibuleType vestibuleType)
         {
             if (vestibuleType == VestibuleType.Forward)
             {
-                return ForwardCenter.position;
+                return forwardCenter.position;
             }
-            else
-            {
-                return BackwardCenter.position;
-            }
+
+            return backwardCenter.position;
         }
+
         public Vector3 GetReversedOffset(VestibuleType vestibule)
         {
             if (vestibule == VestibuleType.Forward)
             {
-                return BackwardCenter.position;
+                return backwardCenter.position;
             }
-            else
-            {
-                return ForwardCenter.position;
-            }
+
+            return forwardCenter.position;
         }
     }
 }

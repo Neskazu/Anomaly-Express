@@ -1,6 +1,4 @@
 using Managers;
-using NUnit.Framework;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -11,82 +9,82 @@ namespace Train
 {
     public class VestibuleController : NetworkBehaviour
     {
+        [SerializeField] private VestibuleType vestibuleDirection = VestibuleType.Forward;
+        [SerializeField] private bool isBackward = false;
+        [SerializeField] private Transform spawnPointForward;
+        [SerializeField] private Transform spawnPointBackward;
+        [SerializeField] private DoorController doorBackward;
+        [SerializeField] private DoorController doorForward;
+        [SerializeField] private List<ulong> clientsInVestibule;
 
-        [SerializeField]
-        private VestibuleType vestibuleDirection = VestibuleType.Forward;
-        public VestibuleType VestibuleDirection {  get { return vestibuleDirection; } set { vestibuleDirection = value; } }
-
-        [SerializeField]
-        private bool isBackward = false;
-
-        [SerializeField]
-        private Transform spawnpointForward;
-
-        [SerializeField]
-        private Transform spawnpointBackward;
-        [SerializeField]
-        private DoorController doorBackward;
-        [SerializeField]
-        private DoorController doorForward;
-        [SerializeField]
-        private List<ulong> clientsInVestibule;
-        //íàäî áóäåò áðàòü ó äâåðè 
+        // TODO: Ð½Ð°Ð´Ð¾ Ð±ÑƒÐ´ÐµÑ‚ Ð±Ñ€Ð°Ñ‚ÑŒ Ñƒ Ð´Ð²ÐµÑ€Ð¸
         [SerializeField] private float doorTweenDuration = .5f;
-        //local flag for door
-        private bool forwardIsOpen = false;
-        private bool backwardIsOpen = false;
+
+        // local flag for door
+        private bool _forwardIsOpen = false;
+        private bool _backwardIsOpen = false;
+
+        public VestibuleType VestibuleDirection
+        {
+            get => vestibuleDirection;
+            set => vestibuleDirection = value;
+        }
+
         public override void OnNetworkSpawn()
         {
             if (!IsServer) return;
 
-            // Ïîäïèñûâàåìñÿ íà ñîáûòèÿ èçìåíåíèé äâåðåé
+            // ÐŸÐ¾Ð´Ð¿Ð¸ÑÑ‹Ð²Ð°ÐµÐ¼ÑÑ Ð½Ð° ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ñ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¹ Ð´Ð²ÐµÑ€ÐµÐ¹
             doorForward.OnDoorStateChanged += OnDoorStateChanged;
             doorBackward.OnDoorStateChanged += OnDoorStateChanged;
 
-            // Èíèöèàëèçèðóåì ëîêàëüíûå ôëàãè èç òåêóùåãî ñîñòîÿíèÿ ñåòåâîãî ôëàãà äâåðè
-            forwardIsOpen = doorForward.IsOpenNetwork();
-            backwardIsOpen = doorBackward.IsOpenNetwork();
-
+            // Ð˜Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð¸Ñ€ÑƒÐµÐ¼ Ð»Ð¾ÐºÐ°Ð»ÑŒÐ½Ñ‹Ðµ Ñ„Ð»Ð°Ð³Ð¸ Ð¸Ð· Ñ‚ÐµÐºÑƒÑ‰ÐµÐ³Ð¾ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ñ ÑÐµÑ‚ÐµÐ²Ð¾Ð³Ð¾ Ñ„Ð»Ð°Ð³Ð° Ð´Ð²ÐµÑ€Ð¸
+            _forwardIsOpen = doorForward.IsOpenNetwork();
+            _backwardIsOpen = doorBackward.IsOpenNetwork();
         }
 
         private void OnDoorStateChanged(DoorController doorController, bool isOpen)
         {
             if (doorController == doorForward)
             {
-                forwardIsOpen = isOpen;
+                _forwardIsOpen = isOpen;
             }
             else if (doorController == doorBackward)
             {
-                backwardIsOpen = isOpen;
+                _backwardIsOpen = isOpen;
             }
-            if(!forwardIsOpen&&!backwardIsOpen&&isAllPlayerInVestibule())
+
+            if (!_forwardIsOpen && !_backwardIsOpen && IsAllPlayerInVestibule())
             {
                 LoadNextLevel();
             }
-
         }
+
         private IEnumerator DelayedLoadNext()
         {
             if (IsServer)
             {
-
                 doorBackward.ToggleLockServerRpc();
                 doorForward.ToggleLockServerRpc();
             }
-            // æä¸ì ïîëíîãî çàâåðøåíèÿ àíèìàöèè çàêðûòèÿ (tweenDuration)
+
+            // Ð¶Ð´Ñ‘Ð¼ Ð¿Ð¾Ð»Ð½Ð¾Ð³Ð¾ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ñ Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸Ð¸ Ð·Ð°ÐºÑ€Ñ‹Ñ‚Ð¸Ñ (tweenDuration)
             yield return new WaitForSeconds(doorTweenDuration);
 
-            // Òåïåðü óæå áåçîïàñíî ñïàâíèòü/îòãðóæàòü óðîâåíü
+            // Ð¢ÐµÐ¿ÐµÑ€ÑŒ ÑƒÐ¶Ðµ Ð±ÐµÐ·Ð¾Ð¿Ð°ÑÐ½Ð¾ ÑÐ¿Ð°Ð²Ð½Ð¸Ñ‚ÑŒ/Ð¾Ñ‚Ð³Ñ€ÑƒÐ¶Ð°Ñ‚ÑŒ ÑƒÑ€Ð¾Ð²ÐµÐ½ÑŒ
             SpawnWagonBasedOnDirection();
             isBackward = true;
         }
+
         private void LoadNextLevel()
         {
             if (!IsServer)
             {
                 return;
             }
+
             doorBackward.ToggleLockServerRpc();
+
             DOVirtual.DelayedCall(doorTweenDuration, () =>
             {
                 SpawnWagonBasedOnDirection();
@@ -94,20 +92,20 @@ namespace Train
                 doorForward.ToggleLockServerRpc();
                 SwapDoors();
             });
-            
         }
+
         void SwapDoors()
         {
-            DoorController door = doorForward;
-            doorForward = doorBackward;
-            doorBackward = door;
+            (doorForward, doorBackward) = (doorBackward, doorForward);
         }
+
         private void Start()
         {
             if (!IsServer)
             {
-                return ;
+                return;
             }
+
             if (vestibuleDirection == VestibuleType.Forward)
             {
                 doorBackward.ForceInteract(gameObject);
@@ -117,16 +115,17 @@ namespace Train
                 doorForward.ForceInteract(gameObject);
             }
         }
+
         private void SpawnWagonBasedOnDirection()
         {
             if (vestibuleDirection == VestibuleType.Forward)
             {
-                TrainManager.Instance.SpawnWagon(vestibuleDirection, spawnpointForward.position, isBackward);
+                TrainManager.Instance.SpawnWagon(vestibuleDirection, spawnPointForward.position, isBackward);
                 vestibuleDirection = VestibuleType.Backward;
             }
             else
             {
-                TrainManager.Instance.SpawnWagon(vestibuleDirection, spawnpointBackward.position, isBackward);
+                TrainManager.Instance.SpawnWagon(vestibuleDirection, spawnPointBackward.position, isBackward);
                 vestibuleDirection = VestibuleType.Forward;
             }
         }
@@ -135,11 +134,13 @@ namespace Train
         {
             if (vestibuleType == VestibuleType.Backward)
             {
-                return spawnpointForward.position - spawnpointBackward.position;
+                return spawnPointForward.position - spawnPointBackward.position;
             }
+
             return Vector3.zero;
         }
-        public bool isAllPlayerInVestibule()
+
+        public bool IsAllPlayerInVestibule()
         {
             int total = NetworkManager.Singleton.ConnectedClients.Count;
             return clientsInVestibule.Count == total;
@@ -148,34 +149,42 @@ namespace Train
         private void OnTriggerEnter(Collider other)
         {
             Debug.Log("trigger enter");
-            if(!IsServer)
+
+            if (!IsServer)
             {
                 return;
             }
+
             var networkObject = other.GetComponent<NetworkObject>();
-            if (networkObject == null)
+
+            if (!networkObject)
             {
                 return;
             }
+
             ulong clientId = networkObject.OwnerClientId;
             clientsInVestibule.Add(clientId);
         }
+
         private void OnTriggerExit(Collider other)
         {
             if (!IsServer)
             {
                 return;
             }
+
             var networkObject = other.GetComponent<NetworkObject>();
-            if (networkObject == null)
+
+            if (!networkObject)
             {
                 return;
             }
+
             ulong clientId = networkObject.OwnerClientId;
             clientsInVestibule.Remove(clientId);
         }
     }
-    
+
     public enum VestibuleType
     {
         Forward,
