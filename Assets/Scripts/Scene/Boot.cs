@@ -8,6 +8,8 @@ namespace Scene
 
         private async void Start()
         {
+            Application.targetFrameRate = 60;
+
             await SceneTransitionController.Instance.Play(sequence);
         }
     }

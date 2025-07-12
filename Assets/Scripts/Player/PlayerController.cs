@@ -3,7 +3,6 @@ using Managers;
 using Unity.Netcode;
 using UnityEngine;
 
-
 namespace Player
 {
     [DisallowMultipleComponent]
@@ -14,13 +13,14 @@ namespace Player
         [SerializeField] private NetworkObject networkObject;
         [SerializeField] private Behaviour[] localComponents;
 
-
         public KinematicCharacterMotor Motor;
-        [Header("Stable Movement")] public float MaxStableMoveSpeed = 10f;
+        [Header("Stable Movement")]
+        public float MaxStableMoveSpeed = 10f;
         public float StableMovementSharpness = 15;
         public float OrientationSharpness = 10;
 
-        [Header("Air Movement")] public float MaxAirMoveSpeed = 10f;
+        [Header("Air Movement")]
+        public float MaxAirMoveSpeed = 10f;
         public float AirAccelerationSpeed = 5f;
         public float Drag = 0.1f;
         public float AirScalableForwardSpeed = 10f;
@@ -35,6 +35,8 @@ namespace Player
 
         public Vector3 PunchVelocity;
 
+        public static ulong LocalPlayerId { get; private set; }
+
         private static InputManager InputManager
             => InputManager.Singleton;
 
@@ -47,6 +49,8 @@ namespace Player
         {
             if (!networkObject.IsOwner)
                 return;
+
+            LocalPlayerId = networkObject.OwnerClientId;
 
             foreach (Behaviour localComponent in localComponents)
                 localComponent.enabled = true;
