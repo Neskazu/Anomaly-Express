@@ -1,7 +1,7 @@
 ﻿using Managers;
 using UnityEngine;
 
-namespace Anomalies.Concrete
+namespace Anomalies.Concrete.Visual
 {
     public class AnomalyRotatedSky : AnomalyBase
     {

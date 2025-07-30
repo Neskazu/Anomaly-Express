@@ -3,9 +3,9 @@ using R3;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Anomalies.Concrete
+namespace Anomalies.Concrete.Audio
 {
-    public class AnomalyMusic : AnomalyBase
+    public class AnomalyMusic : AnomalyBase, IAudioAnomaly
     {
         [Header("References")]
         [SerializeField] private AudioSource source;
@@ -23,16 +23,13 @@ namespace Anomalies.Concrete
         private float _musicVolume;
         private float _anomalyVolume;
 
-        private const float Mute = -80;
-        private const float Unmute = 0;
-
         protected override void OnActivate()
         {
             globalMixer.GetFloat(musicParameterName, out _initialMusicVolume);
-            globalMixer.SetFloat(anomaliesParameterName, Mute);
+            globalMixer.SetFloat(anomaliesParameterName, IAudioAnomaly.Mute);
 
             _musicVolume = _initialMusicVolume;
-            _anomalyVolume = Mute;
+            _anomalyVolume = IAudioAnomaly.Mute;
 
             source.Play();
 
@@ -48,18 +45,18 @@ namespace Anomalies.Concrete
             source.Stop();
 
             globalMixer.SetFloat(musicParameterName, _initialMusicVolume);
-            globalMixer.SetFloat(anomaliesParameterName, Unmute);
+            globalMixer.SetFloat(anomaliesParameterName, IAudioAnomaly.Unmute);
         }
 
         private void VolumeUpdate()
         {
-            _musicVolume = Mathf.Clamp(_musicVolume - deltaMusicVolume, Mute, Unmute);
-            _anomalyVolume = Mathf.Clamp(_anomalyVolume + deltaAnomalyVolume, Mute, Unmute);
+            _musicVolume = Mathf.Clamp(_musicVolume - deltaMusicVolume, IAudioAnomaly.Mute, IAudioAnomaly.Unmute);
+            _anomalyVolume = Mathf.Clamp(_anomalyVolume + deltaAnomalyVolume, IAudioAnomaly.Mute, IAudioAnomaly.Unmute);
 
             globalMixer.SetFloat(musicParameterName, _musicVolume);
             globalMixer.SetFloat(anomaliesParameterName, _anomalyVolume);
 
-            if (_anomalyVolume >= Unmute && _musicVolume <= Mute)
+            if (_anomalyVolume >= IAudioAnomaly.Unmute && _musicVolume <= IAudioAnomaly.Mute)
                 _subscription.Dispose();
         }
     }

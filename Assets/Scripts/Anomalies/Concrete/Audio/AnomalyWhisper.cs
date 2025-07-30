@@ -1,12 +1,11 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using Managers;
 using Network;
 using Player;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Anomalies.Concrete
+namespace Anomalies.Concrete.Audio
 {
     public class AnomalyWhisper : AnomalyBase
     {

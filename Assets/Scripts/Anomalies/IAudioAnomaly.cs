@@ -1,10 +1,8 @@
-using UnityEngine;
-
 namespace Anomalies
 {
     public interface IAudioAnomaly : IAnomaly
     {
-        AudioClip Clip { get; set; }
-        float Volume { get; set; }
+        public const float Mute = -80;
+        public const float Unmute = 0;
     }
 }

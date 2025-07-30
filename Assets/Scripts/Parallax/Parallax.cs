@@ -11,10 +11,10 @@ namespace Parallax
         [SerializeField] private float speed;
         [SerializeField] private float size;
 
-        private GameObject[] chunks;
+        private GameObject[] _chunks;
 
-        Vector3 spawnPosition;
-        Vector3 despawnPosition;
+        private Vector3 _spawnPosition;
+        private Vector3 _despawnPosition;
 
         private void Awake()
         {
@@ -25,34 +25,34 @@ namespace Parallax
         {
             var direction = transform.forward;
 
-            spawnPosition = transform.position - direction * (size / 2);
-            despawnPosition = transform.position + direction * (size / 2);
+            _spawnPosition = transform.position - direction * (size / 2);
+            _despawnPosition = transform.position + direction * (size / 2);
 
             var spacing = chunkSize.z;
             var amount = Mathf.CeilToInt(size / spacing);
 
-            chunks = new GameObject[amount];
+            _chunks = new GameObject[amount];
 
             for (int i = 0; i < amount; i++)
             {
-                var position = spawnPosition + direction * spacing * i;
+                var position = _spawnPosition + direction * spacing * i;
                 var rotation = Quaternion.LookRotation(direction, Vector3.up);
 
-                chunks[i] = Instantiate(chunkPrefab, position, rotation, transform);
+                _chunks[i] = Instantiate(chunkPrefab, position, rotation, transform);
             }
         }
 
         private void FixedUpdate()
         {
-            foreach (var chunk in chunks)
+            foreach (var chunk in _chunks)
             {
                 if (!chunk)
                     continue;
 
                 chunk.transform.position += transform.forward * (speed * Time.deltaTime);
 
-                if (chunk.transform.position.z > despawnPosition.z)
-                    chunk.transform.position = spawnPosition;
+                if (chunk.transform.position.z > _despawnPosition.z)
+                    chunk.transform.position = _spawnPosition;
             }
         }
 
@@ -70,12 +70,9 @@ namespace Parallax
             float spacing = chunkSize.z;
             int amount = Mathf.CeilToInt(size / spacing);
 
-            Vector3[] centers = new Vector3[amount];
-
             for (int i = 0; i < amount; i++)
             {
-                Gizmos.matrix = Matrix4x4.TRS(spawn + direction * spacing * i,
-                    Quaternion.LookRotation(direction, Vector3.up), Vector3.one);
+                Gizmos.matrix = Matrix4x4.TRS(spawn + direction * spacing * i, Quaternion.LookRotation(direction, Vector3.up), Vector3.one);
                 Gizmos.DrawWireCube(Vector3.zero, chunkSize);
             }
         }
