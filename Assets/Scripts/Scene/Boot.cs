@@ -5,10 +5,11 @@ namespace Scene
     public class Boot : MonoBehaviour
     {
         [SerializeField] private SceneTransitionSequence sequence;
+        [SerializeField] private uint targetFrameRate = 60;
 
         private async void Start()
         {
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = (int) targetFrameRate;
 
             await SceneTransitionController.Instance.Play(sequence);
         }
