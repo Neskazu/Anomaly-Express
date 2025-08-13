@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Anomalies;
+using R3;
 using Train;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,6 +10,8 @@ namespace Managers
     public class TrainManager : NetworkBehaviour
     {
         public static TrainManager Instance { get; private set; }
+
+        public Observable<GameObject> OnNewWagon => _onNewWagon;
 
         [SerializeField] private GameObject defaultWagon;
         [SerializeField] private GameObject[] anomalyWagons;
@@ -24,7 +27,7 @@ namespace Managers
         private int _currentWagonIndex = 0;
         private AnomalyBase _currentAnomaly = null;
 
-        // Current wagon anomaly flag
+        private Subject<GameObject> _onNewWagon;
 
         private void Awake()
         {
@@ -35,6 +38,7 @@ namespace Managers
             }
 
             Instance = this;
+            _onNewWagon = new Subject<GameObject>().AddTo(this);
         }
 
         public void SpawnWagon(VestibuleType vestibuleType, Vector3 position, bool isBackward)
@@ -101,6 +105,7 @@ namespace Managers
 
             currentWagonHasAnomaly = wagonController.hasAnomaly;
 
+            _onNewWagon.OnNext(wagon);
             return wagon;
         }
 
@@ -113,7 +118,6 @@ namespace Managers
 
         private void DespawnWagons(VestibuleType vestibuleType)
         {
-            // TODO: Узнать у несказу где удалять аномалии
             _currentAnomaly?.Deactivate();
             _currentAnomaly = null;
 

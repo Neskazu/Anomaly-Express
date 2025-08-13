@@ -22,10 +22,12 @@ namespace UI.Utils
 
         public async void Start()
         {
+#if !UNITY_EDITOR && !DEVELOPMENT_BUILD
             await UniTask.WaitForSeconds(startDelay);
             await showSequence.Play();
             await UniTask.WaitForSeconds(screenTime);
             await hideSequence.Play();
+#endif
 
             Destroy(canvas.gameObject);
         }

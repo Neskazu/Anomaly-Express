@@ -460,7 +460,7 @@ Transform:
   m_GameObject: {fileID: 300335285}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -100, y: -10, z: 0}
+  m_LocalPosition: {x: -100, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -479,9 +479,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chunkPrefab: {fileID: 1099583033315240282, guid: d9333b06f7a6da64388780451e177be9, type: 3}
-  chunkSize: {x: 1, y: 1, z: 195}
-  speed: 50
-  size: 600
+  chunkSize: {x: 1, y: 1, z: 200}
+  size: 800
+  time: 5
 --- !u!1001 &374689579
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -732,7 +732,7 @@ Transform:
   m_GameObject: {fileID: 648052414}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 100, y: -10, z: 0}
+  m_LocalPosition: {x: 100, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -751,9 +751,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chunkPrefab: {fileID: 1870112421830024345, guid: df8a3a0ff8d66ff43ba6c35c57c6e61a, type: 3}
-  chunkSize: {x: 1, y: 1, z: 195}
-  speed: 50
+  chunkSize: {x: 1, y: 1, z: 200}
   size: 800
+  time: 5
 --- !u!1 &868563531
 GameObject:
   m_ObjectHideFlags: 0
@@ -780,7 +780,7 @@ Transform:
   m_GameObject: {fileID: 868563531}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 300, y: -10, z: 0}
+  m_LocalPosition: {x: 300, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -798,10 +798,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4822ec8f4fe711644ac60fc0d7db6968, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkPrefab: {fileID: 3224962317251451233, guid: dd724665740213b428d845149e36601d, type: 3}
-  chunkSize: {x: 1, y: 1, z: 195}
-  speed: 25
+  chunkPrefab: {fileID: 206153294761315511, guid: 278738ca52305e143b45c51b6fe09ef9, type: 3}
+  chunkSize: {x: 1, y: 1, z: 200}
   size: 1200
+  time: 10
 --- !u!1 &873859513
 GameObject:
   m_ObjectHideFlags: 0
@@ -999,7 +999,7 @@ Transform:
   m_GameObject: {fileID: 1460613776}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 100}
+  m_LocalPosition: {x: 0, y: -10, z: -100}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

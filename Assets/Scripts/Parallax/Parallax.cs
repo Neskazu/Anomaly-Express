@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEditor;
 using UnityEngine;
 
@@ -5,55 +6,54 @@ namespace Parallax
 {
     public class Parallax : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] private GameObject chunkPrefab;
         [SerializeField] private Vector3 chunkSize;
 
-        [SerializeField] private float speed;
+        [Header("Settings")]
         [SerializeField] private float size;
+        [SerializeField] private float time;
 
-        private GameObject[] _chunks;
-
-        private Vector3 _spawnPosition;
-        private Vector3 _despawnPosition;
+        private Transform[] _chunks;
 
         private void Awake()
         {
             Spawn();
+            Move();
         }
 
         private void Spawn()
         {
             var direction = transform.forward;
-
-            _spawnPosition = transform.position - direction * (size / 2);
-            _despawnPosition = transform.position + direction * (size / 2);
-
+            var spawnPosition = transform.position - direction * (size / 2);
             var spacing = chunkSize.z;
             var amount = Mathf.CeilToInt(size / spacing);
 
-            _chunks = new GameObject[amount];
+            _chunks = new Transform[amount];
 
             for (int i = 0; i < amount; i++)
             {
-                var position = _spawnPosition + direction * spacing * i;
+                var position = spawnPosition + direction * spacing * i;
                 var rotation = Quaternion.LookRotation(direction, Vector3.up);
 
-                _chunks[i] = Instantiate(chunkPrefab, position, rotation, transform);
+                _chunks[i] = Instantiate(chunkPrefab, position, rotation, transform).transform;
             }
         }
 
-        private void FixedUpdate()
+        private void Move()
         {
-            foreach (var chunk in _chunks)
+            Sequence sequence = DOTween.Sequence();
+
+            foreach (Transform chunk in _chunks)
             {
-                if (!chunk)
-                    continue;
-
-                chunk.transform.position += transform.forward * (speed * Time.deltaTime);
-
-                if (chunk.transform.position.z > _despawnPosition.z)
-                    chunk.transform.position = _spawnPosition;
+                sequence.Join(
+                    chunk
+                        .DOLocalMove(Vector3.Scale(chunk.forward, chunk.localPosition) + Vector3.Scale(chunk.forward, chunkSize), time)
+                        .SetEase(Ease.Linear)
+                );
             }
+
+            sequence.SetLoops(-1);
         }
 
         private void OnDrawGizmosSelected()

@@ -234,9 +234,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chunkPrefab: {fileID: 1870112421830024345, guid: df8a3a0ff8d66ff43ba6c35c57c6e61a, type: 3}
-  chunkSize: {x: 1, y: 1, z: 195}
-  speed: 50
+  chunkSize: {x: 1, y: 1, z: 200}
   size: 600
+  time: 5
 --- !u!1 &232593037
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,9 +282,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chunkPrefab: {fileID: 206153294761315511, guid: 278738ca52305e143b45c51b6fe09ef9, type: 3}
-  chunkSize: {x: 1, y: 1, z: 195}
-  speed: 25
+  chunkSize: {x: 1, y: 1, z: 200}
   size: 800
+  time: 10
 --- !u!1 &302460289
 GameObject:
   m_ObjectHideFlags: 0
@@ -865,6 +865,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 957361790}
+  - component: {fileID: 957361791}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -881,7 +882,7 @@ Transform:
   m_GameObject: {fileID: 957361789}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -6.13, z: 0}
+  m_LocalPosition: {x: 0, y: -5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -889,6 +890,19 @@ Transform:
   - {fileID: 755624818}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &957361791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957361789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e382aa5dc1045e08c5c9036b463b720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 957361790}
 --- !u!1 &1043731621
 GameObject:
   m_ObjectHideFlags: 0
@@ -1172,9 +1186,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chunkPrefab: {fileID: 3224962317251451233, guid: dd724665740213b428d845149e36601d, type: 3}
-  chunkSize: {x: 1, y: 1, z: 195}
-  speed: 25
+  chunkSize: {x: 1, y: 1, z: 200}
   size: 800
+  time: 10
 --- !u!1 &1657292243
 GameObject:
   m_ObjectHideFlags: 0
@@ -1503,9 +1517,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chunkPrefab: {fileID: 1099583033315240282, guid: d9333b06f7a6da64388780451e177be9, type: 3}
-  chunkSize: {x: 1, y: 1, z: 195}
-  speed: 50
+  chunkSize: {x: 1, y: 1, z: 200}
   size: 600
+  time: 5
 --- !u!1001 &926828704956610011
 PrefabInstance:
   m_ObjectHideFlags: 0
