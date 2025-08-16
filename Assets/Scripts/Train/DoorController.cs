@@ -22,11 +22,14 @@ namespace Train
         // Сетевой флаг состояния двери
         private NetworkVariable<bool> _netIsOpen = new NetworkVariable<bool>();
 
-        private Quaternion _closedRotation;
+        private Quaternion _closedRotationMesh;
+
+        private Quaternion _closedRotationCollider;
 
         private void Awake()
         {
-            _closedRotation = doorMesh.localRotation;
+            _closedRotationMesh = doorMesh.localRotation;
+            _closedRotationCollider = doorCollider.transform.localRotation;
         }
 
         public override void OnNetworkSpawn()
@@ -140,15 +143,16 @@ namespace Train
 
         private void ApplyOpenVisual(float signedAngle)
         {
-            Vector3 targetEuler = _closedRotation.eulerAngles + new Vector3(0f, signedAngle, 0f);
-            doorMesh.DOLocalRotate(targetEuler, tweenDuration).SetEase(Ease.OutCubic);
-            doorCollider.transform.DOLocalRotate(targetEuler, tweenDuration).SetEase(Ease.OutCubic);
+            Vector3 targetEulerMesh = _closedRotationMesh.eulerAngles + new Vector3(0f, signedAngle, 0f);
+            Vector3 targetEulerCollider = _closedRotationCollider.eulerAngles + new Vector3(0f, signedAngle, 0f);
+            doorMesh.DOLocalRotate(targetEulerMesh, tweenDuration).SetEase(Ease.OutCubic);
+            doorCollider.transform.DOLocalRotate(targetEulerCollider, tweenDuration).SetEase(Ease.OutCubic);
         }
 
         private void ApplyCloseVisual()
         {
-            doorMesh.DOLocalRotate(_closedRotation.eulerAngles, tweenDuration).SetEase(Ease.OutCubic);
-            doorCollider.transform.DOLocalRotate(_closedRotation.eulerAngles, tweenDuration).SetEase(Ease.OutCubic);
+            doorMesh.DOLocalRotate(_closedRotationMesh.eulerAngles, tweenDuration).SetEase(Ease.OutCubic);
+            doorCollider.transform.DOLocalRotate(_closedRotationCollider.eulerAngles, tweenDuration).SetEase(Ease.OutCubic);
         }
 
         private float DetermineSignedAngle(Vector3 interactorWorldPos)
