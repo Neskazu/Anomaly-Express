@@ -1,3 +1,4 @@
+using KinematicCharacterController;
 using UnityEngine;
 
 namespace Player.Components
@@ -5,18 +6,19 @@ namespace Player.Components
     public class PlayerAudioFootstep : MonoBehaviour
     {
         // Dependencies
-        [SerializeField] private Rigidbody rb;
+        [SerializeField] private KinematicCharacterMotor motor;
         [SerializeField] private AudioSource footAudioSource;
 
         // Settings
-        [SerializeField] private float threshold = 0.01f;
+        [SerializeField] private float threshold = 0.1f;
 
         private void FixedUpdate()
         {
-            if (rb.linearVelocity.magnitude > threshold && !footAudioSource.isPlaying)
-                footAudioSource.Play();
+            float speed = motor.BaseVelocity.magnitude;
 
-            else if (rb.linearVelocity.magnitude < threshold && footAudioSource.isPlaying)
+            if (speed > threshold && !footAudioSource.isPlaying)
+                footAudioSource.Play();
+            else if (speed < threshold && footAudioSource.isPlaying)
                 footAudioSource.Stop();
         }
     }

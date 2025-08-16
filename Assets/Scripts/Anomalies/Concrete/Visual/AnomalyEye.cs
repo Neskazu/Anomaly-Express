@@ -35,7 +35,7 @@ namespace Anomalies.Concrete.Visual
                 .Subscribe(Rotate)
                 .AddTo(this);
 
-            _floatingTween = eyeHolderTransform.DOMove(eyeHolderTransform.position + floatingOffset, floatingDuration)
+            _floatingTween = eyeTransform.DOMove(eyeHolderTransform.position + floatingOffset, floatingDuration)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetEase(Ease.InOutSine);
         }
