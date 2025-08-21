@@ -48,7 +48,7 @@ namespace Parallax
             {
                 sequence.Join(
                     chunk
-                        .DOLocalMove(Vector3.Scale(chunk.forward, chunk.localPosition) + Vector3.Scale(chunk.forward, chunkSize), time)
+                        .DOLocalMove(chunk.localPosition + Vector3.forward * chunkSize.z, time)
                         .SetEase(Ease.Linear)
                 );
             }
