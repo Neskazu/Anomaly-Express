@@ -8,7 +8,9 @@ namespace Train
     public class DoorController : NetworkBehaviour, IInteractable
     {
         [SerializeField] private float openAngle = 100f;
+        [SerializeField] private float shakeAngle = 2f;
         [SerializeField] private float tweenDuration = 0.5f;
+        [SerializeField] private float shakeDuration = 0.15f;
         [SerializeField] private Collider doorCollider;
         [SerializeField] private Transform doorMesh;
         [SerializeField] private DoorType doorType;
@@ -54,9 +56,10 @@ namespace Train
 
         public void Interact(GameObject interactor)
         {
+            float angleSign = DetermineSignedAngle(interactor.transform.position);
             if (doorType == DoorType.Ordinary)
             {
-                float signedAngle = DetermineSignedAngle(interactor.transform.position);
+                float signedAngle = angleSign * openAngle;
 
                 if (IsServer)
                 {
@@ -71,7 +74,7 @@ namespace Train
             {
                 if (!_netIsLocked.Value)
                 {
-                    float signedAngle = DetermineSignedAngle(interactor.transform.position);
+                    float signedAngle = angleSign * openAngle;
 
                     if (IsServer)
                     {
@@ -81,6 +84,11 @@ namespace Train
                     {
                         ChangeStateServerRpc(signedAngle);
                     }
+                }
+                else
+                {
+                    float signedShakeAngle = angleSign * shakeAngle;
+                    ShakeDoor(signedShakeAngle);
                 }
             }
         }
@@ -137,7 +145,7 @@ namespace Train
         [ServerRpc(RequireOwnership = false)]
         private void RequestCurrentAngleServerRpc(ServerRpcParams rpcParams = default)
         {
-            float lastAngle = DetermineSignedAngle(Vector3.zero);
+            float lastAngle = openAngle*DetermineSignedAngle(Vector3.zero);
             OpenDoorClientRpc(lastAngle);
         }
 
@@ -158,7 +166,7 @@ namespace Train
         private float DetermineSignedAngle(Vector3 interactorWorldPos)
         {
             Vector3 localPos = doorCollider.transform.InverseTransformPoint(interactorWorldPos);
-            return (localPos.y >= 0f ? openAngle : -openAngle);
+            return (localPos.y >= 0f ? 1 : -1);
         }
 
         public void ChangeLock()
@@ -175,6 +183,17 @@ namespace Train
         public void ToggleLockServerRpc()
         {
             _netIsLocked.Value = !_netIsLocked.Value;
+        }
+        private void ShakeDoor(float shakeAngle)
+        {
+            Sequence seq = DOTween.Sequence();
+            seq.Append(doorMesh.DOLocalRotate(
+                _closedRotationMesh.eulerAngles + new Vector3(0f, shakeAngle, 0f), shakeDuration))
+               .Append(doorMesh.DOLocalRotate(
+                _closedRotationMesh.eulerAngles - new Vector3(0f, shakeAngle, 0f), shakeDuration))
+               .Append(doorMesh.DOLocalRotate(_closedRotationMesh.eulerAngles, shakeDuration));
+
+            seq.SetEase(Ease.InOutSine);
         }
     }
 
