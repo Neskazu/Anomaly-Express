@@ -9,14 +9,14 @@ namespace Anomalies.Concrete.Visual
         [SerializeField] private Material rotated;
         [SerializeField] private Transform pivot;
 
-        private GameObject _rails;
+        private GameObject _world;
 
         protected override void OnActivate()
         {
             RenderSettings.skybox = rotated;
 
-            _rails = SceneObjectsManager.Instance.Rail;
-            _rails.transform.SetParent(pivot);
+            _world = SceneObjectsManager.Instance.World;
+            _world.transform.SetParent(pivot);
             pivot.rotation = Quaternion.Euler(0, 0, 90);
         }
 
@@ -25,7 +25,7 @@ namespace Anomalies.Concrete.Visual
             RenderSettings.skybox = normal;
 
             pivot.rotation = Quaternion.Euler(0, 0, 0);
-            _rails.transform.SetParent(null);
+            _world.transform.SetParent(null);
         }
     }
 }

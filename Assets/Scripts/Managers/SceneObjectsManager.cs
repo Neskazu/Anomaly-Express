@@ -6,11 +6,11 @@ namespace Managers
     {
         public static SceneObjectsManager Instance;
 
-        public GameObject Rail => rail;
+        public GameObject World => world;
         public AudioSource WheelsAudio => wheelsAudioSource;
 
         [Header("Objects")]
-        [SerializeField] private GameObject rail;
+        [SerializeField] private GameObject world;
 
         [Header("Audio")]
         [SerializeField] private AudioSource wheelsAudioSource;
