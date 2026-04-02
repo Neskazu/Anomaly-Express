@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 142075352269120589}
   - component: {fileID: 4930454702381990741}
   - component: {fileID: 2338952459286243910}
+  - component: {fileID: 622537546768920616}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -278,6 +279,8 @@ MonoBehaviour:
   - {fileID: 4930454702381990741}
   - {fileID: 6355190121646887306}
   - {fileID: 2338952459286243910}
+  jumpComponent: {fileID: 622537546768920616}
+  jumpForce: 10
   Motor: {fileID: 4930454702381990741}
   MaxStableMoveSpeed: 3.5
   StableMovementSharpness: 15
@@ -421,6 +424,19 @@ MonoBehaviour:
   interactableLayerMask:
     serializedVersion: 2
     m_Bits: 256
+--- !u!114 &622537546768920616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1770505051402491123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a1f6e0b69db19458cf93842aa946d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkObject: {fileID: 8626299152645079788}
 --- !u!1 &4041265792143674144
 GameObject:
   m_ObjectHideFlags: 0

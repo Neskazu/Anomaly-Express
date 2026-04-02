@@ -14,6 +14,7 @@ namespace Managers
         public event Action<Vector2> OnMoveAxisChanged;
         public event Action OnPunch;
         public event Action OnInteract;
+        public event Action OnJump;
 
         private InputSystem_Actions inputActions;
 
@@ -37,6 +38,9 @@ namespace Managers
 
             inputActions.Player.Interact.performed
                 += context => OnInteract?.Invoke();
+
+            inputActions.Player.Jump.started
+                += context => OnJump?.Invoke();
             Singleton = this;
         }
 

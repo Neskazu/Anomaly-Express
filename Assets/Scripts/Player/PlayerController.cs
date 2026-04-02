@@ -1,5 +1,6 @@
 ﻿using KinematicCharacterController;
 using Managers;
+using Player.Components;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ namespace Player
 
         [SerializeField] private NetworkObject networkObject;
         [SerializeField] private Behaviour[] localComponents;
+        [SerializeField] private PlayerJump jumpComponent;
+        [SerializeField] private float jumpForce = 10f;
 
         public KinematicCharacterMotor Motor;
         [Header("Stable Movement")]
@@ -127,25 +130,43 @@ namespace Player
 
             if (Motor.GroundingStatus.IsStableOnGround)
             {
-                // Reorient source velocity on current ground slope (this is because we don't want our smoothing to cause any velocity losses in slope changes)
-                currentVelocity = Motor.GetDirectionTangentToSurface(currentVelocity, Motor.GroundingStatus.GroundNormal) * currentVelocity.magnitude;
+                // Handle jump logic: check if jump is requested AND enabled for the current location
+                if (jumpComponent != null && jumpComponent.JumpRequested && jumpComponent.IsJumpEnabled)
+                {
+                    // 1. Forcefully unground the motor to initiate jump
+                    Motor.ForceUnground();
 
-                // Calculate target velocity
-                Vector3 inputRight = Vector3.Cross(_moveInputVector, Motor.CharacterUp);
-                Vector3 reorientedInput = Vector3.Cross(Motor.GroundingStatus.GroundNormal, inputRight).normalized * _moveInputVector.magnitude;
-                targetMovementVelocity = reorientedInput * MaxStableMoveSpeed;
+                    // 2. Apply upward impulse
+                    currentVelocity += Motor.CharacterUp * jumpForce;
 
-                // Smooth movement Velocity
-                currentVelocity = Vector3.Lerp(currentVelocity, targetMovementVelocity, 1 - Mathf.Exp(-StableMovementSharpness * deltaTime));
+                    // 3. Immediately consume the jump request
+                    jumpComponent.JumpRequested = false;
+                }
+                else
+                {
+                    // Reset jump request if grounded but not jumping to prevent late triggers
+                    if (jumpComponent != null) jumpComponent.JumpRequested = false;
+
+                    // Reorient source velocity on current ground slope
+                    currentVelocity = Motor.GetDirectionTangentToSurface(currentVelocity, Motor.GroundingStatus.GroundNormal) * currentVelocity.magnitude;
+
+                    Vector3 inputRight = Vector3.Cross(_moveInputVector, Motor.CharacterUp);
+                    Vector3 reorientedInput = Vector3.Cross(Motor.GroundingStatus.GroundNormal, inputRight).normalized * _moveInputVector.magnitude;
+
+                    targetMovementVelocity = reorientedInput * MaxStableMoveSpeed;
+
+                    // Smooth movement velocity
+                    currentVelocity = Vector3.Lerp(currentVelocity, targetMovementVelocity, 1 - Mathf.Exp(-StableMovementSharpness * deltaTime));
+                }
             }
             else
             {
-                // Add move input
+                // Handle air movement logic
                 if (_moveInputVector.sqrMagnitude > 0f)
                 {
                     targetMovementVelocity = _moveInputVector * MaxAirMoveSpeed;
 
-                    // Prevent climbing on un-stable slopes with air movement
+                    // Prevent climbing on unstable slopes with air movement
                     if (Motor.GroundingStatus.FoundAnyGround)
                     {
                         Vector3 perpenticularObstructionNormal = Vector3.Cross(Vector3.Cross(Motor.CharacterUp, Motor.GroundingStatus.GroundNormal), Motor.CharacterUp).normalized;
@@ -156,17 +177,18 @@ namespace Player
                     currentVelocity += velocityDiff * (AirAccelerationSpeed * deltaTime);
                 }
 
-                // Gravity
+                // Apply gravity and drag
                 currentVelocity += Gravity * deltaTime;
-
-                // Drag
                 currentVelocity *= (1f / (1f + (Drag * deltaTime)));
+
+                // Reset jump request if airborne to prevent mid-air activation
+                if (jumpComponent != null) jumpComponent.JumpRequested = false;
             }
 
+            // Handle external impulses (PunchVelocity)
             if (PunchVelocity.magnitude > 0.1f)
             {
                 Motor.ForceUnground();
-
                 currentVelocity += (PunchVelocity) - Vector3.Project(currentVelocity, Motor.CharacterUp);
                 currentVelocity += (_moveInputVector * AirScalableForwardSpeed);
                 GameManager.Instance.ResetPlayerPunchVelocityServerRpc(networkObject.OwnerClientId);
