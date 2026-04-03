@@ -272,6 +272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dbc447829d341199d4e170d8fd07565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   rb: {fileID: 1168412783720211212}
   networkObject: {fileID: 8626299152645079788}
   localComponents:
@@ -294,6 +295,11 @@ MonoBehaviour:
   MeshRoot: {fileID: 0}
   PunchVelocity: {x: 0, y: 0, z: 0}
   cameraTransform: {fileID: 0}
+  HeadTransform: {fileID: 1790705762068875814}
+  SharedCamPitch:
+    m_InternalValue: 0
+  SharedCamYaw:
+    m_InternalValue: 0
 --- !u!114 &-3165505915988723258
 MonoBehaviour:
   m_ObjectHideFlags: 0

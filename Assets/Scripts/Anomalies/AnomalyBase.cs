@@ -1,23 +1,67 @@
+using System;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Anomalies
 {
-    public abstract class AnomalyBase : MonoBehaviour, IAnomaly
+    public abstract class AnomalyBase : NetworkBehaviour, IAnomaly
     {
-        public bool IsActive { get; set; } = false;
+        public static event Action OnAnomalyStateChanged;
+
+        private readonly NetworkVariable<bool> _isActiveNet = new NetworkVariable<bool>(
+            false,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
+        public bool IsActive
+        {
+            get => _isActiveNet.Value;
+            set
+            {
+                if (value) Activate();
+                else Deactivate();
+            }
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            _isActiveNet.OnValueChanged += HandleStateChanged;
+
+            if (_isActiveNet.Value)
+            {
+                OnActivate();
+                OnAnomalyStateChanged?.Invoke();
+            }
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            _isActiveNet.OnValueChanged -= HandleStateChanged;
+        }
+
+        private void HandleStateChanged(bool previousValue, bool newValue)
+        {
+            if (newValue)
+                OnActivate();
+            else
+                OnDeactivate();
+
+            OnAnomalyStateChanged?.Invoke();
+        }
 
         public void Activate()
         {
-            if (IsActive) return;
-            IsActive = true;
-            OnActivate();
+            if (!IsServer || _isActiveNet.Value) return;
+
+            _isActiveNet.Value = true;
         }
 
         public void Deactivate()
         {
-            if (!IsActive) return;
-            OnDeactivate();
-            IsActive = false;
+            if (!IsServer || !_isActiveNet.Value) return;
+
+            _isActiveNet.Value = false;
         }
 
         protected abstract void OnActivate();
@@ -26,7 +70,7 @@ namespace Anomalies
 
         private void Update()
         {
-            if (IsActive)
+            if (_isActiveNet.Value)
                 OnUpdate();
         }
     }

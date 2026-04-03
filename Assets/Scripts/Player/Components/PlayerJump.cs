@@ -18,6 +18,13 @@ namespace Player.Components
 
         private void OnJumpInput()
         {
+            var controller = PlayerController.LocalInstance;
+
+            if (Anomalies.SplitControlAnomaly.IsSplitActive && controller != null)
+            {
+                if (!controller.CurrentPermissions.CanJump) return;
+            }
+
             JumpRequested = true;
         }
 

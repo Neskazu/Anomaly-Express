@@ -1,13 +1,16 @@
-﻿using KinematicCharacterController;
+﻿using Anomalies;
+using KinematicCharacterController;
 using Managers;
 using Player.Components;
+using Player.Input;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace Player
 {
     [DisallowMultipleComponent]
-    public sealed class PlayerController : MonoBehaviour, ICharacterController
+    public sealed class PlayerController : NetworkBehaviour, ICharacterController
     {
         [SerializeField] private Rigidbody rb;
 
@@ -44,29 +47,70 @@ namespace Player
             => InputManager.Singleton;
 
         [SerializeField] private Transform cameraTransform;
+        // --- split control ---
+        public Transform HeadTransform;
+        public static PlayerController HostInstance { get; private set; }
+        public static PlayerController LocalInstance { get; private set; }
+        public PlayerPermissions CurrentPermissions => _currentPermissions;
+
+        public NetworkVariable<float> SharedCamPitch = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<float> SharedCamYaw = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        private Dictionary<ulong, Vector2> _sharedMoveInputs = new Dictionary<ulong, Vector2>();
+        private bool _sharedJumpInput = false;
+        private PlayerPermissions _currentPermissions;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private bool isDead;
 #endif
+
+        private void OnEnable()
+        {
+            AnomalyBase.OnAnomalyStateChanged += RefreshPermissions;
+            if (NetworkManager.Singleton != null)
+            {
+                NetworkManager.Singleton.OnClientConnectedCallback += OnNetworkChanged;
+                NetworkManager.Singleton.OnClientDisconnectCallback += OnNetworkChanged;
+            }
+            RefreshPermissions();
+        }
+        private void OnDisable()
+        {
+            AnomalyBase.OnAnomalyStateChanged -= RefreshPermissions;
+            if (NetworkManager.Singleton != null)
+            {
+                NetworkManager.Singleton.OnClientConnectedCallback -= OnNetworkChanged;
+                NetworkManager.Singleton.OnClientDisconnectCallback -= OnNetworkChanged;
+            }
+        }
         private void Start()
         {
-            if (!networkObject.IsOwner)
-                return;
+            if (OwnerClientId == NetworkManager.ServerClientId)
+            {
+                HostInstance = this;
+                Debug.Log($"[PlayerController] HostInstance назначен для игрока {OwnerClientId}");
+            }
+            if (IsOwner)
+            {
+                LocalInstance = this; 
+                LocalPlayerId = OwnerClientId;
 
-            LocalPlayerId = networkObject.OwnerClientId;
+                foreach (Behaviour localComponent in localComponents)
+                    localComponent.enabled = true;
 
-            foreach (Behaviour localComponent in localComponents)
-                localComponent.enabled = true;
+                Motor.CharacterController = this;
+                InputManager.OnMoveAxisChanged += HandleInput;
+                cameraTransform = Camera.main.transform;
+            }
 
-            //KCC
-            Motor.CharacterController = this;
-            InputManager.OnMoveAxisChanged += HandleInput;
-            cameraTransform = Camera.main.transform;
+            RefreshPermissions();
         }
 
         private void HandleInput(Vector2 vector)
         {
-            _rawInput = vector;
+            float x = _currentPermissions.CanMoveHorizontal ? vector.x : 0f;
+            float y = _currentPermissions.CanMoveVertical ? vector.y : 0f;
+            _rawInput = new Vector2(x, y);
         }
 
         private void HandleMoveDirection()
@@ -93,39 +137,79 @@ namespace Player
 
         private void Update()
         {
-            if (!networkObject.IsOwner)
-                return;
+            if (!IsOwner) return;
 
-            HandleMoveDirection();
+            if (SplitControlAnomaly.IsSplitActive)
+            {
+                if (!IsServer)
+                {
+                    bool wantJump = jumpComponent != null && jumpComponent.JumpRequested;
+                    HostInstance.SendMovementInputServerRpc(_rawInput, wantJump);
+                    if (jumpComponent != null) jumpComponent.JumpRequested = false;
+                    return;
+                }
+                else 
+                {
+                    Vector2 combinedMove = _rawInput; 
+                    bool combinedJump = (jumpComponent != null && jumpComponent.JumpRequested);
+
+                    foreach (var move in _sharedMoveInputs.Values)
+                        combinedMove += move;
+
+                    combinedMove = new Vector2(Mathf.Clamp(combinedMove.x, -1f, 1f), Mathf.Clamp(combinedMove.y, -1f, 1f));
+                    if (_sharedJumpInput) combinedJump = true;
+
+                    ApplyCombinedInput(combinedMove, combinedJump);
+
+                    _sharedJumpInput = false;
+                    _sharedMoveInputs.Clear(); 
+                }
+            }
+            else
+            {
+                HandleMoveDirection();
+            }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (Input.GetKeyDown(KeyCode.G) && networkObject.IsOwner)
-            {
-                if (!isDead)
-                    GameManager.Instance.KillPlayerServerRpc(networkObject.OwnerClientId);
-                else
-                    GameManager.Instance.RevivePlayerServerRpc(networkObject.OwnerClientId);
+            //if (Input.GetKeyDown(KeyCode.G) && networkObject.IsOwner)
+            //{
+            //    if (!isDead)
+            //        GameManager.Instance.KillPlayerServerRpc(networkObject.OwnerClientId);
+            //    else
+            //        GameManager.Instance.RevivePlayerServerRpc(networkObject.OwnerClientId);
 
-                isDead = !isDead;
-            }
+            //    isDead = !isDead;
+            //}
 #endif
         }
 
         // ICharacterController implementation
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
         {
+            if (SplitControlAnomaly.IsSplitActive)
+            {
+                if (!IsServer) return;
+
+                currentRotation = Quaternion.Euler(0f, SharedCamYaw.Value, 0f);
+                return;
+            }
+
+            if (!_currentPermissions.CanRotate) return;
+
             if (_lookInputVector != Vector3.zero && OrientationSharpness > 0f)
             {
-                // Smoothly interpolate from current to target look direction
                 Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector, 1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
-
-                // Set the current rotation (which will be used by the KinematicCharacterMotor)
                 currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
             }
         }
 
         public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
         {
+            if (SplitControlAnomaly.IsSplitActive && !IsServer)
+            {
+                currentVelocity = Vector3.zero;
+                return;
+            }
             Vector3 targetMovementVelocity;
 
             if (Motor.GroundingStatus.IsStableOnGround)
@@ -197,6 +281,79 @@ namespace Player
             GameManager.Instance.UpdatePlayerVelocityServerRpc(networkObject.OwnerClientId, Motor.Velocity);
         }
 
+        // --- split control ---
+        private void OnNetworkChanged(ulong id) => RefreshPermissions();
+        private void RefreshPermissions()
+        {
+            if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening) return;
+
+            var clientIds = NetworkManager.Singleton.ConnectedClientsIds;
+
+            int myIndex = -1;
+            for (int i = 0; i < clientIds.Count; i++)
+            {
+                if (clientIds[i] == NetworkManager.Singleton.LocalClientId)
+                {
+                    myIndex = i;
+                    break;
+                }
+            }
+
+            bool isSplit = SplitControlAnomaly.IsSplitActive;
+            _currentPermissions = ControlMapper.GetPermissions(myIndex, clientIds.Count, isSplit);
+
+            if (networkObject.IsOwner)
+            {
+                if (isSplit && !IsServer)
+                {
+                    if (MeshRoot) MeshRoot.gameObject.SetActive(false);
+                    Motor.SetCapsuleCollisionsActivation(false); 
+                }
+                else
+                {
+                    if (MeshRoot) MeshRoot.gameObject.SetActive(true);
+                    Motor.SetCapsuleCollisionsActivation(true);
+                }
+            }
+        }
+        [ServerRpc(RequireOwnership = false)]
+        public void SendCameraSyncServerRpc(float pitch, float yaw)
+        {
+            if (HostInstance != null)
+            {
+                HostInstance.SharedCamPitch.Value = pitch;
+                HostInstance.SharedCamYaw.Value = yaw;
+            }
+        }
+        [ServerRpc(RequireOwnership = false)]
+        public void SendMovementInputServerRpc(Vector2 move, bool jump, ServerRpcParams rpcParams = default)
+        {
+            _sharedMoveInputs[rpcParams.Receive.SenderClientId] = move;
+            if (jump) _sharedJumpInput = true;
+        }
+        private void ApplyCombinedInput(Vector2 rawMove, bool forceJump)
+        {
+            Vector3 moveInputVector = new Vector3(rawMove.x, 0f, rawMove.y);
+            moveInputVector = Vector3.ClampMagnitude(moveInputVector, 1f);
+
+            if (cameraTransform)
+            {
+                Vector3 cameraPlanarDirection = Vector3.ProjectOnPlane(cameraTransform.forward, Motor.CharacterUp).normalized;
+
+                if (cameraPlanarDirection.sqrMagnitude == 0f)
+                    cameraPlanarDirection = Vector3.ProjectOnPlane(cameraTransform.up, Motor.CharacterUp).normalized;
+
+                Quaternion cameraPlanarRotation = Quaternion.LookRotation(cameraPlanarDirection, Motor.CharacterUp);
+                moveInputVector = cameraPlanarRotation * moveInputVector;
+                _lookInputVector = cameraPlanarDirection;
+            }
+
+            _moveInputVector = moveInputVector;
+            if (forceJump && jumpComponent != null)
+                jumpComponent.JumpRequested = true;
+        }
+
+        //-------------------------
         public void BeforeCharacterUpdate(float deltaTime) { }
 
         public void PostGroundingUpdate(float deltaTime) { }
