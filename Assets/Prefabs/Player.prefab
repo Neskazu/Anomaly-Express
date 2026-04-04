@@ -314,6 +314,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 2223953529884092654}
   head: {fileID: 1790705762068875814}
+  useHeadBob: 1
+  bobFrequency: 4
+  bobHorizontalAmplitude: 0.08
+  bobVerticalAmplitude: 0.08
+  bobSmoothing: 10
   rotationLimit: 85
   lockCursor: 1
 --- !u!114 &-1900071020872394229
