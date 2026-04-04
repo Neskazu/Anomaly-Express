@@ -19,12 +19,17 @@ namespace Managers
         [SerializeField] private List<GameObject> trainPool = new List<GameObject>();
         [SerializeField] private bool currentWagonHasAnomaly = false;
 
+        [SerializeField, Range(0f, 1f)] private float baseAnomalyChance = 0.6f;
+        [SerializeField] private float anomalyChanceIncrease = 0.05f;
+        [SerializeField] private int maxMissStreak = 5;
+
         // Offsets for wagon and vestibule positioning
         private Vector3 _wagonOffset;
         private Vector3 _wagonReversedOffset;
         private Vector3 _vestibuleOffset;
 
         private int _currentWagonIndex = 0;
+        private int _passedAnomalyWagons = 0;
         private AnomalyBase _currentAnomaly = null;
 
         private Subject<GameObject> _onNewWagon;
@@ -62,6 +67,47 @@ namespace Managers
                 SpawnAnomalyWagon(vestibuleType, position);
             }
         }
+        //public void SpawnWagon(VestibuleType vestibuleType, Vector3 position, bool isBackward)
+        //{
+        //    if (!IsServer)
+        //    {
+        //        return;
+        //    }
+
+        //    _currentWagonIndex = Random.Range(0, anomalyWagons.Length);
+
+        //    bool shouldSpawnDefault = (currentWagonHasAnomaly && !isBackward) || (!currentWagonHasAnomaly && isBackward);
+
+        //    if (shouldSpawnDefault)
+        //    {
+        //        SpawnFirstWagon(vestibuleType, position);
+        //        _passedAnomalyWagons = 0;
+        //        return;
+        //    }
+
+        //    // guaranteed
+        //    if (_passedAnomalyWagons >= maxMissStreak)
+        //    {
+        //        SpawnAnomalyWagon(vestibuleType, position);
+        //        _passedAnomalyWagons = 0;
+        //        return;
+        //    }
+
+        //    // chance
+        //    float currentChance = baseAnomalyChance + (_passedAnomalyWagons * anomalyChanceIncrease);
+        //    currentChance = Mathf.Clamp01(currentChance);
+
+        //    if (Random.value <= currentChance)
+        //    {
+        //        SpawnAnomalyWagon(vestibuleType, position);
+        //        _passedAnomalyWagons = 0;
+        //    }
+        //    else
+        //    {
+        //        SpawnFirstWagon(vestibuleType, position);
+        //        _passedAnomalyWagons++;
+        //    }
+        //}
 
         private void SpawnAnomalyWagon(VestibuleType vestibuleType, Vector3 position)
         {

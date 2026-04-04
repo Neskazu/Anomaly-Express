@@ -68,10 +68,8 @@ namespace Train
                 doorForward.ToggleLockServerRpc();
             }
 
-            // ждём полного завершения анимации закрытия (tweenDuration)
             yield return new WaitForSeconds(doorTweenDuration);
 
-            // Теперь уже безопасно спавнить/отгружать уровень
             SpawnWagonBasedOnDirection();
             isBackward = true;
         }
