@@ -18,6 +18,9 @@ namespace Player
         [SerializeField] private Behaviour[] localComponents;
         [SerializeField] private PlayerJump jumpComponent;
         [SerializeField] private float jumpForce = 10f;
+        //visual
+        [SerializeField] private GameObject[] characterPrefabs;
+         public Transform MeshRoot;
 
         public KinematicCharacterMotor Motor;
         [Header("Stable Movement")]
@@ -33,7 +36,6 @@ namespace Player
 
         [Header("Misc")] public bool RotationObstruction;
         public Vector3 Gravity = new Vector3(0, -30f, 0);
-        public Transform MeshRoot;
 
         private Vector2 _rawInput;
         private Vector3 _moveInputVector;
@@ -55,6 +57,7 @@ namespace Player
 
         public NetworkVariable<float> SharedCamPitch = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         public NetworkVariable<float> SharedCamYaw = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> CharacterId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         private Dictionary<ulong, Vector2> _sharedMoveInputs = new Dictionary<ulong, Vector2>();
         private bool _sharedJumpInput = false;
@@ -82,6 +85,11 @@ namespace Player
                 NetworkManager.Singleton.OnClientConnectedCallback -= OnNetworkChanged;
                 NetworkManager.Singleton.OnClientDisconnectCallback -= OnNetworkChanged;
             }
+        }
+        public override void OnNetworkSpawn()
+        {
+            CharacterId.OnValueChanged += OnCharacterChanged;
+            ApplyCharacter(CharacterId.Value);
         }
         private void Start()
         {
@@ -351,6 +359,24 @@ namespace Player
             _moveInputVector = moveInputVector;
             if (forceJump && jumpComponent != null)
                 jumpComponent.JumpRequested = true;
+        }
+        //visual
+        private void OnCharacterChanged(int oldId, int newId)
+        {
+            ApplyCharacter(newId);
+        }
+
+        private void ApplyCharacter(int id)
+        {
+            foreach (Transform child in MeshRoot)
+                Destroy(child.gameObject);
+
+            if (id < 0 || id >= characterPrefabs.Length)
+            {
+                Debug.LogError($"Invalid CharacterId: {id}");
+                return;
+            }
+            Instantiate(characterPrefabs[id], MeshRoot);
         }
 
         //-------------------------

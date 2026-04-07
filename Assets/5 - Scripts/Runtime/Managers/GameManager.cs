@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Mono;
 using Network;
 using Network.Players;
 using Player;
@@ -41,6 +40,8 @@ namespace Managers
                 playerControllerTransform
                     .GetComponent<NetworkObject>()
                     .SpawnAsPlayerObject(clientId, true);
+                var data = Players.Get(clientId);
+                playerControllerTransform.CharacterId.Value = data.CharacterId;
             }
         }
 
@@ -48,7 +49,6 @@ namespace Managers
         public void KillPlayerServerRpc(ulong clientId)
         {
             var data = Players.Get(clientId);
-
             data.IsDead = true;
             Players.Update(data);
         }

@@ -48,7 +48,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1270954961388152101}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -282,6 +282,12 @@ MonoBehaviour:
   - {fileID: 2338952459286243910}
   jumpComponent: {fileID: 622537546768920616}
   jumpForce: 10
+  characterPrefabs:
+  - {fileID: 7140913627159581200, guid: 1a4e0c40f9e64b942bd1a595960a4840, type: 3}
+  - {fileID: 7817320328328299375, guid: 9387aa5c75ecab44caf061bd475aa32b, type: 3}
+  - {fileID: 3413155492773807224, guid: 328ff3400a96eeb4787debc58710e374, type: 3}
+  - {fileID: 4821471596866993561, guid: b46b95fc73454494b973a718587844a0, type: 3}
+  MeshRoot: {fileID: 3221174744902066890}
   Motor: {fileID: 4930454702381990741}
   MaxStableMoveSpeed: 3.5
   StableMovementSharpness: 15
@@ -292,13 +298,14 @@ MonoBehaviour:
   AirScalableForwardSpeed: 10
   RotationObstruction: 0
   Gravity: {x: 0, y: -30, z: 0}
-  MeshRoot: {fileID: 0}
   PunchVelocity: {x: 0, y: 0, z: 0}
   cameraTransform: {fileID: 0}
   HeadTransform: {fileID: 1790705762068875814}
   SharedCamPitch:
     m_InternalValue: 0
   SharedCamYaw:
+    m_InternalValue: 0
+  CharacterId:
     m_InternalValue: 0
 --- !u!114 &-3165505915988723258
 MonoBehaviour:
@@ -490,7 +497,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -3176697092649291267, guid: 49c3e72c071e9fb42b04677c971119eb, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 7067f13324d86894da65b78e2df9f997, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 7067f13324d86894da65b78e2df9f997, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.15

@@ -8,6 +8,7 @@ namespace Network
     public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable
     {
         public ulong ClientId;
+        public int CharacterId;
         public FixedString64Bytes PlayerName;
 
         public bool IsReady;
@@ -24,6 +25,7 @@ namespace Network
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref ClientId);
+            serializer.SerializeValue(ref CharacterId);
             serializer.SerializeValue(ref PlayerName);
             serializer.SerializeValue(ref IsReady);
             serializer.SerializeValue(ref IsDead);
