@@ -1339,6 +1339,7 @@ GameObject:
   - component: {fileID: 5227901527876187226}
   - component: {fileID: 2728095714574705440}
   - component: {fileID: 987443658107028942}
+  - component: {fileID: 1734528564991288500}
   m_Layer: 0
   m_Name: Wagon Connect
   m_TagString: Untagged
@@ -1409,6 +1410,27 @@ MonoBehaviour:
   doorForward: {fileID: 7071218878637135925}
   clientsInVestibule: 
   doorTweenDuration: 0.5
+--- !u!65 &1734528564991288500
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3114211637938451385}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.2, y: 3.5, z: 6.5}
+  m_Center: {x: 0, y: 3, z: -3.45}
 --- !u!1 &3118653764119726011
 GameObject:
   m_ObjectHideFlags: 0
@@ -1851,7 +1873,7 @@ Transform:
   m_GameObject: {fileID: 4148552062612233903}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3394,7 +3416,7 @@ Transform:
   m_GameObject: {fileID: 8196253556886346641}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -6.975}
+  m_LocalPosition: {x: 0, y: 1.3, z: -6.975}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
