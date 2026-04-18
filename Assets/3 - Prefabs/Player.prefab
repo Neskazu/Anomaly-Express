@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1270954961388152101}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.68, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -286,9 +286,9 @@ MonoBehaviour:
   jumpForce: 10
   characterPrefabs:
   - {fileID: 7140913627159581200, guid: 1a4e0c40f9e64b942bd1a595960a4840, type: 3}
-  - {fileID: 7817320328328299375, guid: 9387aa5c75ecab44caf061bd475aa32b, type: 3}
-  - {fileID: 3413155492773807224, guid: 328ff3400a96eeb4787debc58710e374, type: 3}
-  - {fileID: 4821471596866993561, guid: b46b95fc73454494b973a718587844a0, type: 3}
+  - {fileID: 7882089421815437136, guid: 9387aa5c75ecab44caf061bd475aa32b, type: 3}
+  - {fileID: 6585557110533127784, guid: 328ff3400a96eeb4787debc58710e374, type: 3}
+  - {fileID: 9212417457940923746, guid: b46b95fc73454494b973a718587844a0, type: 3}
   MeshRoot: {fileID: 3221174744902066890}
   Motor: {fileID: 4930454702381990741}
   MaxStableMoveSpeed: 3.5
