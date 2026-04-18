@@ -12,19 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb66dc641fe8ef4c843eb98a8fa4058, type: 3}
   m_Name: FullScreenFog
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   mode:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 0.65
+    m_Value: 1
   color:
     m_OverrideState: 1
-    m_Value: {r: 0.33962262, g: 0.33962262, b: 0.33962262, a: 1}
+    m_Value: {r: 0.53889287, g: 0.6603774, b: 0.65730184, a: 1}
   densityMode:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
   startLine:
     m_OverrideState: 1
     m_Value: 20
