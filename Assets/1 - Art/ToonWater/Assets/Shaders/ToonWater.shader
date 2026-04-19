@@ -155,6 +155,7 @@
 				(i.noiseUV.y + _Time.y * _SurfaceNoiseScroll.y) + distortSample.y);
 				float surfaceNoiseSample = tex2D(_SurfaceNoise, noiseUV).r;
 
+
 				// Use smoothstep to ensure we get some anti-aliasing in the transition from foam to surface.
 				// Uncomment the line below to see how it looks without AA.
 				// float surfaceNoise = surfaceNoiseSample > surfaceNoiseCutoff ? 1 : 0;
