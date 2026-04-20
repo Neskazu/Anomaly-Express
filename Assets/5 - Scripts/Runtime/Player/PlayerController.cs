@@ -191,22 +191,43 @@ namespace Player
         }
 
         // ICharacterController implementation
+        [Header("Rotation Limits")]
+        public float MaxLookAngle = 70f; // Угол, после которого тело начнет поворачиваться за головой
+
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
         {
             if (SplitControlAnomaly.IsSplitActive)
             {
                 if (!IsServer) return;
-
                 currentRotation = Quaternion.Euler(0f, SharedCamYaw.Value, 0f);
                 return;
             }
 
             if (!_currentPermissions.CanRotate) return;
 
-            if (_lookInputVector != Vector3.zero && OrientationSharpness > 0f)
+            // Куда смотрит камера
+            Vector3 cameraDir = _lookInputVector;
+            // Куда мы жмем кнопки движения
+            Vector3 moveDir = _moveInputVector;
+
+            if (moveDir.sqrMagnitude > 0.01f)
             {
-                Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector, 1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
+                // Если идем — тело плавно разворачивается по направлению движения
+                Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, moveDir, 1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
                 currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
+            }
+            else
+            {
+                // Если стоим на месте — считаем угол между грудью и камерой
+                float angleBetween = Vector3.SignedAngle(Motor.CharacterForward, cameraDir, Motor.CharacterUp);
+
+                // Если угол больше 70 градусов (MaxLookAngle), начинаем докручивать тело
+                if (Mathf.Abs(angleBetween) > MaxLookAngle)
+                {
+                    Quaternion targetRot = Quaternion.LookRotation(cameraDir, Motor.CharacterUp);
+                    // Поворачиваем только ту часть, которая выходит за предел
+                    currentRotation = Quaternion.Slerp(currentRotation, targetRot, 1 - Mathf.Exp(-OrientationSharpness * deltaTime));
+                }
             }
         }
 
@@ -370,12 +391,16 @@ namespace Player
             foreach (Transform child in MeshRoot)
                 Destroy(child.gameObject);
 
-            if (id < 0 || id >= characterPrefabs.Length)
+            if (id < 0 || id >= characterPrefabs.Length) return;
+
+            GameObject newCharacter = Instantiate(characterPrefabs[id], MeshRoot);
+
+            // Сообщаем аниматору, что меш обновился
+            var playerAnimator = GetComponent<PlayerAnimator>();
+            if (playerAnimator != null)
             {
-                Debug.LogError($"Invalid CharacterId: {id}");
-                return;
+                playerAnimator.SetupNewCharacter(newCharacter);
             }
-            Instantiate(characterPrefabs[id], MeshRoot);
         }
 
         //-------------------------

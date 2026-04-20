@@ -309,6 +309,7 @@ MonoBehaviour:
     m_InternalValue: 0
   CharacterId:
     m_InternalValue: 0
+  MaxLookAngle: 70
 --- !u!114 &-3165505915988723258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -471,7 +472,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
   motor: {fileID: 4930454702381990741}
-  Human: {fileID: 1270954961388152101}
+  controller: {fileID: 6867427706136141896}
 --- !u!1 &4041265792143674144
 GameObject:
   m_ObjectHideFlags: 0

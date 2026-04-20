@@ -112,7 +112,11 @@ namespace Player.Components
         // ... остальной код (HandleRotation, ApplyLocalRotation и т.д.) без изменений
         private void HandleRotation()
         {
-            if (SplitControlAnomaly.IsSplitActive && PlayerController.HostInstance != null && PlayerController.LocalInstance != null)
+            bool isSplit = SplitControlAnomaly.IsSplitActive &&
+                           PlayerController.HostInstance != null &&
+                           PlayerController.LocalInstance != null;
+
+            if (isSplit)
             {
                 if (PlayerController.LocalInstance.CurrentPermissions.CanRotate)
                 {
@@ -129,6 +133,10 @@ namespace Player.Components
             else
             {
                 ApplyLocalRotation();
+                if (PlayerController.LocalInstance != null && PlayerController.LocalInstance.IsOwner)
+                {
+                    PlayerController.LocalInstance.SendCameraSyncServerRpc(verticalRotation, horizontalRotation);
+                }
             }
         }
 
