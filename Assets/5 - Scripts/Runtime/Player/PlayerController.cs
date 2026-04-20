@@ -395,7 +395,6 @@ namespace Player
 
             GameObject newCharacter = Instantiate(characterPrefabs[id], MeshRoot);
 
-            // Сообщаем аниматору, что меш обновился
             var playerAnimator = GetComponent<PlayerAnimator>();
             if (playerAnimator != null)
             {

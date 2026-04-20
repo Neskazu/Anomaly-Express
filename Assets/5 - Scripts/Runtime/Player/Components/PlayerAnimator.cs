@@ -39,7 +39,6 @@ public class PlayerAnimator : MonoBehaviour
         float yaw = controller.SharedCamYaw.Value;
         float pitch = controller.SharedCamPitch.Value;
 
-        // Берем актуальный поворот тела из KCC
         float bodyYaw = controller.Motor.TransientRotation.eulerAngles.y;
 
         float relativeYaw = Mathf.DeltaAngle(bodyYaw, yaw);
