@@ -6,46 +6,69 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private KinematicCharacterMotor motor;
     [SerializeField] private Player.PlayerController controller;
-    private Quaternion _smoothedHeadRot;
-    [SerializeField] private float smoothSpeed = 15f;
 
+    [Header("Head Settings")]
+    [SerializeField] private float headSmoothSpeed = 15f;
+    private Quaternion _smoothedHeadRot;
     private Transform headBone;
+
+    [Header("Turn Settings")]
+    [SerializeField] private float turnSmoothTime = 0.4f;
+    [SerializeField] private float turnDeadzone = 0.1f; 
+
+    private float _lastRotationY;
+    private float _currentTurnValue;
+    private float _turnVelocityRef;
+
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
+    private static readonly int TurnSpeedHash = Animator.StringToHash("TurnSpeed");
 
     public void SetupNewCharacter(GameObject characterObj)
     {
         animator = characterObj.GetComponent<Animator>();
-
         if (animator != null && animator.isHuman)
-        {
             headBone = animator.GetBoneTransform(HumanBodyBones.Head);
-        }
         else
-        {
             headBone = characterObj.transform.FindRecursive("Head");
-        }
+
+        _lastRotationY = motor.TransientRotation.eulerAngles.y;
     }
 
     private void Update()
     {
         if (animator == null) return;
+
+        // 1. Линейная скорость
         float speed = motor.BaseVelocity.magnitude;
         animator.SetFloat(SpeedHash, speed);
+
+        // 2. Расчет поворота
+        float currentRotationY = motor.TransientRotation.eulerAngles.y;
+        float deltaRotation = Mathf.DeltaAngle(_lastRotationY, currentRotationY);
+        _lastRotationY = currentRotationY;
+        float targetTurnValue = (deltaRotation / Time.deltaTime) / 100f;
+        if (Mathf.Abs(targetTurnValue) < turnDeadzone)
+            targetTurnValue = 0;
+
+        _currentTurnValue = Mathf.SmoothDamp(_currentTurnValue, targetTurnValue, ref _turnVelocityRef, turnSmoothTime);
+
+        animator.SetFloat(TurnSpeedHash, _currentTurnValue);
     }
 
     private void LateUpdate()
     {
         if (headBone == null || controller == null) return;
+
         float yaw = controller.SharedCamYaw.Value;
         float pitch = controller.SharedCamPitch.Value;
-
-        float bodyYaw = controller.Motor.TransientRotation.eulerAngles.y;
+        float bodyYaw = motor.TransientRotation.eulerAngles.y;
 
         float relativeYaw = Mathf.DeltaAngle(bodyYaw, yaw);
         relativeYaw = Mathf.Clamp(relativeYaw, -80f, 80f);
         float clampedPitch = Mathf.Clamp(pitch, -50f, 50f);
+
         Quaternion targetHeadRot = Quaternion.Euler(clampedPitch, relativeYaw, 0);
-        _smoothedHeadRot = Quaternion.Slerp(_smoothedHeadRot, targetHeadRot, Time.deltaTime * smoothSpeed);
+        _smoothedHeadRot = Quaternion.Slerp(_smoothedHeadRot, targetHeadRot, Time.deltaTime * headSmoothSpeed);
         headBone.localRotation = _smoothedHeadRot;
     }
 }

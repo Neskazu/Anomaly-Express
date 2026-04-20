@@ -11,7 +11,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 6384897608093813230}
-    m_Position: {x: 330, y: 160, z: 0}
+    m_Position: {x: 330, y: 180, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -65,6 +65,12 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: TurnSpeed
+    m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -78,6 +84,21 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!206 &1805878736772412795
+BlendTree:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: BlendTree
+  m_Childs: []
+  m_BlendParameter: Speed
+  m_BlendParameterY: Blend
+  m_MinThreshold: 0
+  m_MaxThreshold: 1
+  m_UseAutomaticThresholds: 1
+  m_NormalizedBlendValues: 0
+  m_BlendType: 0
 --- !u!206 &5070318866383626619
 BlendTree:
   m_ObjectHideFlags: 1
@@ -95,20 +116,36 @@ BlendTree:
     m_DirectBlendParameter: Blend
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 477fa7ac5c496894a91119f68fb7689f, type: 3}
+    m_Motion: {fileID: -203655887218126122, guid: c89d3e71c028c064cb6502abbc31267e, type: 3}
     m_Threshold: 0.1
-    m_Position: {x: 0, y: 0}
+    m_Position: {x: -1, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
-  m_BlendParameter: Speed
-  m_BlendParameterY: AnimationSpeed
+  - serializedVersion: 2
+    m_Motion: {fileID: -203655887218126122, guid: c89d3e71c028c064cb6502abbc31267e, type: 3}
+    m_Threshold: 0.2
+    m_Position: {x: 1, y: 0}
+    m_TimeScale: -1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: Speed
+    m_Mirror: 0
+  - serializedVersion: 2
+    m_Motion: {fileID: -203655887218126122, guid: 477fa7ac5c496894a91119f68fb7689f, type: 3}
+    m_Threshold: 0.3
+    m_Position: {x: 0, y: 1}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: Speed
+    m_Mirror: 0
+  m_BlendParameter: TurnSpeed
+  m_BlendParameterY: Speed
   m_MinThreshold: 0
-  m_MaxThreshold: 0.1
+  m_MaxThreshold: 0.3
   m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
-  m_BlendType: 0
+  m_BlendType: 2
 --- !u!1102 &6384897608093813230
 AnimatorState:
   serializedVersion: 6
