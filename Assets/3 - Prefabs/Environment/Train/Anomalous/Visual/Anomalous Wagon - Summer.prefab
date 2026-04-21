@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &5077669899528884813
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2940648517896095164, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2940648517896095164, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2940648517896095164, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2940648517896095164, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2940648517896095164, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2940648517896095164, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2940648517896095164, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2940648517896095164, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2940648517896095164, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2940648517896095164, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3738889829015060473, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2653057164
+      objectReference: {fileID: 0}
+    - target: {fileID: 7257888559175609416, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      propertyPath: m_Name
+      value: Anomalous Wagon - Summer
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7257888559175609416, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5089418111725652315}
+  m_SourcePrefab: {fileID: 100100000, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+--- !u!1 &2508138778654440965 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7257888559175609416, guid: 16a6f843f8e762448aee74a8f177da55, type: 3}
+  m_PrefabInstance: {fileID: 5077669899528884813}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-5089418111725652315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2508138778654440965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e26cb24a569e47f46a2f8343b40d0e43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  summerSkybox: {fileID: 2100000, guid: 97fca95f33987e548be9dd7c03cb1a96, type: 2}
+  summerLightColor: {r: 1, g: 0.95, b: 0.8, a: 1}
+  summerNearPrefab: {fileID: 6888068058327950234, guid: 523e9fed77329304bb83a9d7b9710f34, type: 3}
+  summerFarPrefab: {fileID: 3522140315718782464, guid: b452f245473efa94bae8b10fa9c28e04, type: 3}

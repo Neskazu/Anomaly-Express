@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.34638664, g: 0.51610076, b: 0.5283019, a: 1}
   m_FogMode: 1
   m_FogDensity: 0.001
@@ -201,7 +201,7 @@ GameObject:
   - component: {fileID: 80574891}
   m_Layer: 0
   m_Name: Near
-  m_TagString: Untagged
+  m_TagString: Parallax
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -237,6 +237,7 @@ MonoBehaviour:
   chunkSize: {x: 1, y: 1, z: 200}
   size: 600
   time: 5
+  isFarPlane: 0
 --- !u!1 &232593037
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,7 +250,7 @@ GameObject:
   - component: {fileID: 232593039}
   m_Layer: 0
   m_Name: Medium
-  m_TagString: Untagged
+  m_TagString: Parallax
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -285,6 +286,7 @@ MonoBehaviour:
   chunkSize: {x: 1, y: 1, z: 200}
   size: 800
   time: 10
+  isFarPlane: 1
 --- !u!1 &302460289
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,7 +386,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 119
+    m_Bits: 887
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -780,6 +782,7 @@ GameObject:
   m_Component:
   - component: {fileID: 957361790}
   - component: {fileID: 957361791}
+  - component: {fileID: 957361792}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -817,6 +820,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 957361790}
+--- !u!114 &957361792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957361789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b9710df3aa110a4b976b7e343484e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grassMaterial: {fileID: 2100000, guid: 851879c6d723afb4a8aaa2242cee777c, type: 2}
+  spacing: 0.1
+  drawDistance: 300
+  subdivisionDistance: 100
+  fullDensityDistance: 30
+  densityFalloffExponent: 4
+  subdivisionHeightBoost: 0
+  subdivisionBumpWidth: 20
+  grassMeshSubdivision: 5
+  textureUpdateThreshold: 10
+  maxBufferCount: 2
+  previewVisibleGrassCount: 0
+  cameraBounds:
+    m_Center: {x: 0, y: 0, z: 150.15}
+    m_Extent: {x: 308.42014, y: 173.70508, z: 150.35}
 --- !u!1 &1043731621
 GameObject:
   m_ObjectHideFlags: 0
@@ -1111,7 +1141,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   defaultWagon: {fileID: 4557961453584437428, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
   anomalyWagons:
-  - {fileID: 3166030622210542700, guid: 54d9eb389f303184fadc02eb44c361ba, type: 3}
+  - {fileID: 2508138778654440965, guid: afcb009d68f9efb459d8a77d5b837b69, type: 3}
   vestibulePrefab: {fileID: 3114211637938451385, guid: cc55bf7280daa9047ba01a8cb5490d49, type: 3}
   trainPool:
   - {fileID: 1334426369}
@@ -1148,7 +1178,7 @@ GameObject:
   - component: {fileID: 1585516541}
   m_Layer: 0
   m_Name: Medium
-  m_TagString: Untagged
+  m_TagString: Parallax
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1184,6 +1214,7 @@ MonoBehaviour:
   chunkSize: {x: 1, y: 1, z: 200}
   size: 800
   time: 10
+  isFarPlane: 1
 --- !u!1 &1657292243
 GameObject:
   m_ObjectHideFlags: 0
@@ -1359,7 +1390,7 @@ GameObject:
   - component: {fileID: 1867510104}
   m_Layer: 0
   m_Name: Directional Light
-  m_TagString: Untagged
+  m_TagString: MainLight
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1549,7 +1580,7 @@ GameObject:
   - component: {fileID: 2107680209}
   m_Layer: 0
   m_Name: Near
-  m_TagString: Untagged
+  m_TagString: Parallax
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1585,6 +1616,7 @@ MonoBehaviour:
   chunkSize: {x: 1, y: 1, z: 200}
   size: 600
   time: 5
+  isFarPlane: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

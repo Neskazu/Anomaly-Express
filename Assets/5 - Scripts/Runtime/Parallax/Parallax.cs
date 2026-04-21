@@ -10,9 +10,15 @@ namespace Parallax
         [SerializeField] private GameObject chunkPrefab;
         [SerializeField] private Vector3 chunkSize;
 
+        private Sequence _moveSequence;
+        private GameObject _originalPrefab;
+
         [Header("Settings")]
         [SerializeField] private float size;
         [SerializeField] private float time;
+        [SerializeField] private Vector3 prefabRotationOffset;
+        [SerializeField] private float chunkSizeZ = 200f;
+        public bool isFarPlane;
 
         private Transform[] _chunks;
 
@@ -39,21 +45,48 @@ namespace Parallax
                 _chunks[i] = Instantiate(chunkPrefab, position, rotation, transform).transform;
             }
         }
-
         private void Move()
         {
-            Sequence sequence = DOTween.Sequence();
-
+            _moveSequence = DOTween.Sequence();
             foreach (Transform chunk in _chunks)
             {
-                sequence.Join(
-                    chunk
-                        .DOLocalMove(chunk.localPosition + Vector3.forward * chunkSize.z, time)
+                _moveSequence.Join(
+                    chunk.DOLocalMove(chunk.localPosition + Vector3.forward * chunkSize.z, time)
                         .SetEase(Ease.Linear)
                 );
             }
+            _moveSequence.SetLoops(-1);
+        }
+        public void RefreshPrefab(GameObject newPrefab)
+        {
+            if (_originalPrefab == null) _originalPrefab = chunkPrefab;
 
-            sequence.SetLoops(-1);
+            chunkPrefab = newPrefab;
+            Rebuild();
+        }
+
+        public void RestoreOriginal()
+        {
+            if (_originalPrefab != null)
+            {
+                chunkPrefab = _originalPrefab;
+                Rebuild();
+            }
+        }
+
+        private void Rebuild()
+        {
+            _moveSequence?.Kill();
+
+            if (_chunks != null)
+            {
+                foreach (var chunk in _chunks)
+                {
+                    if (chunk != null) Destroy(chunk.gameObject);
+                }
+            }
+            Spawn();
+            Move();
         }
 
         private void OnDrawGizmosSelected()
