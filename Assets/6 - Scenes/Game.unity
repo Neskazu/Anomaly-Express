@@ -237,6 +237,8 @@ MonoBehaviour:
   chunkSize: {x: 1, y: 1, z: 200}
   size: 600
   time: 5
+  prefabRotationOffset: {x: 0, y: 0, z: 0}
+  chunkSizeZ: 200
   isFarPlane: 0
 --- !u!1 &232593037
 GameObject:
@@ -286,6 +288,8 @@ MonoBehaviour:
   chunkSize: {x: 1, y: 1, z: 200}
   size: 800
   time: 10
+  prefabRotationOffset: {x: 0, y: 0, z: 0}
+  chunkSizeZ: 200
   isFarPlane: 1
 --- !u!1 &302460289
 GameObject:
@@ -845,8 +849,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: 0, y: 0, z: 150.15}
-    m_Extent: {x: 308.42014, y: 173.70508, z: 150.35}
+    m_Center: {x: -186.35323, y: -28.49723, z: -131.67242}
+    m_Extent: {x: 212.81987, y: 172.66064, z: 289.2607}
 --- !u!1 &1043731621
 GameObject:
   m_ObjectHideFlags: 0
@@ -1141,7 +1145,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   defaultWagon: {fileID: 4557961453584437428, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
   anomalyWagons:
-  - {fileID: 2508138778654440965, guid: afcb009d68f9efb459d8a77d5b837b69, type: 3}
+  - {fileID: 4873716067174661901, guid: 10b5bdf82ce37ad41bbd91a4ad3aca47, type: 3}
   vestibulePrefab: {fileID: 3114211637938451385, guid: cc55bf7280daa9047ba01a8cb5490d49, type: 3}
   trainPool:
   - {fileID: 1334426369}
@@ -1214,6 +1218,8 @@ MonoBehaviour:
   chunkSize: {x: 1, y: 1, z: 200}
   size: 800
   time: 10
+  prefabRotationOffset: {x: 0, y: 0, z: 0}
+  chunkSizeZ: 200
   isFarPlane: 1
 --- !u!1 &1657292243
 GameObject:
@@ -1616,6 +1622,8 @@ MonoBehaviour:
   chunkSize: {x: 1, y: 1, z: 200}
   size: 600
   time: 5
+  prefabRotationOffset: {x: 0, y: 0, z: 0}
+  chunkSizeZ: 200
   isFarPlane: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -97,6 +97,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -5694092435888646316, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5694092435888646316, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
       propertyPath: m_AABB.m_Center.x
       value: 0.00000017881393
       objectReference: {fileID: 0}
@@ -119,6 +123,10 @@ PrefabInstance:
     - target: {fileID: -5694092435888646316, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.11878745
+      objectReference: {fileID: 0}
+    - target: {fileID: -4327321129474003597, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -1728013695380148634, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
       propertyPath: m_Name
@@ -179,6 +187,10 @@ PrefabInstance:
     - target: {fileID: 2953604236389334553, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.17406878
+      objectReference: {fileID: 0}
+    - target: {fileID: 3006928552751935236, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4870552773557632513, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
       propertyPath: m_Controller
@@ -251,6 +263,10 @@ PrefabInstance:
     - target: {fileID: 7140606858727328969, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.073745616
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146093304296209568, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7843940381619062395, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
       propertyPath: m_DirtyAABB

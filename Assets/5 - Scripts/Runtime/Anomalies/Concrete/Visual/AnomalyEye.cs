@@ -8,55 +8,113 @@ namespace Anomalies.Concrete.Visual
 {
     public class AnomalyEye : AnomalyBase
     {
-        [Header("References")]
-        [SerializeField] private Transform eyeHolderTransform;
-        [SerializeField] private Transform eyeTransform;
+        [Header("Hierarchy References")]
+        [SerializeField] private Transform driftPivot;
+        [SerializeField] private Transform shakePivot;
+        [SerializeField] private Transform eyeVisual;
 
         [Header("Floating Settings")]
-        [SerializeField] private Vector3 floatingOffset = Vector3.up * 3;
-        [SerializeField] private float floatingDuration = 5.0f;
+        [SerializeField] private float driftRadius = 33f;
+        [SerializeField] private float minDriftDuration = 0.15f;
+        [SerializeField] private float maxDriftDuration = 2f;
+        [SerializeField] private float jitterStrength = 0.5f;
+        [SerializeField] private float minDriftPause = 0.5f;
+        [SerializeField] private float maxDriftPause = 1.5f;
 
-        [Header("Focus Settings")]
-        [SerializeField] private float interval;
-        [SerializeField] private float angle = 20.0f;
-        [SerializeField] private float duration = .5f;
+        [Header("Rotation Settings")]
+        [SerializeField] private float maxLookAngle = 40.0f;
+        [SerializeField] private float minRotationDuration = 0.2f;
+        [SerializeField] private float maxRotationDuration = 0.6f;
 
-        private DG.Tweening.Tween _floatingTween;
-        private DG.Tweening.Tween _rotatingTween;
-        private IDisposable _subscription;
+        [Header("Logic")]
+        [Range(0, 1)][SerializeField] private float spinChance = 0.15f;
+        [SerializeField] private float minInterval = 0.5f;
+        [SerializeField] private float maxInterval = 2.5f;
+
+        private DG.Tweening.Sequence _moveSeq;
+        private DG.Tweening.Sequence _rotSeq;
+        private DG.Tweening.Tween _jitterTween;
+        private IDisposable _logicSub;
+        private Vector3 _initialPos;
 
         protected override void OnActivate()
         {
-            if (interval < duration)
-                interval = duration;
+            // Теперь берем позицию driftPivot, так как двигаем его
+            _initialPos = driftPivot.localPosition;
 
-            _subscription = Observable
-                .Interval(TimeSpan.FromSeconds(interval))
-                .Subscribe(Rotate)
+            // Дрожь работает на своем слое (shakePivot) и не мешает полету
+            _jitterTween = shakePivot.DOShakePosition(1f, jitterStrength, 15)
+                .SetLoops(-1, LoopType.Yoyo) // FullStep лучше для бесконечного шейка
+                .SetEase(Ease.Linear);
+
+            StartHugeDrift();
+            ScheduleNextAction();
+        }
+
+        private void StartHugeDrift()
+        {
+            _moveSeq?.Kill();
+            _moveSeq = DOTween.Sequence();
+            Vector3 targetPos = _initialPos + Random.insideUnitSphere * driftRadius;
+            float duration = Random.Range(minDriftDuration, maxDriftDuration);
+            float pause = Random.Range(minDriftPause, maxDriftPause);
+            var easeType = duration < 0.4f ? Ease.OutExpo : Ease.InOutQuad;
+            _moveSeq.Append(driftPivot.DOLocalMove(targetPos, duration)
+                .SetEase(easeType));
+            _moveSeq.AppendInterval(pause);
+
+            // Зацикливаем
+            _moveSeq.OnComplete(StartHugeDrift);
+        }
+
+        private void ScheduleNextAction()
+        {
+            _logicSub = Observable
+                .Timer(TimeSpan.FromSeconds(Random.Range(minInterval, maxInterval)))
+                .Subscribe(_ =>
+                {
+                    PerformAction();
+                    ScheduleNextAction();
+                })
                 .AddTo(this);
+        }
 
-            _floatingTween = eyeTransform.DOMove(eyeHolderTransform.position + floatingOffset, floatingDuration)
-                .SetLoops(-1, LoopType.Yoyo)
-                .SetEase(Ease.InOutSine);
+        private void PerformAction()
+        {
+            _rotSeq?.Kill();
+            _rotSeq = DOTween.Sequence();
+
+            bool isSpinning = Random.value < spinChance;
+            float duration = Random.Range(minRotationDuration, maxRotationDuration);
+
+            if (isSpinning)
+            {
+                float spin = (Random.value > 0.5f ? 720f : 1080f) * (Random.value > 0.5f ? 1 : -1);
+
+                _rotSeq.Append(eyeVisual.DOLocalRotate(new Vector3(0, 0, spin), duration * 3f, RotateMode.LocalAxisAdd)
+                    .SetEase(Ease.OutBack, 1.5f));
+            }
+            else
+            {
+                Vector3 targetRot = new Vector3(
+                    Random.Range(-maxLookAngle, maxLookAngle),
+                    Random.Range(-maxLookAngle, maxLookAngle),
+                    0
+                );
+
+                // Вращаем саму модель глаза
+                _rotSeq.Append(eyeVisual.DOLocalRotate(targetRot, duration)
+                    .SetEase(Ease.OutExpo));
+
+            }
         }
 
         protected override void OnDeactivate()
         {
-            _floatingTween?.Kill();
-            _rotatingTween?.Kill();
-            _subscription?.Dispose();
-        }
-
-        private void Rotate(Unit _)
-        {
-            Vector3 randomRotation = new(
-                Random.Range(-angle, angle),
-                Random.Range(-angle, angle),
-                Random.Range(-angle, angle)
-            );
-
-            _rotatingTween = eyeTransform.DOLocalRotate(randomRotation, duration)
-                .SetEase(Ease.InOutSine);
+            _moveSeq?.Kill();
+            _rotSeq?.Kill();
+            _jitterTween?.Kill();
+            _logicSub?.Dispose();
         }
     }
 }

@@ -1,3 +1,5 @@
+using DG;
+using DG.Tweening;
 using Managers;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,8 +9,12 @@ namespace Player.Components
     public class PlayerJump : MonoBehaviour
     {
         [SerializeField] private NetworkObject networkObject;
-        public bool IsJumpEnabled { get; private set; } = false;
-        public bool JumpRequested { get; set; } 
+        [SerializeField] private PlayerAnimator playerAnimator;
+        [SerializeField]
+        public bool IsJumpEnabled;
+        public bool JumpRequested { get; set; }
+        [SerializeField]
+        private float jumpDelay = 0.1f;
 
         private void Start()
         {
@@ -25,7 +31,18 @@ namespace Player.Components
                 if (!controller.CurrentPermissions.CanJump) return;
             }
 
-            JumpRequested = true;
+            if (IsJumpEnabled)
+            {
+                playerAnimator?.TriggerJump();
+
+                DOVirtual.DelayedCall(jumpDelay, () =>
+                {
+                    if (this != null)
+                    {
+                        JumpRequested = true;
+                    }
+                }).SetTarget(this);
+            }
         }
 
         public void SetJumpEnabled(bool value)

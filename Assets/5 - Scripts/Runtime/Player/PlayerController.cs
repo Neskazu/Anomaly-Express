@@ -6,6 +6,7 @@ using Player.Input;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Player
 {
@@ -394,11 +395,24 @@ namespace Player
             if (id < 0 || id >= characterPrefabs.Length) return;
 
             GameObject newCharacter = Instantiate(characterPrefabs[id], MeshRoot);
+            if (IsOwner)
+            {
+                SetShadowsOnly(newCharacter);
+            }
 
             var playerAnimator = GetComponent<PlayerAnimator>();
             if (playerAnimator != null)
             {
                 playerAnimator.SetupNewCharacter(newCharacter);
+            }
+        }
+
+        private void SetShadowsOnly(GameObject target)
+        {
+            var renderers = target.GetComponentsInChildren<Renderer>();
+            foreach (var r in renderers)
+            {
+                r.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
             }
         }
 

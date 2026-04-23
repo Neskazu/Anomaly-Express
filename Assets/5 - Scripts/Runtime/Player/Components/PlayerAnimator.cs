@@ -22,6 +22,8 @@ public class PlayerAnimator : MonoBehaviour
 
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int TurnSpeedHash = Animator.StringToHash("TurnSpeed");
+    private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
+    private static readonly int JumpHash = Animator.StringToHash("Jump");
 
     public void SetupNewCharacter(GameObject characterObj)
     {
@@ -38,11 +40,9 @@ public class PlayerAnimator : MonoBehaviour
     {
         if (animator == null) return;
 
-        // 1. Линейная скорость
         float speed = motor.BaseVelocity.magnitude;
         animator.SetFloat(SpeedHash, speed);
 
-        // 2. Расчет поворота
         float currentRotationY = motor.TransientRotation.eulerAngles.y;
         float deltaRotation = Mathf.DeltaAngle(_lastRotationY, currentRotationY);
         _lastRotationY = currentRotationY;
@@ -51,8 +51,10 @@ public class PlayerAnimator : MonoBehaviour
             targetTurnValue = 0;
 
         _currentTurnValue = Mathf.SmoothDamp(_currentTurnValue, targetTurnValue, ref _turnVelocityRef, turnSmoothTime);
-
+        
+        bool isGrounded = motor.GroundingStatus.IsStableOnGround;
         animator.SetFloat(TurnSpeedHash, _currentTurnValue);
+        animator.SetBool(IsGroundedHash, isGrounded);
     }
 
     private void LateUpdate()
@@ -70,6 +72,13 @@ public class PlayerAnimator : MonoBehaviour
         Quaternion targetHeadRot = Quaternion.Euler(clampedPitch, relativeYaw, 0);
         _smoothedHeadRot = Quaternion.Slerp(_smoothedHeadRot, targetHeadRot, Time.deltaTime * headSmoothSpeed);
         headBone.localRotation = _smoothedHeadRot;
+    }
+    public void TriggerJump()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger(JumpHash);
+        }
     }
 }
 public static class TransformExtensions

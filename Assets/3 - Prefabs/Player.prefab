@@ -458,6 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkObject: {fileID: 8626299152645079788}
+  playerAnimator: {fileID: -1045929615171509631}
 --- !u!114 &-1045929615171509631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,6 +474,9 @@ MonoBehaviour:
   animator: {fileID: 0}
   motor: {fileID: 4930454702381990741}
   controller: {fileID: 6867427706136141896}
+  headSmoothSpeed: 15
+  turnSmoothTime: 0.4
+  turnDeadzone: 0.1
 --- !u!1 &4041265792143674144
 GameObject:
   m_ObjectHideFlags: 0
