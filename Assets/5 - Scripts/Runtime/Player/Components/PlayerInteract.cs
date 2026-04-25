@@ -1,12 +1,15 @@
-using UnityEngine;
+using DG.Tweening;
 using Managers;
 using Unity.Netcode;
+using UnityEngine;
 public class PlayerInteract : MonoBehaviour
 {
     [Tooltip("Max interaction range")]
     [SerializeField] private float range = 2f;
     [Tooltip("Layer with all interactables")]
     [SerializeField] private LayerMask interactableLayerMask;
+    [SerializeField] private PlayerAnimator playerAnimator;
+    [SerializeField] private float interactDelay = 0.15f;
     private InputManager Input
             => InputManager.Singleton;
     private RaycastHit hit;
@@ -22,7 +25,17 @@ public class PlayerInteract : MonoBehaviour
             return;
 
         var target = hit.collider.GetComponent<IInteractable>();
-        target.Interact(gameObject);
+        if (target == null) return;
+
+        playerAnimator?.TriggerInteract();
+
+        DOVirtual.DelayedCall(interactDelay, () =>
+        {
+            if (this != null && target != null)
+            {
+                target.Interact(gameObject);
+            }
+        }).SetTarget(this);
     }
     private void OnDestroy()
     {

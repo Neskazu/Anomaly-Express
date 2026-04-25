@@ -445,6 +445,7 @@ MonoBehaviour:
   interactableLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  playerAnimator: {fileID: -1045929615171509631}
 --- !u!114 &622537546768920616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,6 +460,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkObject: {fileID: 8626299152645079788}
   playerAnimator: {fileID: -1045929615171509631}
+  IsJumpEnabled: 0
+  jumpDelay: 0.1
 --- !u!114 &-1045929615171509631
 MonoBehaviour:
   m_ObjectHideFlags: 0

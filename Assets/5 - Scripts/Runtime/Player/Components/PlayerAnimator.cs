@@ -24,6 +24,7 @@ public class PlayerAnimator : MonoBehaviour
     private static readonly int TurnSpeedHash = Animator.StringToHash("TurnSpeed");
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
     private static readonly int JumpHash = Animator.StringToHash("Jump");
+    private static readonly int InteractHash = Animator.StringToHash("Interact");
 
     public void SetupNewCharacter(GameObject characterObj)
     {
@@ -78,6 +79,13 @@ public class PlayerAnimator : MonoBehaviour
         if (animator != null)
         {
             animator.SetTrigger(JumpHash);
+        }
+    }
+    public void TriggerInteract()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger(InteractHash);
         }
     }
 }
