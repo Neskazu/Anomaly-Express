@@ -90,6 +90,7 @@ namespace Player
         public override void OnNetworkSpawn()
         {
             CharacterId.OnValueChanged += OnCharacterChanged;
+            ApplyCharacter(CharacterId.Value);
         }
         private void Start()
         {

@@ -17,7 +17,7 @@ AnimatorStateMachine:
     m_Position: {x: 100, y: 300, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 177053985465257028}
-    m_Position: {x: 500, y: 520, z: 0}
+    m_Position: {x: 360, y: 420, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4008026622842269059}
     m_Position: {x: 630, y: 290, z: 0}
@@ -78,7 +78,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -4953768193764632710, guid: 9ac2adc26048d7943af0f00cd07e6216, type: 3}
+  m_Motion: {fileID: -9070578397753738753, guid: 9ac2adc26048d7943af0f00cd07e6216, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -105,7 +105,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 4461826734956849724, guid: 9ac2adc26048d7943af0f00cd07e6216, type: 3}
+  m_Motion: {fileID: 8698526773485126825, guid: 9ac2adc26048d7943af0f00cd07e6216, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -193,7 +193,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Fall_Loop
-  m_Speed: 1
+  m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 3450843809823485845}
@@ -206,7 +206,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 5834259319507412652, guid: 9ac2adc26048d7943af0f00cd07e6216, type: 3}
+  m_Motion: {fileID: -7284213031989373608, guid: 9ac2adc26048d7943af0f00cd07e6216, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
