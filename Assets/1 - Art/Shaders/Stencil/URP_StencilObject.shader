@@ -5,6 +5,7 @@ Shader "Custom/URP_StencilObject_Lit"
         _BaseMap ("Base Map", 2D) = "white" {}
         _BaseColor ("Base Color", Color) = (1, 1, 1, 1)
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Render Face (Cull)", Float) = 2
+        [Enum(UnityEngine.Rendering.CompareFunction)] _StencilComp ("Stencil Comparison", Float) = 3
     }
     SubShader
     {
@@ -20,7 +21,7 @@ Shader "Custom/URP_StencilObject_Lit"
             Stencil
             {
                 Ref 2
-                Comp Equal
+                Comp [_StencilComp]
                 Pass Keep
             }
 
