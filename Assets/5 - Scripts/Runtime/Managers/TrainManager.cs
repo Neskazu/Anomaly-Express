@@ -27,7 +27,7 @@ namespace Managers
         private Vector3 _wagonOffset;
         private Vector3 _wagonReversedOffset;
         private Vector3 _vestibuleOffset;
-
+        public int CurrentWagonIndex => _currentWagonIndex;
         private int _currentWagonIndex = 0;
         private int _passedAnomalyWagons = 0;
         private AnomalyBase _currentAnomaly = null;

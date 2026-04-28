@@ -16,6 +16,8 @@ namespace Train
         [SerializeField] private DoorController doorBackward;
         [SerializeField] private DoorController doorForward;
         [SerializeField] private List<ulong> clientsInVestibule;
+        [Header("Visuals")]
+        [SerializeField] private List<WagonNumberAnimate> wagonNumberAnimators;
 
         // TODO: надо будет брать у двери
         [SerializeField] private float doorTweenDuration = .5f;
@@ -34,11 +36,9 @@ namespace Train
         {
             if (!IsServer) return;
 
-            // Подписываемся на события изменений дверей
             doorForward.OnDoorStateChanged += OnDoorStateChanged;
             doorBackward.OnDoorStateChanged += OnDoorStateChanged;
 
-            // Инициализируем локальные флаги из текущего состояния сетевого флага двери
             _forwardIsOpen = doorForward.IsOpenNetwork();
             _backwardIsOpen = doorBackward.IsOpenNetwork();
         }
@@ -60,27 +60,13 @@ namespace Train
             }
         }
 
-        private IEnumerator DelayedLoadNext()
-        {
-            if (IsServer)
-            {
-                doorBackward.ToggleLockServerRpc();
-                doorForward.ToggleLockServerRpc();
-            }
-
-            yield return new WaitForSeconds(doorTweenDuration);
-
-            SpawnWagonBasedOnDirection();
-            isBackward = true;
-        }
-
         private void LoadNextLevel()
         {
             if (!IsServer)
             {
                 return;
             }
-
+            AnimateWagonNumbersClientRpc(TrainManager.Instance.CurrentWagonIndex);
             doorBackward.ToggleLockServerRpc();
 
             DOVirtual.DelayedCall(doorTweenDuration, () =>
@@ -96,7 +82,18 @@ namespace Train
         {
             (doorForward, doorBackward) = (doorBackward, doorForward);
         }
-
+        [ClientRpc]
+        private void AnimateWagonNumbersClientRpc(int nextIndex)
+        {
+            foreach (var animator in wagonNumberAnimators)
+            {
+                if (animator != null)
+                {
+                    Debug.Log("animation"+nextIndex);
+                    animator.PlayScroll(nextIndex);
+                }
+            }
+        }
         private void Start()
         {
             if (!IsServer)
