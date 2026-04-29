@@ -867,7 +867,7 @@ GameObject:
   - component: {fileID: 2378046109014255418}
   - component: {fileID: 719994649667347131}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Number
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -954,9 +954,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetRenderer: {fileID: 0}
-  duration: 1.5
+  propertyName: _BaseMap
+  duration: 2
   stepY: -0.25
-  fullSpins: 2
+  fullSpins: 3
+  startXOffset: -0.05
 --- !u!1 &1563722246693590415
 GameObject:
   m_ObjectHideFlags: 0
@@ -3487,9 +3489,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetRenderer: {fileID: 0}
+  propertyName: _BaseMap
   duration: 1.5
   stepY: -0.25
   fullSpins: 2
+  startXOffset: -0.05
 --- !u!1 &7410308445256905189
 GameObject:
   m_ObjectHideFlags: 0
@@ -3503,7 +3507,7 @@ GameObject:
   - component: {fileID: 8482707037804041188}
   - component: {fileID: 4731655899756494621}
   m_Layer: 0
-  m_Name: Cube.001
+  m_Name: Number
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3590,9 +3594,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetRenderer: {fileID: 0}
-  duration: 1.5
+  propertyName: _BaseMap
+  duration: 2
   stepY: -0.25
-  fullSpins: 2
+  fullSpins: 3
+  startXOffset: -0.05
 --- !u!1 &7584003867985528292
 GameObject:
   m_ObjectHideFlags: 0

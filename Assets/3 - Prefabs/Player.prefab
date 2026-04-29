@@ -152,7 +152,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.35
+  m_Radius: 0.25
   m_Height: 1.5
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -400,7 +400,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Capsule: {fileID: 6479078452582669956}
-  CapsuleRadius: 0.35
+  CapsuleRadius: 0.25
   CapsuleHeight: 1.5
   CapsuleYOffset: 0
   CapsulePhysicsMaterial: {fileID: 0}
@@ -415,7 +415,7 @@ MonoBehaviour:
   AllowSteppingWithoutStableGrounding: 0
   MinRequiredStepDepth: 0.1
   LedgeAndDenivelationHandling: 1
-  MaxStableDistanceFromLedge: 0.3
+  MaxStableDistanceFromLedge: 0.25
   MaxVelocityForLedgeSnap: 0
   MaxStableDenivelationAngle: 180
   InteractiveRigidbodyHandling: 1
@@ -446,6 +446,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   playerAnimator: {fileID: -1045929615171509631}
+  interactDelay: 0.15
 --- !u!114 &622537546768920616
 MonoBehaviour:
   m_ObjectHideFlags: 0
