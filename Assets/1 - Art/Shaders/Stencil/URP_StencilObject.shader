@@ -33,6 +33,8 @@ Shader "Custom/URP_StencilObject_Lit"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS
+            #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -87,14 +89,20 @@ Shader "Custom/URP_StencilObject_Lit"
                 half3 normalWS = normalize(input.normalWS);
 
                 Light mainLight = GetMainLight(TransformWorldToShadowCoord(input.positionWS));
-                half NdotL = max(0.0, dot(normalWS, mainLight.direction)) 
-                + max(0.0, dot(-normalWS, mainLight.direction));
-                half3 lighting = mainLight.color * (mainLight.distanceAttenuation * mainLight.shadowAttenuation * NdotL);
-                
-                half3 ambient = SampleSH(normalWS);
-                
-                half3 finalColor = albedo * (lighting + ambient);
+                half NdotL = saturate(dot(normalWS, mainLight.direction));
+                half3 finalLighting = mainLight.color * (mainLight.distanceAttenuation * mainLight.shadowAttenuation * NdotL);
 
+                #if defined(_ADDITIONAL_LIGHTS)
+                uint pixelLightCount = GetAdditionalLightsCount();
+                for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
+                {
+                    Light light = GetAdditionalLight(lightIndex, input.positionWS);
+                    half addNdotL = saturate(dot(normalWS, light.direction));
+                    finalLighting += light.color * (light.distanceAttenuation * light.shadowAttenuation * addNdotL);
+                }
+                #endif
+                half3 ambient = SampleSH(normalWS);
+                half3 finalColor = albedo * (finalLighting + ambient);
                 finalColor = MixFog(finalColor, input.fogCoord);
 
                 return half4(finalColor, alpha);
