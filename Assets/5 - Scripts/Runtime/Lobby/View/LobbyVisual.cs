@@ -9,13 +9,14 @@ using UnityEngine.UI;
 
 namespace Lobby.View
 {
-    public class LobbyUI : MonoBehaviour
+    public class LobbyVisual : MonoBehaviour
     {
         [SerializeField] private Button mainMenuButton;
         [SerializeField] private Button readyButton;
         [SerializeField] private Button startButton;
 
         [SerializeField] private PlayerUI[] playersView;
+        [SerializeField] private GameObject[] characterModels;
 
         [SerializeField] private LobbyController controller;
         [SerializeField] private SceneTransitionSequence toMenu;
@@ -56,15 +57,23 @@ namespace Lobby.View
 
         private void Redraw(PlayerData obj)
         {
-            for (var i = 0; i < Players.Count(); i++)
-            {
-                playersView[i].gameObject.SetActive(true);
-                playersView[i].UpdateInfo(Players[i]);
-            }
+            foreach (var view in playersView)
+                view.gameObject.SetActive(false);
 
-            for (var i = Players.Count(); i < playersView.Length; i++)
+            foreach (var model in characterModels)
+                model.SetActive(false);
+
+            foreach (var player in Players)
             {
-                playersView[i].gameObject.SetActive(false);
+                int id = player.CharacterId;
+
+                if (id < 0 || id >= playersView.Length)
+                    continue;
+
+                playersView[id].gameObject.SetActive(true);
+                playersView[id].UpdateInfo(player);
+
+                characterModels[id].SetActive(true);
             }
         }
 

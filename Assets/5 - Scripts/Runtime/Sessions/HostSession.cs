@@ -34,7 +34,7 @@ namespace Sessions
 
         private void OnClientConnectedCallback(ulong id)
         {
-            Mediator.Players.Add(new PlayerData { ClientId = id });
+            Mediator.Players.Add(new PlayerData { ClientId = id, CharacterId = -1 });
         }
 
         private void OnClientDisconnectedCallback(ulong id)

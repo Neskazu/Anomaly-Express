@@ -97,7 +97,6 @@ namespace Player
             if (OwnerClientId == NetworkManager.ServerClientId)
             {
                 HostInstance = this;
-                Debug.Log($"[PlayerController] HostInstance назначен для игрока {OwnerClientId}");
             }
             if (IsOwner)
             {

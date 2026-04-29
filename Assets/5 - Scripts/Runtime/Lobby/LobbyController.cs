@@ -20,12 +20,17 @@ namespace Lobby
         private void Awake()
         {
             if (NetworkManager.IsServer)
+            {
                 MultiplayerManager.Players.OnUpdated += IsAllReady;
+                MultiplayerManager.Players.OnConnected += OnPlayersChanged;
+                MultiplayerManager.Players.OnDisconnected += OnPlayersChanged;
+            }
         }
 
         private void Start()
         {
             MultiplayerManager.Instance.SetNameServerRpc("Name");
+            AssignCharacters();
         }
 
         public override void OnDestroy()
@@ -59,16 +64,37 @@ namespace Lobby
         {
             var players = Players.ToList();
 
-            var availableCharacters = new List<int> { 0, 1, 2, 3 }
-             .OrderBy(_ => UnityEngine.Random.value)
-             .ToList();
+            var allCharacters = new List<int> { 0, 1, 2, 3 };
+
+            var takenCharacters = players
+                .Where(p => p.CharacterId >= 0)
+                .Select(p => p.CharacterId)
+                .ToHashSet();
+
+            var freeCharacters = allCharacters
+                .Where(id => !takenCharacters.Contains(id))
+                .OrderBy(_ => UnityEngine.Random.value)
+                .ToList();
+
+            int freeIndex = 0;
+
             for (int i = 0; i < players.Count; i++)
             {
-                var data = players[i];
-                data.CharacterId = availableCharacters[i];
+                var player = players[i];
 
-                Players.Update(data);
+                if (player.CharacterId >= 0)
+                    continue;
+
+                if (freeIndex >= freeCharacters.Count)
+                    break;
+
+                player.CharacterId = freeCharacters[freeIndex++];
+                Players.Update(player);
             }
+        }
+        private void OnPlayersChanged(PlayerData _)
+        {
+            AssignCharacters();
         }
     }
 }
