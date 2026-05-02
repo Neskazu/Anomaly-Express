@@ -2,6 +2,7 @@
 using DG.Tweening;
 using UI.Base;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Player.UI
 {
@@ -10,8 +11,11 @@ namespace Player.UI
         public static DeathScreen Instance { get; private set; }
 
         [SerializeField] private Canvas canvas;
-        [SerializeField] private RectTransform deathScreen;
-        [SerializeField] private float animationDuration = 0.5f;
+        [SerializeField] private Graphic targetGraphic;
+        [SerializeField] private float duration = 0.5f;
+
+        private const string DissolveProperty = "_Dissolve";
+        private const string InvertProperty = "_Invert";
 
         private void Awake()
         {
@@ -20,18 +24,24 @@ namespace Player.UI
 
         public async UniTask Show()
         {
-            await deathScreen
-                .DOAnchorPos(Vector2.zero, animationDuration)
-                .From(new Vector2(Screen.width, 0))
-                .SetEase(Ease.InOutCubic);
+            await DOTween.Sequence()
+                .Append(targetGraphic.material
+                    .DOFloat(0.0f, InvertProperty, 0))
+                .Append(targetGraphic.material
+                    .DOFloat(0.0f, DissolveProperty, duration)
+                    .From(1.0f)
+                    .SetEase(Ease.InOutSine));
         }
 
         public async UniTask Hide()
         {
-            await deathScreen
-                .DOAnchorPos(new Vector2(-Screen.width, 0), animationDuration)
-                .SetEase(Ease.InOutCubic)
-                .From(Vector2.zero);
+            await DOTween.Sequence()
+                .Append(targetGraphic.material
+                    .DOFloat(1.0f, InvertProperty, 0))
+                .Append(targetGraphic.material
+                    .DOFloat(1.0f, DissolveProperty, duration)
+                    .From(0.0f)
+                    .SetEase(Ease.InOutSine));
         }
     }
 }

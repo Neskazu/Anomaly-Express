@@ -43,7 +43,9 @@ namespace Tween.Base
             _tweener.OnComplete(delegate
             {
                 if (disableAfter == DisableAfter.Forward && !reverse || disableAfter == DisableAfter.Backward && reverse)
+                {
                     _target?.gameObject.SetActive(false);
+                }
 
                 onComplete?.Invoke();
             });

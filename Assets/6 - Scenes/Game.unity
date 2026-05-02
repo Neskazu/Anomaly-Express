@@ -718,10 +718,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 670696961}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1920, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 2124, y: 976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &791887663
 MonoBehaviour:
@@ -735,8 +735,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 8a26cca90feb4e745af3485ab6e62961, type: 2}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -773,9 +773,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe7ab79012e64f288a31de87c722e6ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  deathScreen: {fileID: 791887662}
-  animationDuration: 0.5
+  canvas: {fileID: 670696960}
+  targetGraphic: {fileID: 791887663}
+  duration: 0.5
 --- !u!1 &957361789
 GameObject:
   m_ObjectHideFlags: 0
@@ -849,8 +849,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: -186.35323, y: -28.49723, z: -131.67242}
-    m_Extent: {x: 212.81987, y: 172.66064, z: 289.2607}
+    m_Center: {x: 1805.7798, y: 514.60706, z: -2259.25}
+    m_Extent: {x: 2643.3237, y: 1208.3287, z: 144.5}
 --- !u!1 &1043731621
 GameObject:
   m_ObjectHideFlags: 0
@@ -1025,6 +1025,14 @@ PrefabInstance:
       propertyPath: vestibuleDirection
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2254789631834367744, guid: cc55bf7280daa9047ba01a8cb5490d49, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0ec86a82d9a2c7347960512c75e7ecbd, type: 2}
+    - target: {fileID: 2254789631834367744, guid: cc55bf7280daa9047ba01a8cb5490d49, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 8216c046286173e4cbcc4df0756da1ad, type: 2}
     - target: {fileID: 2728095714574705440, guid: cc55bf7280daa9047ba01a8cb5490d49, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 4204676155
