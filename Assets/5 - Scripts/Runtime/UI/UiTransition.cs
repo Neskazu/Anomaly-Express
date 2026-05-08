@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Attributes;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,53 +24,77 @@ namespace UI
 
         private void Awake()
         {
+            Prepare().Forget();
+        }
+
+        private async UniTask Prepare()
+        {
+            if (_initial != null)
+            {
+                return;
+            }
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(container);
+            await UniTask.DelayFrame(1);
+
             _initial = new Vector2[targets.Length];
 
             for (var i = 0; i < targets.Length; i++)
+            {
                 _initial[i] = targets[i].anchoredPosition;
+            }
 
             if (_fitter) _fitter.enabled = false;
             if (_layoutGroup) _layoutGroup.enabled = false;
         }
 
         [Button]
-        public void Show()
+        public async UniTask Show()
         {
-            container.TryGetComponent(out _layoutGroup);
-            container.TryGetComponent(out _fitter);
+            await Prepare();
 
             gameObject.SetActive(true);
 
-            for (int i = 0; i < targets.Length; i++)
+            for (var i = 0; i < targets.Length; i++)
             {
-                targets[i].DOAnchorPosX(_initial[i].x, duration)
-                    .From(_initial[i] + Vector2.left * 150)
+                targets[i]
+                    .DOAnchorPosX(_initial[i].x, duration)
+                    .From(_initial[i] - Vector2.right * 150)
                     .SetEase(Ease.InOutSine)
                     .SetDelay(i * delay);
 
-                int notMutable = i;
+                var notMutable = i;
 
-                targetsGroups[i].DOFade(1, duration)
+                targetsGroups[i]
+                    .DOFade(1, duration)
                     .From(0)
                     .SetEase(Ease.InOutSine)
                     .SetDelay(i * delay)
-                    .OnComplete(() => { targetsGroups[notMutable].blocksRaycasts = true; });
+                    .OnComplete(() =>
+                    {
+                        targetsGroups[notMutable].blocksRaycasts = true;
+                        LayoutRebuilder.ForceRebuildLayoutImmediate(targetsGroups[notMutable].transform as RectTransform);
+                    });
             }
         }
 
         [Button]
-        public void Hide()
+        public async UniTask Hide()
         {
-            for (int i = 0; i < targets.Length; i++)
+            await Prepare();
+
+            for (var i = 0; i < targets.Length; i++)
             {
-                targets[i].DOAnchorPosX(_initial[i].x + 150, duration)
+                targets[i]
+                    .DOAnchorPosX(_initial[i].x + 150, duration)
                     .From(_initial[i])
                     .SetEase(Ease.InOutSine)
                     .SetDelay(i * delay);
 
                 targetsGroups[i].blocksRaycasts = false;
 
-                targetsGroups[i].DOFade(0, duration)
+                targetsGroups[i]
+                    .DOFade(0, duration)
                     .From(1)
                     .SetEase(Ease.InOutSine)
                     .SetDelay(i * delay);
@@ -86,21 +111,20 @@ namespace UI
                 return;
             }
 
-
             targets = GetComponentsInDirectChildren<RectTransform>(container).ToArray();
             targetsGroups = new CanvasGroup[targets.Length];
 
-            for (int i = 0; i < targets.Length; i++)
+            for (var i = 0; i < targets.Length; i++)
                 targets[i].TryGetComponent(out targetsGroups[i]);
         }
 
         private static List<T> GetComponentsInDirectChildren<T>(Transform parent) where T : Component
         {
-            List<T> results = new List<T>();
+            var results = new List<T>();
 
             foreach (Transform child in parent)
             {
-                T component = child.GetComponent<T>();
+                var component = child.GetComponent<T>();
 
                 if (component != null)
                     results.Add(component);
