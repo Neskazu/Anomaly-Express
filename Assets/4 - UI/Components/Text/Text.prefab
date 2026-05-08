@@ -68,14 +68,14 @@ MonoBehaviour:
   m_text: "\u041F\u0440\u0435\u0444\u0430\u0431 \u0442\u0435\u043A\u0441\u0442\u0430"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 23e707d88a59cf147822e6fe0e968f7b, type: 2}
-  m_sharedMaterial: {fileID: -7940497898698873800, guid: e08975743705d234c84d23d94466aba6, type: 2}
+  m_sharedMaterial: {fileID: 7852834817246919525, guid: 23e707d88a59cf147822e6fe0e968f7b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4293851900
-  m_fontColor: {r: 0.31132078, g: 0.18882442, b: 0.12482201, a: 1}
+    rgba: 4288265727
+  m_fontColor: {r: 1, g: 0.7411765, b: 0.6, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -103,6 +103,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -133,6 +134,6 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
