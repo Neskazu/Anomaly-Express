@@ -25,10 +25,22 @@ public class PlayerAnimator : MonoBehaviour
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
     private static readonly int JumpHash = Animator.StringToHash("Jump");
     private static readonly int InteractHash = Animator.StringToHash("Interact");
+    private float speed;
 
     public void SetupNewCharacter(GameObject characterObj)
     {
-        animator = characterObj.GetComponent<Animator>();
+        Animator skinAnimator = characterObj.GetComponent<Animator>();
+
+        if (skinAnimator != null)
+        {
+            animator.avatar = skinAnimator.avatar;
+
+            Destroy(skinAnimator);
+
+            animator.Rebind();
+            animator.Update(0f);
+        }
+
         if (animator != null && animator.isHuman)
             headBone = animator.GetBoneTransform(HumanBodyBones.Head);
         else
@@ -39,9 +51,16 @@ public class PlayerAnimator : MonoBehaviour
 
     private void Update()
     {
-        if (animator == null) return;
-
-        float speed = motor.BaseVelocity.magnitude;
+        if (animator == null || controller == null) return;
+        if (!controller.IsOwner)
+        {
+            motor.SetRotation(controller.NetworkBodyRotation.Value);
+            speed = controller.NetworkSpeed.Value;
+        }
+        else
+        {
+            speed = motor.BaseVelocity.magnitude;
+        }
         animator.SetFloat(SpeedHash, speed);
 
         float currentRotationY = motor.TransientRotation.eulerAngles.y;
@@ -62,15 +81,26 @@ public class PlayerAnimator : MonoBehaviour
     {
         if (headBone == null || controller == null) return;
 
-        float yaw = controller.SharedCamYaw.Value;
-        float pitch = controller.SharedCamPitch.Value;
+        float yaw, pitch;
+        if (controller.IsOwner && !Anomalies.SplitControlAnomaly.IsSplitActive && controller.CameraTransform != null)
+        {
+            yaw = controller.CameraTransform.eulerAngles.y;
+            pitch = controller.CameraTransform.localEulerAngles.x;
+            if (pitch > 180) pitch -= 360;
+        }
+        else
+        {
+            yaw = controller.SharedCamYaw.Value;
+            pitch = controller.SharedCamPitch.Value;
+        }
+
         float bodyYaw = motor.TransientRotation.eulerAngles.y;
 
         float relativeYaw = Mathf.DeltaAngle(bodyYaw, yaw);
         relativeYaw = Mathf.Clamp(relativeYaw, -80f, 80f);
         float clampedPitch = Mathf.Clamp(pitch, -50f, 50f);
-
         Quaternion targetHeadRot = Quaternion.Euler(clampedPitch, relativeYaw, 0);
+
         _smoothedHeadRot = Quaternion.Slerp(_smoothedHeadRot, targetHeadRot, Time.deltaTime * headSmoothSpeed);
         headBone.localRotation = _smoothedHeadRot;
     }
