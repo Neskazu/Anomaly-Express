@@ -102,21 +102,21 @@ namespace Player.Components
         }
         private void HandleRotation()
         {
-            bool isSplit = SplitControlAnomaly.IsSplitActive &&
-                           PlayerController.HostInstance != null &&
-                           PlayerController.LocalInstance != null;
+            bool isSplit = SplitControlAnomaly.IsSplitActive && PlayerController.HostInstance != null;
 
             if (isSplit)
             {
                 if (PlayerController.LocalInstance.CurrentPermissions.CanRotate)
                 {
                     ApplyLocalRotation();
-                    PlayerController.LocalInstance.SendCameraSyncServerRpc(verticalRotation, horizontalRotation);
+
+                    PlayerController.HostInstance.SendCameraSyncServerRpc(verticalRotation, horizontalRotation);
                 }
                 else
                 {
                     verticalRotation = PlayerController.HostInstance.SharedCamPitch.Value;
                     horizontalRotation = PlayerController.HostInstance.SharedCamYaw.Value;
+
                     Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
                 }
             }
