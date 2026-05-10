@@ -33,41 +33,29 @@ namespace Scene
         public UniTask Show()
         {
             if (_active)
-            {
                 return UniTask.CompletedTask;
-            }
 
-            if (_sequence.IsActive())
-            {
-                return _task;
-            }
+            if (_sequence != null && _sequence.IsPlaying())
+                _sequence.Kill();
 
             _sequence = tweenSequence.Play();
-            _task = _sequence.ToUniTask();
+            _sequence.AppendCallback(() => _active = true);
 
-            _sequence.AppendCallback(delegate { _active = true; });
-
-            return _task;
+            return _sequence.AsyncWaitForCompletion().AsUniTask();
         }
 
         public UniTask Hide()
         {
             if (!_active)
-            {
                 return UniTask.CompletedTask;
-            }
 
-            if (_sequence.IsActive())
-            {
-                return _task;
-            }
+            if (_sequence != null && _sequence.IsPlaying())
+                _sequence.Kill();
 
             _sequence = tweenSequence.Play(true);
-            _task = _sequence.ToUniTask();
+            _sequence.AppendCallback(() => _active = false);
 
-            _sequence.AppendCallback(delegate { _active = false; });
-
-            return _task;
+            return _sequence.AsyncWaitForCompletion().AsUniTask();
         }
     }
 }

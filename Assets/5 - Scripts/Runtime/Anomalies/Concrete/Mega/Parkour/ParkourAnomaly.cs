@@ -1,6 +1,8 @@
-using System.Collections.Generic;
+using KinematicCharacterController;
 using Unity.Netcode;
 using UnityEngine;
+using System.Collections;
+using Player.Components;
 
 namespace Anomalies
 {
@@ -9,16 +11,17 @@ namespace Anomalies
         [Header("Group Settings")]
         [SerializeField] private GameObject[] _suitcases;
         [SerializeField] private Transform _exitPoint;
+        [SerializeField] private Transform _startPoint;
 
         [Header("Floating Settings")]
-        public float amplitude = 0.2f;
-        public float frequency = 1f;
+        [SerializeField] private float amplitude = 0.2f;
+        [SerializeField] private float frequency = 1f;
 
         private Vector3[] _startPositions;
         private float[] _phaseOffsets;
-        private MeshRenderer[] _renderers; 
+        private MeshRenderer[] _renderers;
 
-        private NetworkVariable<ulong> _guideId = new NetworkVariable<ulong>(999);
+        private readonly NetworkVariable<ulong> _guideId = new(ulong.MaxValue);
 
         public override void OnNetworkSpawn()
         {
@@ -31,12 +34,31 @@ namespace Anomalies
 
             for (int i = 0; i < count; i++)
             {
-                _startPositions[i] = _suitcases[i].transform.position;
-                _phaseOffsets[i] = Random.Range(0f, 100f);
-                _renderers[i] = _suitcases[i].GetComponent<MeshRenderer>();
+                if (_suitcases[i] != null)
+                {
+                    _startPositions[i] = _suitcases[i].transform.position;
+                    _phaseOffsets[i] = Random.Range(0f, 100f);
+                    _renderers[i] = _suitcases[i].GetComponent<MeshRenderer>();
+                }
             }
 
-            OnAnomalyStateChanged += RefreshVisibility;
+            _guideId.OnValueChanged += OnGuideChanged;
+            OnAnomalyStateChanged += OnAnomalyToggled;
+
+            if (_guideId.Value != ulong.MaxValue)
+                OnGuideChanged(ulong.MaxValue, _guideId.Value);
+        }
+
+        private void Start()
+        {
+            if (IsServer) Activate();
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
+            _guideId.OnValueChanged -= OnGuideChanged;
+            OnAnomalyStateChanged -= OnAnomalyToggled;
         }
 
         protected override void OnActivate()
@@ -47,19 +69,59 @@ namespace Anomalies
             if (clients.Count > 0)
             {
                 _guideId.Value = clients[Random.Range(0, clients.Count)].ClientId;
-                TeleportGuideClientRpc(_guideId.Value);
             }
         }
 
-        [ClientRpc]
-        private void TeleportGuideClientRpc(ulong targetId)
+        protected override void OnDeactivate()
         {
-            if (NetworkManager.Singleton.LocalClientId == targetId)
+            if (IsServer) _guideId.Value = ulong.MaxValue;
+        }
+        private void OnAnomalyToggled()
+        {
+            RefreshVisibility();
+            StartCoroutine(WaitAndChangeJumpState());
+        }
+
+        private void OnGuideChanged(ulong previousId, ulong newId)
+        {
+            RefreshVisibility();
+
+            if (newId != ulong.MaxValue && NetworkManager.Singleton.LocalClientId == newId)
             {
-                var player = NetworkManager.Singleton.LocalClient.PlayerObject;
-                if (player.TryGetComponent<CharacterController>(out var cc)) cc.enabled = false;
+                StartCoroutine(WaitAndTeleport());
+            }
+        }
+
+        private IEnumerator WaitAndTeleport()
+        {
+            while (NetworkManager.Singleton.LocalClient?.PlayerObject == null)
+                yield return null;
+
+            var player = NetworkManager.Singleton.LocalClient.PlayerObject;
+            var motor = player.GetComponentInChildren<KinematicCharacterMotor>();
+
+            if (motor != null)
+            {
+                motor.SetPositionAndRotation(_exitPoint.position, _exitPoint.rotation);
+                motor.BaseVelocity = Vector3.zero;
+            }
+            else
+            {
                 player.transform.position = _exitPoint.position;
-                if (cc != null) cc.enabled = true;
+            }
+        }
+
+        private IEnumerator WaitAndChangeJumpState()
+        {
+            while (NetworkManager.Singleton.LocalClient?.PlayerObject == null)
+                yield return null;
+
+            var player = NetworkManager.Singleton.LocalClient.PlayerObject;
+            var jumpComp = player.GetComponent<PlayerJump>();
+
+            if (jumpComp != null)
+            {
+                jumpComp.IsJumpEnabled = IsActive;
             }
         }
 
@@ -67,6 +129,7 @@ namespace Anomalies
         {
             for (int i = 0; i < _suitcases.Length; i++)
             {
+                if (_suitcases[i] == null) continue;
                 float offsetY = Mathf.Sin(Time.time * frequency + _phaseOffsets[i]) * amplitude;
                 _suitcases[i].transform.position = _startPositions[i] + new Vector3(0, offsetY, 0);
             }
@@ -78,25 +141,20 @@ namespace Anomalies
 
             for (int i = 0; i < _renderers.Length; i++)
             {
-                if (_renderers[i] == null) continue;
-
-                if (IsActive)
-                    _renderers[i].enabled = isGuide;
-                else
-                    _renderers[i].enabled = true;
+                if (_renderers[i] != null)
+                    _renderers[i].enabled = !IsActive || isGuide;
             }
         }
-
-        protected override void OnDeactivate()
+        public void HandlePlayerFall(KinematicCharacterMotor motor)
         {
-            if (IsServer) _guideId.Value = 999;
-            RefreshVisibility();
-        }
+            bool isGuide = NetworkManager.Singleton.LocalClientId == _guideId.Value;
+            Transform targetPoint = isGuide ? _exitPoint : _startPoint;
 
-        public override void OnNetworkDespawn()
-        {
-            base.OnNetworkDespawn();
-            OnAnomalyStateChanged -= RefreshVisibility;
+            if (targetPoint != null)
+            {
+                motor.SetPositionAndRotation(targetPoint.position, targetPoint.rotation);
+                motor.BaseVelocity = Vector3.zero;
+            }
         }
     }
 }

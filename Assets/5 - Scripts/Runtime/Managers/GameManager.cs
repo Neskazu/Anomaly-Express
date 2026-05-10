@@ -47,16 +47,25 @@ namespace Managers
         private void SceneManager_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode,
             List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
         {
-            foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
-            {
-                var playerControllerTransform = Instantiate(playerPrefab);
+            if (!IsServer)
+                return;
 
-                playerControllerTransform
-                    .GetComponent<NetworkObject>()
-                    .SpawnAsPlayerObject(clientId, true);
+            foreach (var clientId in clientsCompleted)
+            {
+                if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client))
+                {
+                    if (client.PlayerObject != null && client.PlayerObject.IsSpawned)
+                    {
+                        continue;
+                    }
+                }
+
+                var player = Instantiate(playerPrefab);
+                var netObj = player.GetComponent<NetworkObject>();
+                netObj.SpawnAsPlayerObject(clientId, true);
 
                 var data = Players.Get(clientId);
-                playerControllerTransform.CharacterId.Value = data.CharacterId;
+                player.CharacterId.Value = data.CharacterId;
             }
         }
 

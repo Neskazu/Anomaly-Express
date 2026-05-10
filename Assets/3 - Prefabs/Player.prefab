@@ -287,7 +287,7 @@ MonoBehaviour:
   - {fileID: 2338952459286243910}
   - {fileID: 144946101472848074}
   jumpComponent: {fileID: 622537546768920616}
-  jumpForce: 10
+  jumpForce: 8
   characterPrefabs:
   - {fileID: 7140913627159581200, guid: 1a4e0c40f9e64b942bd1a595960a4840, type: 3}
   - {fileID: 7882089421815437136, guid: 9387aa5c75ecab44caf061bd475aa32b, type: 3}
@@ -312,6 +312,10 @@ MonoBehaviour:
   SharedCamYaw:
     m_InternalValue: 0
   CharacterId:
+    m_InternalValue: 0
+  NetworkBodyRotation:
+    m_InternalValue: {x: 0, y: 0, z: 0, w: 1}
+  NetworkSpeed:
     m_InternalValue: 0
   MaxLookAngle: 70
 --- !u!114 &-3165505915988723258

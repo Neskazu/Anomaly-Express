@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Anomalies;
+using MegaAnomalies;
 using R3;
+using Scene;
 using Train;
 using Unity.Netcode;
 using UnityEngine;
@@ -33,6 +35,7 @@ namespace Managers
         private AnomalyBase _currentAnomaly = null;
 
         private Subject<GameObject> _onNewWagon;
+        [SerializeField] private SceneTransitionSequence sequence;
 
         private void Awake()
         {
@@ -53,8 +56,13 @@ namespace Managers
                 return;
             }
 
-            // TODO: сделать выбор случайным и без повторов
             _currentWagonIndex = (_currentWagonIndex + 1) % anomalyWagons.Length;
+            Debug.Log(_currentWagonIndex);
+            if(_currentWagonIndex==0)
+            {
+                LoadToMegaAnomaly();
+                return;
+            }
 
             bool shouldSpawnDefault = (currentWagonHasAnomaly && !isBackward) || (!currentWagonHasAnomaly && isBackward);
 
@@ -66,6 +74,12 @@ namespace Managers
             {
                 SpawnAnomalyWagon(vestibuleType, position);
             }
+        }
+        public async void LoadToMegaAnomaly()
+        {
+            Debug.Log("Load");
+            await AnomalyTransitionAnimation.Instance.Play();
+            await SceneTransitionController.Instance.Play(sequence);
         }
         //public void SpawnWagon(VestibuleType vestibuleType, Vector3 position, bool isBackward)
         //{
