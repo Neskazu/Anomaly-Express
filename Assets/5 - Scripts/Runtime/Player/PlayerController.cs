@@ -59,6 +59,11 @@ namespace Player
         public NetworkVariable<float> SharedCamPitch = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         public NetworkVariable<float> SharedCamYaw = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         public NetworkVariable<int> CharacterId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<Quaternion> NetworkBodyRotation = new NetworkVariable<Quaternion>(Quaternion.identity, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        public NetworkVariable<float> NetworkSpeed = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        public Transform CameraTransform => cameraTransform;
+        private float _lastSentPitch;
+        private float _lastSentYaw;
 
         private Dictionary<ulong, Vector2> _sharedMoveInputs = new Dictionary<ulong, Vector2>();
         private bool _sharedJumpInput = false;
@@ -154,6 +159,7 @@ namespace Player
                     bool wantJump = jumpComponent != null && jumpComponent.JumpRequested;
                     HostInstance.SendMovementInputServerRpc(_rawInput, wantJump);
                     if (jumpComponent != null) jumpComponent.JumpRequested = false;
+                    NetworkBodyRotation.Value = Motor.TransientRotation;
                     return;
                 }
                 else 
@@ -176,6 +182,28 @@ namespace Player
             else
             {
                 HandleMoveDirection();
+                if (cameraTransform != null)
+                {
+                    float pitch = cameraTransform.localEulerAngles.x;
+                    if (pitch > 180) pitch -= 360;
+                    float yaw = cameraTransform.eulerAngles.y;
+
+                    if (Mathf.Abs(pitch - _lastSentPitch) > 1f || Mathf.Abs(yaw - _lastSentYaw) > 1f)
+                    {
+                        SendCameraSyncServerRpc(pitch, yaw);
+                        _lastSentPitch = pitch;
+                        _lastSentYaw = yaw;
+                    }
+                    float currentSpeed = Motor.BaseVelocity.magnitude;
+                    if (Mathf.Abs(NetworkSpeed.Value - currentSpeed) > 0.1f)
+                    {
+                        NetworkSpeed.Value = currentSpeed;
+                    }
+                    if (Quaternion.Angle(NetworkBodyRotation.Value, Motor.TransientRotation) > 0.1f)
+                    {
+                        NetworkBodyRotation.Value = Motor.TransientRotation;
+                    }
+                }
             }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -191,9 +219,8 @@ namespace Player
 #endif
         }
 
-        // ICharacterController implementation
         [Header("Rotation Limits")]
-        public float MaxLookAngle = 70f; // Угол, после которого тело начнет поворачиваться за головой
+        public float MaxLookAngle = 70f;
 
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
         {
@@ -206,27 +233,20 @@ namespace Player
 
             if (!_currentPermissions.CanRotate) return;
 
-            // Куда смотрит камера
             Vector3 cameraDir = _lookInputVector;
-            // Куда мы жмем кнопки движения
             Vector3 moveDir = _moveInputVector;
 
             if (moveDir.sqrMagnitude > 0.01f)
             {
-                // Если идем — тело плавно разворачивается по направлению движения
                 Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, moveDir, 1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
                 currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
             }
             else
             {
-                // Если стоим на месте — считаем угол между грудью и камерой
                 float angleBetween = Vector3.SignedAngle(Motor.CharacterForward, cameraDir, Motor.CharacterUp);
-
-                // Если угол больше 70 градусов (MaxLookAngle), начинаем докручивать тело
                 if (Mathf.Abs(angleBetween) > MaxLookAngle)
                 {
                     Quaternion targetRot = Quaternion.LookRotation(cameraDir, Motor.CharacterUp);
-                    // Поворачиваем только ту часть, которая выходит за предел
                     currentRotation = Quaternion.Slerp(currentRotation, targetRot, 1 - Mathf.Exp(-OrientationSharpness * deltaTime));
                 }
             }
@@ -348,11 +368,8 @@ namespace Player
         [ServerRpc(RequireOwnership = false)]
         public void SendCameraSyncServerRpc(float pitch, float yaw)
         {
-            if (HostInstance != null)
-            {
-                HostInstance.SharedCamPitch.Value = pitch;
-                HostInstance.SharedCamYaw.Value = yaw;
-            }
+            this.SharedCamPitch.Value = pitch;
+            this.SharedCamYaw.Value = yaw;
         }
         [ServerRpc(RequireOwnership = false)]
         public void SendMovementInputServerRpc(Vector2 move, bool jump, ServerRpcParams rpcParams = default)

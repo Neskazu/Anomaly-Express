@@ -75,7 +75,6 @@ namespace Player.Components
 
         private Vector3 CalculateHeadBobOffset()
         {
-            // Нам нужно знать, движется ли локальный игрок и на земле ли он
             var pc = PlayerController.LocalInstance;
             if (pc == null || !pc.Motor.GroundingStatus.IsStableOnGround)
             {
@@ -83,11 +82,7 @@ namespace Player.Components
                 _currentBobOffset = Vector3.Lerp(_currentBobOffset, Vector3.zero, Time.deltaTime * bobSmoothing);
                 return _currentBobOffset;
             }
-
-            // Получаем скорость из мотора KCC
             float speed = pc.Motor.Velocity.magnitude;
-
-            // Если почти не движемся, плавно сбрасываем оффсет
             if (speed < 0.1f)
             {
                 _bobTimer = 0;
@@ -95,10 +90,7 @@ namespace Player.Components
             }
             else
             {
-                // Увеличиваем таймер в зависимости от скорости
                 _bobTimer += Time.deltaTime * speed * bobFrequency;
-
-                // Математика качания (восьмерка)
                 float x = Mathf.Cos(_bobTimer / 2) * bobHorizontalAmplitude;
                 float y = Mathf.Sin(_bobTimer) * bobVerticalAmplitude;
 
@@ -108,8 +100,6 @@ namespace Player.Components
 
             return _currentBobOffset;
         }
-
-        // ... остальной код (HandleRotation, ApplyLocalRotation и т.д.) без изменений
         private void HandleRotation()
         {
             bool isSplit = SplitControlAnomaly.IsSplitActive &&
