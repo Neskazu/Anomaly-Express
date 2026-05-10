@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Network;
 using Network.Players;
 using Player;
 using Unity.Netcode;
@@ -10,16 +9,31 @@ namespace Managers
 {
     public class GameManager : NetworkBehaviour
     {
-        public static GameManager Instance { get; private set; }
-
         [SerializeField] private PlayerController playerPrefab;
 
-        private static PlayerDataProvider Players =>
-            MultiplayerManager.Players;
+        private static PlayerDataProvider Players => MultiplayerManager.Players;
+
+        public static GameManager Instance { get; private set; }
 
         private void Awake()
         {
+            if (Instance != null)
+            {
+                Destroy(this);
+                return;
+            }
+
             Instance = this;
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            if (Instance == this)
+            {
+                Instance = null;
+            }
         }
 
         public override void OnNetworkSpawn()
@@ -35,11 +49,12 @@ namespace Managers
         {
             foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
-                PlayerController playerControllerTransform = Instantiate(playerPrefab);
+                var playerControllerTransform = Instantiate(playerPrefab);
 
                 playerControllerTransform
                     .GetComponent<NetworkObject>()
                     .SpawnAsPlayerObject(clientId, true);
+
                 var data = Players.Get(clientId);
                 playerControllerTransform.CharacterId.Value = data.CharacterId;
             }
