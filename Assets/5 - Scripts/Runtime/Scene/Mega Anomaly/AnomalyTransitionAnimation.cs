@@ -1,14 +1,16 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Managers;
 using Player.Components;
 using Scene;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace MegaAnomalies
 {
-    public class AnomalyTransitionAnimation : MonoBehaviour
+    public class AnomalyTransitionAnimation : NetworkBehaviour
     {
-        [SerializeField] private PlayerCamera playerCameraController;
+        [SerializeField] private PlayerCamera playerCamera;
         [SerializeField] private GameObject crack;
         [SerializeField] private GameObject hole;
 
@@ -31,7 +33,8 @@ namespace MegaAnomalies
 
         public async UniTask Play()
         {
-            playerCameraController.enabled = false;
+            playerCamera.enabled = false;
+            InputManager.Singleton.DisablePlayerMovement();
 
             var seq = DOTween.Sequence();
 
@@ -42,16 +45,12 @@ namespace MegaAnomalies
             // right
             seq.Append(camTransform.DOLocalRotate(new Vector3(5, 40, 5), 0.8f).SetEase(Ease.InOutSine));
             seq.AppendInterval(0.4f)
-                .AppendCallback(delegate { crack.SetActive(true); });
+                .AppendCallback(ShowCrackRpc);
 
             // down
             seq.Append(camTransform.DOLocalRotate(new Vector3(75, 0, 0), 0.5f).SetEase(Ease.InCubic));
             seq.AppendInterval(0.4f)
-                .AppendCallback(delegate
-                {
-                    hole.SetActive(true);
-                    crack.SetActive(false);
-                });
+                .AppendCallback(ShowHoleRpc);
             seq.AppendInterval(0.1f);
 
             // fall
@@ -62,10 +61,29 @@ namespace MegaAnomalies
             seq.Append(camTransform.DOMoveY(camTransform.position.y - 2f, 0.3f).SetEase(Ease.InExpo));
             seq.Join(camTransform.DOLocalRotate(new Vector3(-70, 0, 0), 0.2f).SetEase(Ease.InOutSine));
 
-            await seq.Play().ToUniTask();
- 
+            await seq.Play();
+
             camTransform.DOShakePosition(0.5f, 0.7f, 20, 90);
             camTransform.DOShakeRotation(0.5f, 10f, 20, 90);
+
+            await UniTask.WaitForSeconds(1);
+
+            playerCamera.enabled = true;
+            InputManager.Singleton.EnablePlayerMovement();
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        private void ShowCrackRpc()
+        {
+            crack.SetActive(true);
+            hole.SetActive(false);
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        private void ShowHoleRpc()
+        {
+            crack.SetActive(false);
+            hole.SetActive(true);
         }
 
 #if UNITY_EDITOR || DEBUG

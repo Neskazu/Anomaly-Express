@@ -44,6 +44,16 @@ namespace Managers
             Singleton = this;
         }
 
+        public void DisablePlayerMovement()
+        {
+            inputActions.Player.Disable();
+        }
+
+        public void EnablePlayerMovement()
+        {
+            inputActions.Player.Enable();
+        }
+
         private void OnEnable()
         {
             inputActions?.Enable();
