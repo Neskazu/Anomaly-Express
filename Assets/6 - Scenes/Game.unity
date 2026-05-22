@@ -382,7 +382,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -849,8 +849,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: 187.20389, y: -79.15404, z: 228.43628}
-    m_Extent: {x: 265.275, y: 167.65912, z: 262.0586}
+    m_Center: {x: 169.38405, y: -45.571106, z: 11.652969}
+    m_Extent: {x: 170.41002, y: 176.31665, z: 322.89392}
 --- !u!1 &1043731621
 GameObject:
   m_ObjectHideFlags: 0
