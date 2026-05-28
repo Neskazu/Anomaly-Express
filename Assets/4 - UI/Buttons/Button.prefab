@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7325959388997267048}
   - component: {fileID: 7689341688341035281}
   - component: {fileID: 6445152771118111193}
+  - component: {fileID: -607362369002386463}
   m_Layer: 0
   m_Name: Button
   m_TagString: Untagged
@@ -140,6 +141,19 @@ MonoBehaviour:
   fill: {fileID: 2901366578069616649}
   normalColor: {r: 0.6, g: 0.85882354, b: 1, a: 0.078431375}
   hoverColor: {r: 0.6, g: 0.85882354, b: 1, a: 0.27450982}
+--- !u!114 &-607362369002386463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911120803863082594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3922a5fd7dc0735428c79344db5182d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioPlayer: {fileID: 0}
 --- !u!1 &2095533129940768831
 GameObject:
   m_ObjectHideFlags: 0
