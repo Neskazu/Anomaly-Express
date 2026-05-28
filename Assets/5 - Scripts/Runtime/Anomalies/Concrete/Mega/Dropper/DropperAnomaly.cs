@@ -12,6 +12,7 @@ public class DropperAnomaly : AnomalyBase, IKccHitReceiver
 
     [Header("Group Settings")]
     [SerializeField] private GameObject[] _obstacles;
+    [SerializeField] private GameObject[] _floor;
 
     [Header("Floating Settings")]
     [SerializeField] private float amplitude = 0.2f;
@@ -38,7 +39,16 @@ public class DropperAnomaly : AnomalyBase, IKccHitReceiver
                 router.Anomaly = this;
             }
         }
-        OnAnomalyStateChanged += OnAnomalyToggled;
+        count = _floor.Length;
+        for (int i = 0; i < count; i++)
+        {
+            if (_floor[i] != null)
+            {
+                var router = _floor[i].AddComponent<DropperHitRouter>();
+                router.Anomaly = this;
+            }
+        }
+            OnAnomalyStateChanged += OnAnomalyToggled;
     }
 
     private void Start()
