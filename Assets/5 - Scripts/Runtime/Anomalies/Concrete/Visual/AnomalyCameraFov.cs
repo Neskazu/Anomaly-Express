@@ -21,7 +21,7 @@ namespace Anomalies
             _localCamera = Camera.main;
             if (_localCamera != null) _defaultFov = _localCamera.fieldOfView;
             float finalTarget = (Random.value > 0.5f) ? targetFovMax : targetFovMin;
-            _localCamera.DOFieldOfView(finalTarget, duration);
+            _localCamera.DOFieldOfView(finalTarget, duration).SetLink(gameObject);
         }
 
         protected override void OnDeactivate()

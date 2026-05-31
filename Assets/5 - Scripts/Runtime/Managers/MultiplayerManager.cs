@@ -20,6 +20,11 @@ namespace Managers
 
         private void Awake()
         {
+            if (Instance != null)
+            { 
+                Destroy(this);
+                return; 
+            }
             DontDestroyOnLoad(gameObject);
             Instance = this;
         }

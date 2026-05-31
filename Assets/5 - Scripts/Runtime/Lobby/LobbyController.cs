@@ -13,7 +13,7 @@ namespace Lobby
     public class LobbyController : NetworkBehaviour
     {
         [SerializeField] private SceneTransitionSequence toGame;
-
+        private bool _gameStarted;
         private static PlayerDataProvider Players =>
             MultiplayerManager.Players;
 
@@ -36,14 +36,20 @@ namespace Lobby
         public override void OnDestroy()
         {
             MultiplayerManager.Players.OnUpdated -= IsAllReady;
+            MultiplayerManager.Players.OnDisconnected -= OnPlayersChanged;
+            MultiplayerManager.Players.OnConnected -= OnPlayersChanged;
+
         }
 
         private void IsAllReady(PlayerData _)
         {
+            if (_gameStarted)
+                return;
             if (Players.Any(player => !player.IsReady))
                 return;
 
             StartGame();
+            _gameStarted = true;
         }
 
         public async void StartGame()

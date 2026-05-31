@@ -432,6 +432,11 @@ namespace Player
                 r.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
             }
         }
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            InputManager.OnMoveAxisChanged += HandleInput;
+        }
 
         //-------------------------
         public void BeforeCharacterUpdate(float deltaTime) { }
