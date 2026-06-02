@@ -6,13 +6,14 @@ public class SnowClickEmitter : MonoBehaviour
     [SerializeField] private Camera mainCamera;
 
     [SerializeField] private float spawnDistance = 10f;
+    [SerializeField] private float distanceVariation = 3f;
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 pos = Input.mousePosition;
-            pos.z = spawnDistance;
+            pos.z = spawnDistance + Random.Range(0, distanceVariation);
 
             Vector3 worldPos = mainCamera.ScreenToWorldPoint(pos);
 
