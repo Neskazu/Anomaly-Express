@@ -327,5 +327,61 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -1728013695380148634, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2165492064780529861}
   m_SourcePrefab: {fileID: -3956505258223990651, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+--- !u!4 &669331322910841136 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -9055416251393219258, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+  m_PrefabInstance: {fileID: 800870728064629878}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5200173290652652624 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4843614395330177062, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+  m_PrefabInstance: {fileID: 800870728064629878}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5710886317964504105 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4297446187249348513, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+  m_PrefabInstance: {fileID: 800870728064629878}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7140913627159581200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfba4ccd3f854e64f868ce83553071a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &7140913627159581200 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1728013695380148634, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+  m_PrefabInstance: {fileID: 800870728064629878}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2165492064780529861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7140913627159581200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27332c090835c8940847be8a66566c6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vrm10: {fileID: 5710886317964504105}
+  headBone: {fileID: 669331322910841136}
+  neckBone: {fileID: 5200173290652652624}
+  enableBlink: 1
+  blinkDelayRange: {x: 2.5, y: 5}
+  blinkCloseTime: 0.07
+  blinkOpenTime: 0.1
+  baseEmotion: 0
+  emotionLerpSpeed: 7
+  defaultReactionDuration: 0.85
+  reactionBlendInTime: 0.12
+  reactionBlendOutTime: 0.16
+  headShakeAngle: 14
+  headShakeWaves: 3.5
+  neckShare: 0.45
