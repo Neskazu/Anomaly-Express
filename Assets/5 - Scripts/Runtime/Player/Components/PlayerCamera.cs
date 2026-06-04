@@ -175,12 +175,9 @@ namespace Player.Components
 
                 Vector3 acceleration = (localVelocity - _previousLocalVelocity) / Time.deltaTime;
                 _previousLocalVelocity = localVelocity;
-
-                // Реагируем только на изменение движения, а не на постоянную скорость
                 targetRoll = Mathf.Clamp(-acceleration.x * 0.02f, -maxRoll, maxRoll);
                 targetPitchOffset = Mathf.Clamp(-acceleration.z * 0.01f, -maxPitchOffset, maxPitchOffset);
 
-                // Чтобы эффект не дёргался от мелких колебаний
                 if (acceleration.magnitude < 0.5f)
                 {
                     targetRoll = 0f;

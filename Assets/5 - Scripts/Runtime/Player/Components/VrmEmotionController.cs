@@ -1,8 +1,8 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using UniVRM10;
 using UnityEngine;
 
-[DisallowMultipleComponent]
 public class VrmEmotionController : MonoBehaviour
 {
     public enum Emotion
@@ -28,15 +28,14 @@ public class VrmEmotionController : MonoBehaviour
     [SerializeField] private Emotion baseEmotion = Emotion.Neutral;
     [SerializeField] private float emotionLerpSpeed = 7f;
 
-    [Header("Reaction")]
-    [SerializeField] private float defaultReactionDuration = 0.85f;
-    [SerializeField] private float reactionBlendInTime = 0.12f;
-    [SerializeField] private float reactionBlendOutTime = 0.16f;
+    [Header("Reactions")]
+    [SerializeField] private string defaultReactionId = "nose";
+    [SerializeField] private List<VrmReaction> reactions = new List<VrmReaction>();
 
-    [Header("Head Shake")]
-    [SerializeField] private float headShakeAngle = 14f;
-    [SerializeField] private float headShakeWaves = 3.5f;
-    [SerializeField] private float neckShare = 0.45f;
+    private Vector3 currentHeadOffset;
+    private Vector3 currentNeckOffset;
+    internal void SetHeadReactionEuler(Vector3 euler) => currentHeadOffset = euler;
+    internal void SetNeckReactionEuler(Vector3 euler) => currentNeckOffset = euler;
 
     private struct FaceWeights
     {
@@ -62,26 +61,46 @@ public class VrmEmotionController : MonoBehaviour
     private FaceWeights targetFace;
 
     private float blinkValue;
-    private float reactionMix;
     private Emotion reactionEmotion = Emotion.Angry;
     private bool reactionActive;
 
     private DG.Tweening.Tween blinkLoopTween;
     private DG.Tweening.Tween blinkTween;
     private DG.Tweening.Tween reactionTween;
-    private DG.Tweening.Tween headShakeTween;
 
     private Quaternion headRestRotation;
     private Quaternion neckRestRotation;
     private bool restPoseCached;
 
-    private float headShakeY;
-    private float neckShakeY;
+    public bool IsReactionActive => reactionActive;
+
+    private readonly Dictionary<string, VrmReaction> reactionLookup = new Dictionary<string, VrmReaction>();
 
     private void Awake()
     {
         if (vrm10 == null)
             vrm10 = GetComponentInChildren<Vrm10Instance>(true);
+
+        RebuildReactionLookup();
+    }
+
+    private void OnValidate()
+    {
+        RebuildReactionLookup();
+    }
+
+    private void RebuildReactionLookup()
+    {
+        reactionLookup.Clear();
+
+        for (int i = 0; i < reactions.Count; i++)
+        {
+            var r = reactions[i];
+            if (r == null || string.IsNullOrWhiteSpace(r.id))
+                continue;
+
+            reactionLookup[r.id] = r;
+        }
     }
 
     private void OnEnable()
@@ -99,19 +118,24 @@ public class VrmEmotionController : MonoBehaviour
         blinkLoopTween?.Kill();
         blinkTween?.Kill();
         reactionTween?.Kill();
-        headShakeTween?.Kill();
 
         blinkLoopTween = null;
         blinkTween = null;
         reactionTween = null;
-        headShakeTween = null;
     }
 
     private void LateUpdate()
     {
         UpdateTargets(Time.deltaTime);
         ApplyFace();
-        ApplyHeadPose();
+
+        if (reactionActive)
+        {
+            if (headBone != null)
+                headBone.localRotation = headRestRotation * Quaternion.Euler(currentHeadOffset);
+            if (neckBone != null)
+                neckBone.localRotation = neckRestRotation * Quaternion.Euler(currentNeckOffset);
+        }
     }
 
     public void SetBaseEmotion(Emotion emotion)
@@ -119,35 +143,51 @@ public class VrmEmotionController : MonoBehaviour
         baseEmotion = emotion;
     }
 
-    public void TriggerNoseReaction()
+    public void TriggerReaction(string reactionId)
     {
-        TriggerReaction(Emotion.Angry, defaultReactionDuration);
-    }
+        if (reactionActive)
+            return;
 
-    public void TriggerReaction(Emotion emotion, float duration)
-    {
-        reactionEmotion = emotion;
+        if (!reactionLookup.TryGetValue(reactionId, out var reaction) || reaction == null)
+            return;
+
+        reactionEmotion = reaction.emotion;
 
         reactionTween?.Kill();
-        headShakeTween?.Kill();
-
-        reactionTween = CreateReactionTween(duration);
-        headShakeTween = CreateHeadShakeTween(duration, headShakeAngle);
+        reactionTween = reaction.CreateTween(this);
     }
+
+    public void TriggerNoseReaction()
+    {
+        TriggerReaction(defaultReactionId);
+    }
+
+    internal void SetReactionActive(bool active)
+    {
+        reactionActive = active;
+    }
+
+    internal void SetHeadRotation(Quaternion localRotation)
+    {
+        if (headBone != null)
+            headBone.localRotation = localRotation;
+    }
+
+    internal void SetNeckRotation(Quaternion localRotation)
+    {
+        if (neckBone != null)
+            neckBone.localRotation = localRotation;
+    }
+
+    internal Quaternion HeadRestRotation => headRestRotation;
+    internal Quaternion NeckRestRotation => neckRestRotation;
+
+    internal Emotion ReactionEmotion => reactionEmotion;
 
     private void UpdateTargets(float dt)
     {
         FaceWeights baseTarget = EmotionToWeights(baseEmotion);
-
-        if (reactionActive)
-        {
-            FaceWeights reactionTarget = EmotionToWeights(reactionEmotion);
-            targetFace = FaceWeights.Lerp(baseTarget, reactionTarget, reactionMix);
-        }
-        else
-        {
-            targetFace = baseTarget;
-        }
+        targetFace = reactionActive ? FaceWeights.Lerp(baseTarget, EmotionToWeights(reactionEmotion), 0.8f) : baseTarget;
 
         float t = 1f - Mathf.Exp(-emotionLerpSpeed * dt);
         currentFace = FaceWeights.Lerp(currentFace, targetFace, t);
@@ -198,56 +238,6 @@ public class VrmEmotionController : MonoBehaviour
             .Append(DOTween.To(() => blinkValue, x => blinkValue = x, 0f, blinkOpenTime).SetEase(Ease.OutQuad));
     }
 
-    private DG.Tweening.Tween CreateReactionTween(float duration)
-    {
-        reactionActive = true;
-        reactionMix = 0f;
-
-        float inTime = Mathf.Min(reactionBlendInTime, duration);
-        float outTime = Mathf.Min(reactionBlendOutTime, duration);
-        float holdTime = Mathf.Max(0f, duration - inTime - outTime);
-
-        return DOTween.Sequence()
-            .Append(DOTween.To(() => reactionMix, x => reactionMix = x, 1f, inTime).SetEase(Ease.OutSine))
-            .AppendInterval(holdTime)
-            .Append(DOTween.To(() => reactionMix, x => reactionMix = x, 0f, outTime).SetEase(Ease.InSine))
-            .OnComplete(() => reactionActive = false)
-            .OnKill(() => reactionActive = false);
-    }
-
-    private DG.Tweening.Tween CreateHeadShakeTween(float duration, float angle)
-    {
-        if (headBone == null && neckBone == null)
-            return null;
-
-        headShakeY = 0f;
-        neckShakeY = 0f;
-
-        float part = Mathf.Max(0.01f, duration / 4f);
-
-        return DOTween.Sequence()
-            .Append(DOTween.To(() => headShakeY, x => headShakeY = x, angle, part).SetEase(Ease.OutSine))
-            .Join(DOTween.To(() => neckShakeY, x => neckShakeY = x, angle * neckShare, part).SetEase(Ease.OutSine))
-            .Append(DOTween.To(() => headShakeY, x => headShakeY = x, -angle, part).SetEase(Ease.InOutSine))
-            .Join(DOTween.To(() => neckShakeY, x => neckShakeY = x, -angle * neckShare, part).SetEase(Ease.InOutSine))
-            .Append(DOTween.To(() => headShakeY, x => headShakeY = x, angle, part).SetEase(Ease.InOutSine))
-            .Join(DOTween.To(() => neckShakeY, x => neckShakeY = x, angle * neckShare, part).SetEase(Ease.InOutSine))
-            .Append(DOTween.To(() => headShakeY, x => headShakeY = x, 0f, part).SetEase(Ease.InSine))
-            .Join(DOTween.To(() => neckShakeY, x => neckShakeY = x, 0f, part).SetEase(Ease.InSine));
-    }
-
-    private void ApplyHeadPose()
-    {
-        if (!restPoseCached)
-            return;
-
-        if (headBone != null)
-            headBone.localRotation = headRestRotation * Quaternion.Euler(0f, headShakeY, 0f);
-
-        if (neckBone != null)
-            neckBone.localRotation = neckRestRotation * Quaternion.Euler(0f, neckShakeY, 0f);
-    }
-
     private void CacheRestPose()
     {
         if (restPoseCached)
@@ -267,24 +257,11 @@ public class VrmEmotionController : MonoBehaviour
         switch (emotion)
         {
             case Emotion.Happy:
-                return new FaceWeights
-                {
-                    Happy = 0.8f,
-                    Relaxed = 0.18f
-                };
-
+                return new FaceWeights { Happy = 0.8f, Relaxed = 0.18f };
             case Emotion.Angry:
-                return new FaceWeights
-                {
-                    Angry = 0.8f
-                };
-
+                return new FaceWeights { Angry = 0.8f };
             case Emotion.Sad:
-                return new FaceWeights
-                {
-                    Sad = 0.8f
-                };
-
+                return new FaceWeights { Sad = 0.8f };
             default:
                 return new FaceWeights();
         }
