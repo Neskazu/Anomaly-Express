@@ -435,7 +435,7 @@ namespace Player
         public override void OnDestroy()
         {
             base.OnDestroy();
-            InputManager.OnMoveAxisChanged += HandleInput;
+            InputManager.OnMoveAxisChanged -= HandleInput;
         }
 
         //-------------------------
