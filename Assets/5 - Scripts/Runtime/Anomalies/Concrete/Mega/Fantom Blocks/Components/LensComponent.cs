@@ -1,0 +1,41 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Anomalies
+{
+    public class LensComponent : MonoBehaviour
+    {
+        private static readonly HashSet<LensComponent> Lens = new();
+        public static IReadOnlyCollection<LensComponent> Active => Lens;
+
+        [Header("References")]
+        [SerializeField] private Camera cam;
+
+        [Header("Settings")]
+        [SerializeField] private Color color;
+
+        public Vector3 RGB { get; private set; }
+
+        public Plane[] Planes { get; private set; }
+
+        private void Start()
+        {
+            RGB = new Vector3(color.r, color.g, color.b);
+        }
+
+        private void OnEnable()
+        {
+            Lens.Add(this);
+        }
+
+        private void OnDisable()
+        {
+            Lens.Remove(this);
+        }
+
+        private void Update()
+        {
+            Planes = GeometryUtility.CalculateFrustumPlanes(cam);
+        }
+    }
+}
