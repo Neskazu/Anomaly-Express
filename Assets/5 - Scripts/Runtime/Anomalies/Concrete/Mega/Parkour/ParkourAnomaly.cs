@@ -20,6 +20,8 @@ namespace Anomalies
         private Vector3[] _startPositions;
         private float[] _phaseOffsets;
         private MeshRenderer[] _renderers;
+        [Header("Floating anomaly")]
+        [SerializeField] private AnomalyLevitatingObjects anomalyLevitatingObjects;
 
         private readonly NetworkVariable<ulong> _guideId = new(ulong.MaxValue);
 
@@ -51,7 +53,11 @@ namespace Anomalies
 
         private void Start()
         {
-            if (IsServer) Activate();
+            if (IsServer)
+            {
+                Activate();
+                anomalyLevitatingObjects.Activate();
+            }
         }
 
         public override void OnNetworkDespawn()
