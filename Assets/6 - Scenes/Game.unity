@@ -849,8 +849,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: -170.72527, y: -106.25862, z: 186.98703}
-    m_Extent: {x: 297.49213, y: 167.45793, z: 255.03738}
+    m_Center: {x: 216.92601, y: -137.89221, z: -160.21243}
+    m_Extent: {x: 225.64519, y: 159.7927, z: 289.45813}
 --- !u!1 &1043731621
 GameObject:
   m_ObjectHideFlags: 0
@@ -1055,7 +1055,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5227901527876187226, guid: cc55bf7280daa9047ba01a8cb5490d49, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 7
+      value: 6.995
       objectReference: {fileID: 0}
     - target: {fileID: 5227901527876187226, guid: cc55bf7280daa9047ba01a8cb5490d49, type: 3}
       propertyPath: m_LocalRotation.w
