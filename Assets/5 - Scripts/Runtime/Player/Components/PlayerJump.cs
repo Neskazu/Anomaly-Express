@@ -10,11 +10,12 @@ namespace Player.Components
     {
         [SerializeField] private NetworkObject networkObject;
         [SerializeField] private PlayerAnimator playerAnimator;
-        [SerializeField]
-        public bool IsJumpEnabled;
+        [SerializeField] private float jumpDelay = 0.1f;
+
+        public bool IsJumpEnabled = true;
         public bool JumpRequested { get; set; }
-        [SerializeField]
-        private float jumpDelay = 0.1f;
+
+        private DG.Tweening.Tween _jumpDelayTween;
 
         private void Start()
         {
@@ -31,29 +32,28 @@ namespace Player.Components
                 if (!controller.CurrentPermissions.CanJump) return;
             }
 
-            if (IsJumpEnabled)
+            if (!IsJumpEnabled || controller == null) return;
+
+            if (!controller.Motor.GroundingStatus.IsStableOnGround) return;
+
+            if (_jumpDelayTween != null && _jumpDelayTween.IsActive()) return;
+
+            playerAnimator?.TriggerJump();
+
+            _jumpDelayTween = DOVirtual.DelayedCall(jumpDelay, () =>
             {
-                playerAnimator?.TriggerJump();
-
-                DOVirtual.DelayedCall(jumpDelay, () =>
-                {
-                    if (this != null)
-                    {
-                        JumpRequested = true;
-                    }
-                }).SetTarget(this);
-            }
+                JumpRequested = true;
+            }).SetLink(gameObject);
         }
 
-        public void SetJumpEnabled(bool value)
-        {
-            IsJumpEnabled = value;
-        }
+        public void SetJumpEnabled(bool value) => IsJumpEnabled = value;
 
         private void OnDestroy()
         {
             if (InputManager.Singleton != null)
                 InputManager.Singleton.OnJump -= OnJumpInput;
+
+            _jumpDelayTween?.Kill();
         }
     }
 }
