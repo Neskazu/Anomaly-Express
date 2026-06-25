@@ -150,7 +150,14 @@ namespace Player
 
         private void Update()
         {
-            if (!IsOwner) return;
+            if (!IsOwner) return;;
+
+            // jump buffer
+            if (jumpComponent != null)
+            {
+                bool hasPermissions = !SplitControlAnomaly.IsSplitActive || CurrentPermissions.CanJump;
+                jumpComponent.ProcessJumpBuffer(hasPermissions);
+            }
 
             if (SplitControlAnomaly.IsSplitActive)
             {

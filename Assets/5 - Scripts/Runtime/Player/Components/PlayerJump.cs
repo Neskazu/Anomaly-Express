@@ -1,4 +1,3 @@
-using DG;
 using DG.Tweening;
 using Managers;
 using Unity.Netcode;
@@ -12,9 +11,13 @@ namespace Player.Components
         [SerializeField] private PlayerAnimator playerAnimator;
         [SerializeField] private float jumpDelay = 0.1f;
 
+        [Header("Jump Forgiveness")]
+        public float jumpBufferTime = 0.07f;
+
         public bool IsJumpEnabled = true;
         public bool JumpRequested { get; set; }
 
+        private float _lastJumpInputTime = -100f;
         private DG.Tweening.Tween _jumpDelayTween;
 
         private void Start()
@@ -25,19 +28,24 @@ namespace Player.Components
 
         private void OnJumpInput()
         {
-            var controller = PlayerController.LocalInstance;
+            _lastJumpInputTime = Time.time;
+        }
+        public void ProcessJumpBuffer(bool hasPermissions)
+        {
+            if (!IsJumpEnabled || !hasPermissions) return;
 
-            if (Anomalies.SplitControlAnomaly.IsSplitActive && controller != null)
+            bool hasBufferedJump = (Time.time - _lastJumpInputTime) <= jumpBufferTime;
+
+            if (hasBufferedJump)
             {
-                if (!controller.CurrentPermissions.CanJump) return;
+                if (_jumpDelayTween != null && _jumpDelayTween.IsActive()) return;
+                _lastJumpInputTime = -100f;
+                ExecuteJumpSequence();
             }
+        }
 
-            if (!IsJumpEnabled || controller == null) return;
-
-            if (!controller.Motor.GroundingStatus.IsStableOnGround) return;
-
-            if (_jumpDelayTween != null && _jumpDelayTween.IsActive()) return;
-
+        private void ExecuteJumpSequence()
+        {
             playerAnimator?.TriggerJump();
 
             _jumpDelayTween = DOVirtual.DelayedCall(jumpDelay, () =>
