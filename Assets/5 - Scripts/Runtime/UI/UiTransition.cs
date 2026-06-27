@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Attributes;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -30,22 +31,31 @@ namespace UI
         private async UniTask Prepare()
         {
             if (_initial != null)
-            {
                 return;
-            }
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(container);
             await UniTask.DelayFrame(1);
 
             _initial = new Vector2[targets.Length];
 
-            for (var i = 0; i < targets.Length; i++)
+            for (int i = 0; i < targets.Length; i++)
             {
                 _initial[i] = targets[i].anchoredPosition;
             }
 
-            if (_fitter) _fitter.enabled = false;
-            if (_layoutGroup) _layoutGroup.enabled = false;
+            if (_fitter)
+                _fitter.enabled = false;
+
+            if (_layoutGroup)
+                _layoutGroup.enabled = false;
+        }
+
+        public void Toggle()
+        {
+            if (gameObject.activeSelf)
+                Hide().Forget();
+            else
+                Show().Forget();
         }
 
         [Button]
@@ -55,15 +65,22 @@ namespace UI
 
             gameObject.SetActive(true);
 
-            for (var i = 0; i < targets.Length; i++)
+            for (int i = 0; i < targets.Length; i++)
             {
+                targets[i].DOKill();
+
                 targets[i]
                     .DOAnchorPosX(_initial[i].x, duration)
                     .From(_initial[i] - Vector2.right * 150)
                     .SetEase(Ease.InOutSine)
                     .SetDelay(i * delay);
 
-                var notMutable = i;
+                if (targetsGroups[i] == null)
+                    continue;
+
+                targetsGroups[i].DOKill();
+
+                int index = i;
 
                 targetsGroups[i]
                     .DOFade(1, duration)
@@ -72,8 +89,10 @@ namespace UI
                     .SetDelay(i * delay)
                     .OnComplete(() =>
                     {
-                        targetsGroups[notMutable].blocksRaycasts = true;
-                        LayoutRebuilder.ForceRebuildLayoutImmediate(targetsGroups[notMutable].transform as RectTransform);
+                        targetsGroups[index].blocksRaycasts = true;
+
+                        LayoutRebuilder.ForceRebuildLayoutImmediate(
+                            targetsGroups[index].transform as RectTransform);
                     });
             }
         }
@@ -83,14 +102,20 @@ namespace UI
         {
             await Prepare();
 
-            for (var i = 0; i < targets.Length; i++)
+            for (int i = 0; i < targets.Length; i++)
             {
+                targets[i].DOKill();
+
                 targets[i]
                     .DOAnchorPosX(_initial[i].x + 150, duration)
                     .From(_initial[i])
                     .SetEase(Ease.InOutSine)
                     .SetDelay(i * delay);
 
+                if (targetsGroups[i] == null)
+                    continue;
+
+                targetsGroups[i].DOKill();
                 targetsGroups[i].blocksRaycasts = false;
 
                 targetsGroups[i]
@@ -99,6 +124,12 @@ namespace UI
                     .SetEase(Ease.InOutSine)
                     .SetDelay(i * delay);
             }
+
+            float totalDuration = duration + delay * Mathf.Max(0, targets.Length - 1);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(totalDuration));
+
+            gameObject.SetActive(false);
         }
 
 #if UNITY_EDITOR
@@ -107,24 +138,24 @@ namespace UI
         {
             if (!container)
             {
-                Debug.LogWarning($"Missing container");
+                Debug.LogWarning("Missing container");
                 return;
             }
 
             targets = GetComponentsInDirectChildren<RectTransform>(container).ToArray();
             targetsGroups = new CanvasGroup[targets.Length];
 
-            for (var i = 0; i < targets.Length; i++)
+            for (int i = 0; i < targets.Length; i++)
                 targets[i].TryGetComponent(out targetsGroups[i]);
         }
 
         private static List<T> GetComponentsInDirectChildren<T>(Transform parent) where T : Component
         {
-            var results = new List<T>();
+            List<T> results = new();
 
             foreach (Transform child in parent)
             {
-                var component = child.GetComponent<T>();
+                T component = child.GetComponent<T>();
 
                 if (component != null)
                     results.Add(component);

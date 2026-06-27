@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Localization;
+using SaveSystem;
+using UnityEngine;
 
 namespace Scene
 {
@@ -9,7 +11,11 @@ namespace Scene
 
         private async void Start()
         {
-            Application.targetFrameRate = (int) targetFrameRate;
+            SaveManager.Load();
+
+            LocalizationManager.Instance.Initialize();
+
+            Application.targetFrameRate = (int)targetFrameRate;
 
             await SceneTransitionController.Instance.Play(sequence);
         }
