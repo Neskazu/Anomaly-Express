@@ -48,14 +48,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3122642997159042220, guid: 1b0e0dd74243e124d90ac0da25e337df, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b34f1de23ad4c3e44822542f7ace494e, type: 2}
     - target: {fileID: 3350822714730020110, guid: 1b0e0dd74243e124d90ac0da25e337df, type: 3}
       propertyPath: m_Name
-      value: Diana's Phone
+      value: Lisa's Phone
       objectReference: {fileID: 0}
     - target: {fileID: 3855221955274038491, guid: 1b0e0dd74243e124d90ac0da25e337df, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 56393e8f6163d6b419a32198d9d276a4, type: 2}
+      objectReference: {fileID: 2100000, guid: b34f1de23ad4c3e44822542f7ace494e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
