@@ -12,6 +12,7 @@ namespace Achievements
         [SerializeField] private TMP_Text descriptionText;
         [SerializeField] private TMP_Text progressText;
         [SerializeField] private Image lockIcon;
+        [SerializeField] private Image unlockIcon;
 
         private AchievementDefinition definition;
         private AchievementProgress progress;
@@ -64,7 +65,8 @@ namespace Achievements
                 progressText.gameObject.SetActive(false);
             }
 
-            lockIcon.enabled = !progress.Unlocked;
+            lockIcon.gameObject.SetActive(!progress.Unlocked);
+            unlockIcon.gameObject.SetActive(progress.Unlocked);
         }
     }
 }
