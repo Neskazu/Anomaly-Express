@@ -341,7 +341,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -402, y: 170}
+  m_AnchoredPosition: {x: -400, y: 100}
   m_SizeDelta: {x: 1700, y: 460}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7894979402560151725
@@ -468,6 +468,7 @@ GameObject:
   - component: {fileID: 5691239341193006789}
   - component: {fileID: 3975076139647223770}
   - component: {fileID: 4531344624558460754}
+  - component: {fileID: 788622874587500231}
   m_Layer: 5
   m_Name: Loading
   m_TagString: Untagged
@@ -594,6 +595,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &788622874587500231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4417666952786457962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bbbaca7029ad4747ae626fd77de8cac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: MENU_LOADING
 --- !u!1 &4664463626432901368
 GameObject:
   m_ObjectHideFlags: 0
