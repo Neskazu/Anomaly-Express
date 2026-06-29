@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: StencilObjectRoom
+  m_Name: StencilObjectRoomVisable
   m_Shader: {fileID: 4800000, guid: c81f16d2eea9f964199b84577965db50, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -123,7 +123,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _StencilComp: 3
+    - _StencilComp: 8
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1

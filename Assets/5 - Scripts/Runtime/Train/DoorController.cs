@@ -197,6 +197,16 @@ namespace Train
 
             seq.SetEase(Ease.InOutSine);
         }
+        [ServerRpc(RequireOwnership = false)]
+        public void SetLockServerRpc(bool lockState)
+        {
+            _netIsLocked.Value = lockState;
+        }
+
+        public bool IsLockedNetwork()
+        {
+            return _netIsLocked.Value;
+        }
     }
 
     public enum DoorType

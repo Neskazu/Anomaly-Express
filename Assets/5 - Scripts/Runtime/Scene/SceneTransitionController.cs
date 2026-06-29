@@ -36,5 +36,31 @@ namespace Scene
 
             Loaded?.Invoke(sequence);
         }
+        public async UniTask Play(SceneTransitionSequence sequence, bool showLoadingScreen = true)
+        {
+            if (showLoadingScreen)
+            {
+                await _loadingScreen.Show();
+            }
+
+            foreach (var sceneTransitionStep in sequence.steps)
+            {
+                if (sceneTransitionStep.networkMode == SceneTransitionSequence.NetworkMode.Solo)
+                {
+                    await SceneManager.LoadSceneAsync(sceneTransitionStep.scene.Path, sceneTransitionStep.loadMode).ToUniTask();
+                }
+                else
+                {
+                    NetworkManager.Singleton.SceneManager.LoadScene(sceneTransitionStep.scene.Path, sceneTransitionStep.loadMode);
+                }
+            }
+
+            if (showLoadingScreen)
+            {
+                await _loadingScreen.Hide();
+            }
+
+            Loaded?.Invoke(sequence);
+        }
     }
 }
