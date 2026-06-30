@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Network.Players;
 using Player;
+using R3;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,10 +11,17 @@ namespace Managers
     public class GameManager : NetworkBehaviour
     {
         [SerializeField] private PlayerController playerPrefab;
+        [SerializeField] private Transform[] spawnPoints;
 
         private static PlayerDataProvider Players => MultiplayerManager.Players;
 
         public static GameManager Instance { get; private set; }
+
+        private readonly Subject<ulong> onLocalPlayerSpawn = new();
+
+        private int nextSpawnIndex = 0;
+
+        public Observable<ulong> OnLocalPlayerSpawn => onLocalPlayerSpawn;
 
         private void Awake()
         {
@@ -60,13 +68,40 @@ namespace Managers
                     }
                 }
 
-                var player = Instantiate(playerPrefab);
+                var pos = NextSpawnPoint();
+                var player = Instantiate(playerPrefab, pos.position, pos.rotation);
                 var netObj = player.GetComponent<NetworkObject>();
                 netObj.SpawnAsPlayerObject(clientId, true);
 
                 var data = Players.Get(clientId);
                 player.CharacterId.Value = data.CharacterId;
+
+                OnLocalPlayerSpawnRpc(clientId, RpcTarget.Single(clientId, RpcTargetUse.Temp));
             }
+        }
+
+        private Pose NextSpawnPoint()
+        {
+            if (spawnPoints.Length == 0)
+            {
+                return default;
+            }
+
+            var pos = new Pose(spawnPoints[nextSpawnIndex].position, spawnPoints[nextSpawnIndex].rotation);
+
+            nextSpawnIndex++;
+            if (nextSpawnIndex >= spawnPoints.Length)
+            {
+                nextSpawnIndex = 0;
+            }
+
+            return pos;
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void OnLocalPlayerSpawnRpc(ulong id, RpcParams rpcParameters = default)
+        {
+            onLocalPlayerSpawn.OnNext(id);
         }
 
         [ServerRpc(RequireOwnership = false)]
