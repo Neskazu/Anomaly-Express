@@ -48,7 +48,7 @@ namespace Anomalies
             }
             else
             {
-                detected.Value--;
+                detected.Value = Mathf.Max(detected.Value - 1, 0);
             }
 
             UpdateStateRpc(detected.Value > 0);

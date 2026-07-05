@@ -98,6 +98,18 @@ namespace Managers
             return pos;
         }
 
+        public Transform GetRandomSpawnPoint()
+        {
+            if (spawnPoints == null || spawnPoints.Length == 0)
+            {
+                return null;
+            }
+
+            var randomIndex = Random.Range(0, spawnPoints.Length);
+
+            return spawnPoints[randomIndex];
+        }
+
         [Rpc(SendTo.SpecifiedInParams)]
         private void OnLocalPlayerSpawnRpc(ulong id, RpcParams rpcParameters = default)
         {

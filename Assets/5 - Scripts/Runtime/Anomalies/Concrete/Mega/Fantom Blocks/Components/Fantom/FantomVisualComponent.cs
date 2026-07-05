@@ -1,6 +1,7 @@
 using DG.Tweening;
 using R3;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Anomalies
 {
@@ -12,6 +13,9 @@ namespace Anomalies
         [SerializeField] private GameObject onRevealed;
         [SerializeField] private GameObject onConcealed;
 
+        [Space]
+        [SerializeField] private VisualEffect effect;
+
         private DG.Tweening.Tween anim;
 
         private void Start()
@@ -21,6 +25,7 @@ namespace Anomalies
                 .AddTo(this);
 
             anim = DOTween.Sequence()
+                .AppendInterval(1f)
                 .SetAutoKill(false)
                 .Pause();
         }
@@ -34,6 +39,8 @@ namespace Anomalies
         private void RevealedCallback(bool revealed)
         {
             anim.OnComplete(() => OnCompleteCallback(revealed));
+
+            effect.SetBool("Activate", revealed);
 
             onRevealed.SetActive(revealed);
             onConcealed.SetActive(!revealed);
