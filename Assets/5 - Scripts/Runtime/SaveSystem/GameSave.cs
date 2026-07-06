@@ -8,5 +8,6 @@ namespace SaveSystem
     {
         public AchievementSave Achievements = new();
         public SettingsSave Settings = new();
+        public SessionSave Session = new();
     }
 }
