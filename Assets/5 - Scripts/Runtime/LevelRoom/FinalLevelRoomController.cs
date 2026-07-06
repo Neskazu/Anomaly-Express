@@ -100,6 +100,6 @@ public class FinalLevelRoomController : NetworkBehaviour
 
         await SceneTransitionController.Instance.Play(
             endGameSequence,
-            showLoadingScreen: false);
+            showLoadingScreen: true);
     }
 }

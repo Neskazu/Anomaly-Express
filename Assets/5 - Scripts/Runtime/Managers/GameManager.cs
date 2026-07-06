@@ -38,6 +38,11 @@ namespace Managers
         {
             base.OnDestroy();
 
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
+            {
+                NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= SceneManager_OnLoadEventCompleted;
+            }
+
             if (Instance == this)
             {
                 Instance = null;
@@ -82,7 +87,7 @@ namespace Managers
 
         private Pose NextSpawnPoint()
         {
-            if (spawnPoints.Length == 0)
+            if (spawnPoints == null || spawnPoints.Length <= 0 || spawnPoints[nextSpawnIndex] == null)
             {
                 return default;
             }
