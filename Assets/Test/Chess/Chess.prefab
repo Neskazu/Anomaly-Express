@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5032536268803208541}
   - component: {fileID: 5990726696875255646}
   - component: {fileID: 3842090290753646889}
-  - component: {fileID: 1585968715241157549}
+  - component: {fileID: 6784592345212989544}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4205193570968563853}
@@ -49,7 +49,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 778730653491032106}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -87,7 +87,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1585968715241157549
+--- !u!65 &6784592345212989544
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -106,8 +106,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.6, y: 0.1, z: 1.6}
+  m_Center: {x: 0.7, y: -0.105, z: 0.7}
 --- !u!1 &9179573367227059954
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4051224518
+  GlobalObjectIdHash: 3014805736
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -203,19 +203,19 @@ MonoBehaviour:
     prefab: {fileID: 5356103514587604379, guid: 26c0a9dabeab45b4ab555b94811e6a18, type: 3}
   - type: 0
     color: 0
-    prefab: {fileID: 4768578198023605128, guid: 0987feb2702eeb547873612229cb7013, type: 3}
+    prefab: {fileID: 4768578198023605128, guid: 4c3dd8595b8290a4dad02f0224b122b1, type: 3}
   - type: 1
     color: 0
-    prefab: {fileID: 3690380859830922896, guid: 3881de5971e427c43bfadc45ceb411fb, type: 3}
+    prefab: {fileID: 3690380859830922896, guid: fa8d75ffd3c19c04dbe5ee3902363f8a, type: 3}
   - type: 2
     color: 0
-    prefab: {fileID: 255234413867164089, guid: dcb2b6cd463761649896b5315432e326, type: 3}
+    prefab: {fileID: 255234413867164089, guid: a65cef7dada6d504d8c0206edaa23467, type: 3}
   - type: 3
     color: 0
-    prefab: {fileID: 3846009615383186467, guid: c8d1de04acf59fb40893adcbca8539c8, type: 3}
+    prefab: {fileID: 3846009615383186467, guid: 4d37195d43614e348856baece565ec71, type: 3}
   - type: 4
     color: 0
-    prefab: {fileID: 2560527206248798409, guid: 7c35445b24cd8d941bb3903a208f7a97, type: 3}
+    prefab: {fileID: 2560527206248798409, guid: 6665afcb8e09b82468dbad904f2f2e2b, type: 3}
   - type: 5
     color: 0
-    prefab: {fileID: 5356103514587604379, guid: 26c0a9dabeab45b4ab555b94811e6a18, type: 3}
+    prefab: {fileID: 5356103514587604379, guid: d90cb6f44dd468844b0ab1c602b76bae, type: 3}

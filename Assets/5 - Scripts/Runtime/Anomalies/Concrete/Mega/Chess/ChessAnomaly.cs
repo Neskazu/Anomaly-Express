@@ -5,6 +5,9 @@ using Unity.Netcode;
 using UnityEngine;
 using ChessDotNet;
 using Unity.Collections;
+using Train;
+using System.Threading.Tasks;
+using ChessDotNet.Pieces;
 
 namespace Anomalies
 {
@@ -25,12 +28,18 @@ namespace Anomalies
         [SerializeField] private float _cellSize = 1f;
         [SerializeField] private PieceModelMapping[] _mappings;
 
+        [SerializeField] private DoorController door;
+
+        public System.Action<ChessDotNet.Player> OnGameOver;
+
         private NetworkVariable<FixedString128Bytes> _currentBoardFen = new NetworkVariable<FixedString128Bytes>();
         private NetworkVariable<ulong> _whitePlayerId = new NetworkVariable<ulong>(999);
 
         private ChessGame _gameLogic;
         private ChessPiece[,] _activePieces = new ChessPiece[8, 8];
         private Vector2Int? _selectedCoord = null;
+
+        private SimpleChessAI _ai;
 
         public override void OnNetworkSpawn()
         {
@@ -43,7 +52,10 @@ namespace Anomalies
                 _currentBoardFen.Value = _gameLogic.GetFen();
             }
         }
-
+        private void Start()
+        {
+            if (IsServer) Activate();
+        }
         protected override void OnActivate()
         {
             if (!IsServer) return;
@@ -54,7 +66,10 @@ namespace Anomalies
             var clients = NetworkManager.Singleton.ConnectedClientsIds;
             if (clients.Count > 0) _whitePlayerId.Value = clients[0];
 
-            LockPlayerCameraClientRpc(_whitePlayerId.Value);
+            //door locked until win
+            door.SetLockServerRpc(true);
+            //add ai
+            _ai = new SimpleChessAI(depth: 1);
         }
 
         protected override void OnDeactivate()
@@ -69,11 +84,6 @@ namespace Anomalies
             }
         }
 
-        [ClientRpc]
-        private void LockPlayerCameraClientRpc(ulong targetId)
-        {
-            if (NetworkManager.Singleton.LocalClientId != targetId) return;
-        }
 
         private void Update()
         {
@@ -86,9 +96,22 @@ namespace Anomalies
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                Vector3 localPos = _boardRoot.InverseTransformPoint(hit.point);
-                int x = Mathf.RoundToInt(localPos.x / _cellSize);
-                int y = Mathf.RoundToInt(localPos.z / _cellSize);
+                int x, y;
+
+                ChessPiece clickedPiece = hit.collider.GetComponentInParent<ChessPiece>();
+
+                if (clickedPiece != null)
+                {
+                    Vector3 localPiecePos = _boardRoot.InverseTransformPoint(clickedPiece.transform.position);
+                    x = Mathf.RoundToInt(localPiecePos.x / _cellSize);
+                    y = Mathf.RoundToInt(localPiecePos.z / _cellSize);
+                }
+                else
+                {
+                    Vector3 localPos = _boardRoot.InverseTransformPoint(hit.point);
+                    x = Mathf.RoundToInt(localPos.x / _cellSize);
+                    y = Mathf.RoundToInt(localPos.z / _cellSize);
+                }
 
                 if (x < 0 || x > 7 || y < 0 || y > 7)
                 {
@@ -125,38 +148,83 @@ namespace Anomalies
         public void MakeMoveServerRpc(string moveFrom, string moveTo, ServerRpcParams rpcParams = default)
         {
             ulong senderId = rpcParams.Receive.SenderClientId;
+            if (senderId != _whitePlayerId.Value) return;
+            ChessDotNet.Player player = _gameLogic.WhoseTurn;
+            Piece pieceAtFrom = _gameLogic.GetPieceAt(new Position(moveFrom));
+            bool isPawnMoving = pieceAtFrom != null && pieceAtFrom is Pawn && pieceAtFrom.Owner == player;
+            bool isReachingLastRank = (player == ChessDotNet.Player.White && moveTo[1] == '8') ||
+                                     (player == ChessDotNet.Player.Black && moveTo[1] == '1');
 
-            if (senderId != _whitePlayerId.Value)
+            Move move;
+            if (isPawnMoving && isReachingLastRank)
             {
-                return;
+                move = new Move(moveFrom, moveTo, player, player == ChessDotNet.Player.White ? 'Q' : 'q');
+            }
+            else
+            {
+                move = new Move(moveFrom, moveTo, player);
             }
 
-            Move move = new Move(moveFrom, moveTo, _gameLogic.WhoseTurn);
             bool isValid = _gameLogic.IsValidMove(move);
-
             if (isValid)
             {
                 _gameLogic.MakeMove(move, true);
+                _currentBoardFen.Value = _gameLogic.GetFen();
 
-                if (_gameLogic.IsCheckmated(ChessDotNet.Player.Black) || _gameLogic.IsCheckmated(ChessDotNet.Player.White))
+                if (!CheckGameOver())
                 {
-                    Deactivate();
+                    StartCoroutine(DelayedAIMoveRoutine());
                 }
-                else
-                {
-                    ExecuteAIMove();
-                    _currentBoardFen.Value = _gameLogic.GetFen();
-                }
+            }
+            else
+            {
+                InvalidMoveClientRpc(moveFrom, rpcParams.Receive.SenderClientId);
             }
         }
-
-        private void ExecuteAIMove()
+        [ClientRpc]
+        private void InvalidMoveClientRpc(string moveFrom, ulong targetClientId)
         {
-            var moves = _gameLogic.GetValidMoves(ChessDotNet.Player.Black);
-            if (moves.Count > 0)
+            if (NetworkManager.Singleton.LocalClientId != targetClientId) return;
+
+            int x = moveFrom[0] - 'a';
+            int y = moveFrom[1] - '1';
+
+            if (_activePieces[x, y] != null)
             {
-                _gameLogic.MakeMove(moves[Random.Range(0, moves.Count)], true);
+                _activePieces[x, y].FlashError();
             }
+        }
+        private IEnumerator DelayedAIMoveRoutine()
+        {
+            yield return new WaitForSeconds(0.6f);
+
+            string currentFen = _gameLogic.GetFen();
+
+            Task<Move> aiTask = Task.Run(() =>
+            {
+                ChessGame threadSafeGame = new ChessGame(currentFen);
+                return _ai.GetBestMove(threadSafeGame);
+            });
+
+            yield return new WaitUntil(() => aiTask.IsCompleted);
+
+            Move bestMove = aiTask.Result;
+
+            if (bestMove != null)
+            {
+                _gameLogic.MakeMove(bestMove, true);
+            }
+            else
+            {
+                var moves = _gameLogic.GetValidMoves(ChessDotNet.Player.Black);
+                if (moves.Count > 0)
+                {
+                    _gameLogic.MakeMove(moves[0], true);
+                }
+            }
+
+            _currentBoardFen.Value = _gameLogic.GetFen();
+            CheckGameOver();
         }
 
         private void OnBoardChanged(FixedString128Bytes oldFen, FixedString128Bytes newFen)
@@ -192,14 +260,30 @@ namespace Anomalies
                     char newChar = newBoardState[x, y];
                     if (x == moveTo.x && y == moveTo.y && moveFrom.x != -1)
                     {
+                        // Сперва удаляем фигуру, которая была захвачена
                         if (_activePieces[x, y] != null) _activePieces[x, y].PlayCaptureAndDestroy();
+
+                        // Получаем фигуру, которая сделала ход
                         ChessPiece movingPiece = _activePieces[moveFrom.x, moveFrom.y];
-                        if (movingPiece != null)
+
+                        // --- ДОБАВЛЕНА ЛОГИКА ЗАМЕНЫ МОДЕЛИ ---
+                        char oldCharFrom = movingPiece != null ? movingPiece.name[0] : ' ';
+
+                        // Проверяем, была ли фигура пешкой и поменялся ли её символ в FEN-строке
+                        if (char.ToLower(oldCharFrom) == 'p' && char.ToLower(newChar) != 'p')
                         {
+                            // Пешка превратилась в другую фигуру, удаляем старую модель и спавним новую
+                            movingPiece.PlayCaptureAndDestroy();
+                            nextActivePieces[x, y] = SpawnPiece(x, y, newChar);
+                        }
+                        else if (movingPiece != null)
+                        {
+                            // Обычный ход, просто перемещаем и переименовываем
                             movingPiece.MoveTo(new Vector3(x * _cellSize, 0, y * _cellSize));
                             movingPiece.name = $"{newChar}_{x}_{y}";
                             nextActivePieces[x, y] = movingPiece;
                         }
+                        // --------------------------------------
                     }
                     else if (newChar != ' ' && _activePieces[x, y] != null && _activePieces[x, y].name[0] == newChar)
                     {
@@ -272,6 +356,58 @@ namespace Anomalies
                 'k' => ChessPieceType.King,
                 _ => ChessPieceType.Pawn
             };
+        }
+        [ClientRpc]
+        private void NotifyGameOverClientRpc(ChessDotNet.Player winner)
+        {
+            OnGameOver?.Invoke(winner);
+        }
+        private bool CheckGameOver()
+        {
+            if (_gameLogic.IsCheckmated(ChessDotNet.Player.Black))
+            {
+                door.SetLockServerRpc(false);
+
+                NotifyGameOverClientRpc(ChessDotNet.Player.White);
+                Deactivate();
+                return true;
+            }
+            else if (_gameLogic.IsCheckmated(ChessDotNet.Player.White) ||
+                     _gameLogic.IsStalemated(ChessDotNet.Player.White) ||
+                     _gameLogic.IsStalemated(ChessDotNet.Player.Black))
+            {
+                ResetMatch();
+                return true;
+            }
+
+            return false;
+        }
+
+        private void ResetMatch()
+        {
+            _gameLogic = new ChessGame();
+            _currentBoardFen.Value = _gameLogic.GetFen();
+
+            door.SetLockServerRpc(true);
+        }
+        private void OnDrawGizmos()
+        {
+            if (_boardRoot == null) return;
+
+            for (int x = 0; x < 8; x++)
+            {
+                for (int y = 0; y < 8; y++)
+                {
+                    Vector3 localCenter = new Vector3(x * _cellSize, 0, y * _cellSize);
+
+                    Vector3 worldCenter = _boardRoot.TransformPoint(localCenter);
+
+                    Gizmos.color = (x + y) % 2 == 0 ? Color.green : Color.yellow;
+                    Gizmos.DrawWireCube(worldCenter, new Vector3(_cellSize, 0.01f, _cellSize));
+                }
+            }
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(_boardRoot.position, 0.05f);
         }
     }
 }

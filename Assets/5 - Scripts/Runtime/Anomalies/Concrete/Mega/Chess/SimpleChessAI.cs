@@ -1,6 +1,7 @@
 using ChessDotNet;
-using ChessDotNet.Pieces;
+using System;
 using UnityEngine;
+
 public class SimpleChessAI
 {
     private int _maxDepth;
@@ -20,7 +21,7 @@ public class SimpleChessAI
             ChessGame branch = new ChessGame(game.GetFen());
             branch.MakeMove(move, true);
 
-            int boardValue = Minimax(branch, 2, int.MinValue, int.MaxValue, aiPlayer != ChessDotNet.Player.White);
+            int boardValue = Minimax(branch, _maxDepth - 1, int.MinValue, int.MaxValue, aiPlayer != ChessDotNet.Player.White);
 
             if (aiPlayer == ChessDotNet.Player.White)
             {
@@ -36,19 +37,25 @@ public class SimpleChessAI
 
     private int Minimax(ChessGame game, int depth, int alpha, int beta, bool isMaximizing)
     {
-        if (depth == 0) return ChessEvaluator.Evaluate(game);
+        if (depth <= 0 || game.IsCheckmated(game.WhoseTurn) || game.IsStalemated(game.WhoseTurn))
+        {
+            return ChessEvaluator.Evaluate(game);
+        }
 
         var moves = game.GetValidMoves(game.WhoseTurn);
+
         if (isMaximizing)
         {
             int maxEval = int.MinValue;
             foreach (var move in moves)
             {
-                game.MakeMove(move, true);
-                int eval = Minimax(game, depth - 1, alpha, beta, false);
-                game.Undo();
-                maxEval = Mathf.Max(maxEval, eval);
-                alpha = Mathf.Max(alpha, eval);
+                ChessGame nextStepGame = new ChessGame(game.GetFen());
+                nextStepGame.MakeMove(move, true);
+
+                int eval = Minimax(nextStepGame, depth - 1, alpha, beta, false);
+
+                maxEval = Math.Max(maxEval, eval);
+                alpha = Math.Max(alpha, eval);
                 if (beta <= alpha) break;
             }
             return maxEval;
@@ -58,11 +65,13 @@ public class SimpleChessAI
             int minEval = int.MaxValue;
             foreach (var move in moves)
             {
-                game.MakeMove(move, true);
-                int eval = Minimax(game, depth - 1, alpha, beta, true);
-                game.Undo();
-                minEval = Mathf.Min(minEval, eval);
-                beta = Mathf.Min(beta, eval);
+                ChessGame nextStepGame = new ChessGame(game.GetFen());
+                nextStepGame.MakeMove(move, true);
+
+                int eval = Minimax(nextStepGame, depth - 1, alpha, beta, true);
+
+                minEval = Math.Min(minEval, eval);
+                beta = Math.Min(beta, eval);
                 if (beta <= alpha) break;
             }
             return minEval;
