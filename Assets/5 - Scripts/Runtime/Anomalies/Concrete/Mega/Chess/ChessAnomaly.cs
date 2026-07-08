@@ -39,6 +39,8 @@ namespace Anomalies
         private ChessPiece[,] _activePieces = new ChessPiece[8, 8];
         private Vector2Int? _selectedCoord = null;
 
+        private PlayerAnimator _cachedLocalAnimator;
+
         private SimpleChessAI _ai;
 
         public override void OnNetworkSpawn()
@@ -75,6 +77,7 @@ namespace Anomalies
         protected override void OnDeactivate()
         {
             if (IsServer) _whitePlayerId.Value = 999;
+            _cachedLocalAnimator = null;
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 8; y++)
@@ -138,12 +141,30 @@ namespace Anomalies
 
                     string moveFrom = CoordToAlgebraic(_selectedCoord.Value);
                     string moveTo = CoordToAlgebraic(new Vector2Int(x, y));
-                    MakeMoveServerRpc(moveFrom, moveTo);
+                    PlayAnimationAndSendMove(moveFrom, moveTo);
                     _selectedCoord = null;
                 }
             }
         }
+        private void PlayAnimationAndSendMove(string moveFrom, string moveTo)
+        {
+            if (_cachedLocalAnimator == null)
+            {
+                var localClient = NetworkManager.Singleton.LocalClient;
+                if (localClient != null && localClient.PlayerObject != null)
+                {
+                    _cachedLocalAnimator = localClient.PlayerObject.GetComponentInChildren<PlayerAnimator>();
+                }
+            }
 
+            if (_cachedLocalAnimator != null)
+            {
+                _cachedLocalAnimator.TriggerInteract();
+            }
+
+            // 3. Отправляем ход на сервер
+            MakeMoveServerRpc(moveFrom, moveTo);
+        }
         [ServerRpc(RequireOwnership = false)]
         public void MakeMoveServerRpc(string moveFrom, string moveTo, ServerRpcParams rpcParams = default)
         {
@@ -260,30 +281,24 @@ namespace Anomalies
                     char newChar = newBoardState[x, y];
                     if (x == moveTo.x && y == moveTo.y && moveFrom.x != -1)
                     {
-                        // Сперва удаляем фигуру, которая была захвачена
                         if (_activePieces[x, y] != null) _activePieces[x, y].PlayCaptureAndDestroy();
 
-                        // Получаем фигуру, которая сделала ход
                         ChessPiece movingPiece = _activePieces[moveFrom.x, moveFrom.y];
 
-                        // --- ДОБАВЛЕНА ЛОГИКА ЗАМЕНЫ МОДЕЛИ ---
                         char oldCharFrom = movingPiece != null ? movingPiece.name[0] : ' ';
 
-                        // Проверяем, была ли фигура пешкой и поменялся ли её символ в FEN-строке
                         if (char.ToLower(oldCharFrom) == 'p' && char.ToLower(newChar) != 'p')
                         {
-                            // Пешка превратилась в другую фигуру, удаляем старую модель и спавним новую
                             movingPiece.PlayCaptureAndDestroy();
                             nextActivePieces[x, y] = SpawnPiece(x, y, newChar);
                         }
                         else if (movingPiece != null)
                         {
-                            // Обычный ход, просто перемещаем и переименовываем
+                            
                             movingPiece.MoveTo(new Vector3(x * _cellSize, 0, y * _cellSize));
                             movingPiece.name = $"{newChar}_{x}_{y}";
                             nextActivePieces[x, y] = movingPiece;
                         }
-                        // --------------------------------------
                     }
                     else if (newChar != ' ' && _activePieces[x, y] != null && _activePieces[x, y].name[0] == newChar)
                     {
