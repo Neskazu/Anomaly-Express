@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,7 +8,8 @@ namespace Anomalies
 {
     public class FantomComponent : NetworkBehaviour
     {
-        [SerializeField] private SensorComponent sensor;
+        [SerializeField] private SightSensorComponent sensor;
+        [SerializeField] private FantomVisualComponent visual;
 
         // Shared
         private readonly NetworkVariable<int> detected = new();
@@ -58,6 +60,21 @@ namespace Anomalies
         private void UpdateStateRpc(bool state)
         {
             revealed.Value = state;
+        }
+
+        [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
+        public void UpdateColorRpc(ulong guildID)
+        {
+            var controller = FantomBlocksController.Singleton;
+            var guild = controller.GetGuild(guildID);
+            
+            if (guild.Color.RGBA.a < 0.001)
+            {
+                return;
+            }
+
+            visual.SetColor(guild.Color.Gradient);
+            sensor.SetColor(guild.Color.RGBA);
         }
     }
 }

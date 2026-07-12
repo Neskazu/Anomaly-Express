@@ -39,5 +39,11 @@ namespace Anomalies
         {
             return Vector3.Distance(a, b) < 0.1f;
         }
+
+        public void SetColor(Color clr)
+        {
+            color = clr;
+            rgb = new Vector3(color.r, color.g, color.b);
+        }
     }
 }

@@ -59,5 +59,10 @@ namespace Anomalies
             onRevealed.SetActive(revealed);
             onConcealed.SetActive(!revealed);
         }
+
+        public void SetColor(Gradient colorGradient)
+        {
+            effect.SetGradient("Color", colorGradient);
+        }
     }
 }

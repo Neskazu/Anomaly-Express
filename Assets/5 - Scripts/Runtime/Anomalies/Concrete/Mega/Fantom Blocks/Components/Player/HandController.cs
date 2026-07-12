@@ -16,7 +16,8 @@ namespace Anomalies
         {
             base.OnNetworkPostSpawn();
 
-            var data = Players.Get(OwnerClientId);
+            var owner = NetworkManager.Singleton.LocalClientId;
+            var data = Players.Get(owner);
 
             foreach (Transform child in handsRoot)
             {

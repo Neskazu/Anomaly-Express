@@ -194,6 +194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   sensor: {fileID: 3920141028462516211}
+  visual: {fileID: 8802029647851070410}
 --- !u!114 &8802029647851070410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -575,7 +576,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sightRenderer: {fileID: 7515351418736497832}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  color: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &8604197443036962319
 GameObject:
   m_ObjectHideFlags: 0

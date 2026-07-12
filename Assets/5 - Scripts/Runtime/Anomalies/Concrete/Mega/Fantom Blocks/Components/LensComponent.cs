@@ -33,6 +33,14 @@ namespace Anomalies
             Lens.Remove(this);
         }
 
+        public void UpdateColor(Color clr)
+        {
+            color = clr;
+            RGB = new Vector3(clr.r, clr.g, clr.b);
+
+            Debug.Log(clr);
+        }
+
         private void Update()
         {
             Planes = GeometryUtility.CalculateFrustumPlanes(cam);
