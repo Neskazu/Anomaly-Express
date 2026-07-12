@@ -744,6 +744,7 @@ GameObject:
   - component: {fileID: 527824739}
   - component: {fileID: 527824740}
   - component: {fileID: 527824741}
+  - component: {fileID: 527824742}
   m_Layer: 0
   m_Name: '[ Scripts ]'
   m_TagString: Untagged
@@ -783,6 +784,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transitions:
+  - button: {fileID: 1657299415}
+    from: {fileID: 208452897}
+    to: {fileID: 6118431283819030709}
   - button: {fileID: 1703661026}
     from: {fileID: 208452897}
     to: {fileID: 1582462934}
@@ -803,6 +807,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1238395425}
   window: {fileID: 350753727}
+--- !u!114 &527824742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 527824738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 515b62a0506e4c108f1e5b5a102680d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 760445163}
+  toGame: {fileID: 11400000, guid: 3719436bf2a07e54da94675097d9a345, type: 2}
 --- !u!1001 &561278562
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1637,6 +1655,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4352360628565827405, guid: d81d70e61ab55ab4e9d2f7dae11ab11b, type: 3}
   m_PrefabInstance: {fileID: 760445161}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &760445163 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7689341688341035281, guid: d81d70e61ab55ab4e9d2f7dae11ab11b, type: 3}
+  m_PrefabInstance: {fileID: 760445161}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296265120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!225 &760445166
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1647,7 +1676,7 @@ CanvasGroup:
   m_Enabled: 1
   m_Alpha: 1
   m_Interactable: 1
-  m_BlocksRaycasts: 0
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!1 &776441000
 GameObject:

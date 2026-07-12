@@ -2,7 +2,6 @@
 using Network;
 using Network.Players;
 using Scene;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
@@ -12,10 +11,11 @@ namespace Lobby
 {
     public class LobbyController : NetworkBehaviour
     {
+        private static PlayerDataProvider Players => MultiplayerManager.Players;
+
         [SerializeField] private SceneTransitionSequence toGame;
+
         private bool _gameStarted;
-        private static PlayerDataProvider Players =>
-            MultiplayerManager.Players;
 
         private void Awake()
         {
@@ -38,7 +38,6 @@ namespace Lobby
             MultiplayerManager.Players.OnUpdated -= IsAllReady;
             MultiplayerManager.Players.OnDisconnected -= OnPlayersChanged;
             MultiplayerManager.Players.OnConnected -= OnPlayersChanged;
-
         }
 
         private void IsAllReady(PlayerData _)
@@ -55,6 +54,7 @@ namespace Lobby
         public async void StartGame()
         {
             AssignCharacters();
+
             await SceneTransitionController.Instance.Play(toGame);
         }
 
@@ -66,6 +66,7 @@ namespace Lobby
             data.IsReady = isReady;
             Players.Update(data);
         }
+
         private void AssignCharacters()
         {
             var players = Players.ToList();
@@ -98,6 +99,7 @@ namespace Lobby
                 Players.Update(player);
             }
         }
+
         private void OnPlayersChanged(PlayerData _)
         {
             AssignCharacters();
