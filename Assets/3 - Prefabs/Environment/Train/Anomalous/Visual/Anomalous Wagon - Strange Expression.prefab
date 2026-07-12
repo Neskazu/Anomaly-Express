@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 227684302791997228, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
+      propertyPath: UpdateType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 555756203515655899, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
       propertyPath: m_BlendShapeWeights.Array.size
       value: 57
@@ -84,6 +88,10 @@ PrefabInstance:
       propertyPath: 'm_BlendShapeWeights.Array.data[50]'
       value: 80.8
       objectReference: {fileID: 0}
+    - target: {fileID: 2374133943991102029, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
+      propertyPath: UpdateType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2624484528845302714, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
       propertyPath: m_BlendShapeWeights.Array.size
       value: 57
@@ -135,6 +143,10 @@ PrefabInstance:
     - target: {fileID: 2624484528845302714, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[50]'
       value: 80.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3364441970354067526, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
+      propertyPath: UpdateType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4557961453584437428, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
       propertyPath: m_Name
@@ -298,6 +310,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8302204240766679360, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811406865860084111, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
+      propertyPath: UpdateType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
