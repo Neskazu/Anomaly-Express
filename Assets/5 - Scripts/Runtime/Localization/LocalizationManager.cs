@@ -52,7 +52,6 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
 
             if (!Directory.Exists(LanguagesFolder))
             {
-                Debug.LogWarning($"Languages folder not found:\n{LanguagesFolder}");
                 return;
             }
 
@@ -75,7 +74,6 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
                 };
 
                 languages.Add(language);
-                Debug.Log($"Found language: {info.Code} ({folder})");
             }
         }
 
@@ -142,6 +140,25 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
                 texture,
                 new Rect(0, 0, texture.width, texture.height),
                 Vector2.one * 0.5f);
+        }
+        public void SetLanguage(string code)
+        {
+            SaveManager.Save.Settings.Language = code;
+            SaveManager.SaveGame();
+
+            LoadLanguage(code);
+
+            OnLanguageChanged?.Invoke();
+        }
+        public IReadOnlyList<Language> GetLanguages()
+        {
+            return languages;
+        }
+
+        public Language GetCurrentLanguage()
+        {
+            return languages.Find(x =>
+                x.Info.Code == SaveManager.Save.Settings.Language);
         }
         public void Initialize()
         {
