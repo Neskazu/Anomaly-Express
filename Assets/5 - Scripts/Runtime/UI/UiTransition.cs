@@ -8,6 +8,12 @@ using UnityEngine.UI;
 
 namespace UI
 {
+    public enum TransitionDirection
+    {
+        LeftToRight,
+        TopToBottom
+    }
+
     public class UiTransition : MonoBehaviour
     {
         [Header("References")]
@@ -16,6 +22,8 @@ namespace UI
         [SerializeField] private CanvasGroup[] targetsGroups;
 
         [Header("Settings")]
+        [SerializeField] private TransitionDirection direction = TransitionDirection.LeftToRight;
+        [SerializeField] private float offsetDistance = 150f;
         [SerializeField] private float duration = 0.5f;
         [SerializeField] private float delay = 0.03f;
 
@@ -23,8 +31,15 @@ namespace UI
         private ContentSizeFitter _fitter;
         private Vector2[] _initial;
 
+        // Счетчик для предотвращения отключения объекта, если во время Hide() был вызван Show()
+        private int _transitionSequence;
+
         private void Awake()
         {
+            // Подтягиваем компоненты, если они не были заданы (в твоем коде они были null)
+            container.TryGetComponent(out _layoutGroup);
+            container.TryGetComponent(out _fitter);
+
             Prepare().Forget();
         }
 
@@ -50,6 +65,20 @@ namespace UI
                 _layoutGroup.enabled = false;
         }
 
+        private Vector2 GetShowStartOffset()
+        {
+            return direction == TransitionDirection.LeftToRight
+                ? new Vector2(-offsetDistance, 0)
+                : new Vector2(0, offsetDistance);
+        }
+
+        private Vector2 GetHideEndOffset()
+        {
+            return direction == TransitionDirection.LeftToRight
+                ? new Vector2(offsetDistance, 0)
+                : new Vector2(0, -offsetDistance);
+        }
+
         public void Toggle()
         {
             if (gameObject.activeSelf)
@@ -61,7 +90,21 @@ namespace UI
         [Button]
         public async UniTask Show()
         {
+            _transitionSequence++;
             await Prepare();
+
+            // Если объект был полностью выключен, мгновенно сдвигаем его на стартовую позицию,
+            // чтобы анимация красиво выезжала, а не начиналась из центра
+            if (!gameObject.activeSelf)
+            {
+                Vector2 startOffset = GetShowStartOffset();
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    targets[i].anchoredPosition = _initial[i] + startOffset;
+                    if (targetsGroups[i] != null)
+                        targetsGroups[i].alpha = 0;
+                }
+            }
 
             gameObject.SetActive(true);
 
@@ -69,9 +112,9 @@ namespace UI
             {
                 targets[i].DOKill();
 
+                // Анимируем ИЗ текущей позиции В изначальную (без использования .From)
                 targets[i]
-                    .DOAnchorPosX(_initial[i].x, duration)
-                    .From(_initial[i] - Vector2.right * 150)
+                    .DOAnchorPos(_initial[i], duration)
                     .SetEase(Ease.InOutSine)
                     .SetDelay(i * delay);
 
@@ -84,7 +127,6 @@ namespace UI
 
                 targetsGroups[i]
                     .DOFade(1, duration)
-                    .From(0)
                     .SetEase(Ease.InOutSine)
                     .SetDelay(i * delay)
                     .OnComplete(() =>
@@ -100,15 +142,19 @@ namespace UI
         [Button]
         public async UniTask Hide()
         {
+            _transitionSequence++;
+            int currentSequence = _transitionSequence;
+
             await Prepare();
+
+            Vector2 endOffset = GetHideEndOffset();
 
             for (int i = 0; i < targets.Length; i++)
             {
                 targets[i].DOKill();
 
                 targets[i]
-                    .DOAnchorPosX(_initial[i].x + 150, duration)
-                    .From(_initial[i])
+                    .DOAnchorPos(_initial[i] + endOffset, duration)
                     .SetEase(Ease.InOutSine)
                     .SetDelay(i * delay);
 
@@ -120,7 +166,6 @@ namespace UI
 
                 targetsGroups[i]
                     .DOFade(0, duration)
-                    .From(1)
                     .SetEase(Ease.InOutSine)
                     .SetDelay(i * delay);
             }
@@ -129,7 +174,11 @@ namespace UI
 
             await UniTask.Delay(TimeSpan.FromSeconds(totalDuration));
 
-            gameObject.SetActive(false);
+            // Выключаем объект ТОЛЬКО если с момента начала Hide() не запустили Show()
+            if (currentSequence == _transitionSequence)
+            {
+                gameObject.SetActive(false);
+            }
         }
 
 #if UNITY_EDITOR

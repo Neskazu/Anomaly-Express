@@ -340,6 +340,8 @@ MonoBehaviour:
   - {fileID: 1238395422}
   - {fileID: 1656303436}
   - {fileID: 1587418901}
+  direction: 0
+  offsetDistance: 150
   duration: 0.3
   delay: 0.03
 --- !u!1 &214181638
@@ -796,6 +798,8 @@ MonoBehaviour:
   - {fileID: 233631966}
   targetsGroups:
   - {fileID: 233631969}
+  direction: 0
+  offsetDistance: 150
   duration: 0.3
   delay: 0.03
 --- !u!1 &376277455
@@ -962,9 +966,6 @@ MonoBehaviour:
   - button: {fileID: 1703661026}
     from: {fileID: 208452897}
     to: {fileID: 1582462934}
-  - button: {fileID: 1657299415}
-    from: {fileID: 208452897}
-    to: {fileID: 6118431283819030709}
 --- !u!114 &527824741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3783,6 +3784,8 @@ MonoBehaviour:
   - {fileID: 550851842}
   targetsGroups:
   - {fileID: 1419049652}
+  direction: 1
+  offsetDistance: 150
   duration: 0.5
   delay: 0.03
 --- !u!1001 &1544055429
@@ -3998,6 +4001,8 @@ MonoBehaviour:
   - {fileID: 561278567}
   - {fileID: 2045037722}
   - {fileID: 1755890617}
+  direction: 0
+  offsetDistance: 150
   duration: 0.3
   delay: 0.03
 --- !u!1001 &1587418896
@@ -6891,6 +6896,8 @@ MonoBehaviour:
   - {fileID: 2096660405416567611}
   - {fileID: 3457843945436239735}
   - {fileID: 2039663121}
+  direction: 0
+  offsetDistance: 150
   duration: 0.3
   delay: 0.03
 --- !u!1001 &6141820660224358507
