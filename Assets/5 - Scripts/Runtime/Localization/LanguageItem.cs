@@ -24,7 +24,7 @@ public class LanguageItem : MonoBehaviour
 
         selected.SetActive(isCurrent);
 
-        button.onClick.RemoveAllListeners();
+        button.onClick.RemoveListener(OnClick);
         button.onClick.AddListener(OnClick);
     }
     private void OnEnable()
