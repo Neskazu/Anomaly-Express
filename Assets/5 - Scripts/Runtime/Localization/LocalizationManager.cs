@@ -3,6 +3,7 @@ using SaveSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 
 namespace Localization
@@ -31,6 +32,8 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
 #endif
             }
         }
+        [SerializeField] private LocalizationFontDatabase fontDatabase;
+        public TMP_FontAsset CurrentFont { get; private set; }
 
         private void Awake()
         {
@@ -114,6 +117,8 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
             SaveManager.Save.Settings.Language = language.Info.Code;
             SaveManager.SaveGame();
 
+            CurrentFont = fontDatabase.GetFont(language.Info.Code);
+
             OnLanguageChanged?.Invoke();
 
             Debug.Log($"Loaded language {language.Info.NativeName}");
@@ -147,8 +152,6 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
             SaveManager.SaveGame();
 
             LoadLanguage(code);
-
-            OnLanguageChanged?.Invoke();
         }
         public IReadOnlyList<Language> GetLanguages()
         {
@@ -159,6 +162,10 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
         {
             return languages.Find(x =>
                 x.Info.Code == SaveManager.Save.Settings.Language);
+        }
+        public TMP_FontAsset GetFontForLanguage(string code)
+        {
+            return fontDatabase.GetFont(code);
         }
         public void Initialize()
         {

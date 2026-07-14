@@ -18,6 +18,7 @@ public class LanguageItem : MonoBehaviour
 
         flag.sprite = lang.Flag;
         languageName.text = lang.Info.NativeName;
+        languageName.font = LocalizationManager.Instance.GetFontForLanguage(lang.Info.Code);
         bool isCurrent =
     LocalizationManager.Instance.GetCurrentLanguage().Info.Code == language.Info.Code;
 

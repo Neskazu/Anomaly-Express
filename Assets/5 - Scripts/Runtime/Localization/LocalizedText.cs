@@ -40,6 +40,7 @@ namespace Localization
 
         public void Refresh()
         {
+            text.font = LocalizationManager.Instance.CurrentFont;
             text.text = LocalizationManager.Instance.Get(key);
         }
 

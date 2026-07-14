@@ -25,6 +25,7 @@ public class CurrentLanguageButton : MonoBehaviour
         {
             flag.sprite = language.Flag;
             languageName.text = language.Info.NativeName;
+            languageName.font = LocalizationManager.Instance.GetFontForLanguage(language.Info.Code);
         }
             
     }
