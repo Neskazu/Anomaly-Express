@@ -4,8 +4,11 @@ using Managers;
 using Player.Components;
 using Player.Input;
 using System.Collections.Generic;
+using Controls;
+using R3;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 
 namespace Player
@@ -19,9 +22,13 @@ namespace Player
         [SerializeField] private Behaviour[] localComponents;
         [SerializeField] private PlayerJump jumpComponent;
         [SerializeField] private float jumpForce = 10f;
+
+        [Header("Inputs")]
+        [SerializeField] private InputActionReference movementActionReference;
+
         //visual
         [SerializeField] private GameObject[] characterPrefabs;
-         public Transform MeshRoot;
+        public Transform MeshRoot;
 
         public KinematicCharacterMotor Motor;
         [Header("Stable Movement")]
@@ -50,6 +57,7 @@ namespace Player
             => InputManager.Singleton;
 
         [SerializeField] private Transform cameraTransform;
+
         // --- split control ---
         public Transform HeadTransform;
         public static PlayerController HostInstance { get; private set; }
@@ -81,8 +89,10 @@ namespace Player
                 NetworkManager.Singleton.OnClientConnectedCallback += OnNetworkChanged;
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnNetworkChanged;
             }
+
             RefreshPermissions();
         }
+
         private void OnDisable()
         {
             AnomalyBase.OnAnomalyStateChanged -= RefreshPermissions;
@@ -92,28 +102,36 @@ namespace Player
                 NetworkManager.Singleton.OnClientDisconnectCallback -= OnNetworkChanged;
             }
         }
+
         public override void OnNetworkSpawn()
         {
             CharacterId.OnValueChanged += OnCharacterChanged;
             ApplyCharacter(CharacterId.Value);
         }
+
         private void Start()
         {
             if (OwnerClientId == NetworkManager.ServerClientId)
             {
                 HostInstance = this;
             }
+
             if (IsOwner)
             {
-                LocalInstance = this; 
+                LocalInstance = this;
                 LocalPlayerId = OwnerClientId;
 
-                foreach (Behaviour localComponent in localComponents)
+                foreach (var localComponent in localComponents)
+                {
                     localComponent.enabled = true;
+                }
 
                 Motor.CharacterController = this;
-                InputManager.OnMoveAxisChanged += HandleInput;
                 cameraTransform = Camera.main.transform;
+
+                InputManager
+                    .Subscribe<Vector2>(movementActionReference, InputActionPhase.Performed, HandleInput)
+                    .AddTo(this);
             }
 
             RefreshPermissions();
@@ -121,8 +139,9 @@ namespace Player
 
         private void HandleInput(Vector2 vector)
         {
-            float x = _currentPermissions.CanMoveHorizontal ? vector.x : 0f;
-            float y = _currentPermissions.CanMoveVertical ? vector.y : 0f;
+            var x = _currentPermissions.CanMoveHorizontal ? vector.x : 0f;
+            var y = _currentPermissions.CanMoveVertical ? vector.y : 0f;
+
             _rawInput = new Vector2(x, y);
         }
 
@@ -150,7 +169,7 @@ namespace Player
 
         private void Update()
         {
-            if (!IsOwner) return;;
+            if (!IsOwner) return;
 
             // jump buffer
             if (jumpComponent != null)
@@ -169,9 +188,9 @@ namespace Player
                     NetworkBodyRotation.Value = Motor.TransientRotation;
                     return;
                 }
-                else 
+                else
                 {
-                    Vector2 combinedMove = _rawInput; 
+                    Vector2 combinedMove = _rawInput;
                     bool combinedJump = (jumpComponent != null && jumpComponent.JumpRequested);
 
                     foreach (var move in _sharedMoveInputs.Values)
@@ -183,7 +202,7 @@ namespace Player
                     ApplyCombinedInput(combinedMove, combinedJump);
 
                     _sharedJumpInput = false;
-                    _sharedMoveInputs.Clear(); 
+                    _sharedMoveInputs.Clear();
                 }
             }
             else
@@ -201,11 +220,13 @@ namespace Player
                         _lastSentPitch = pitch;
                         _lastSentYaw = yaw;
                     }
+
                     float currentSpeed = Motor.BaseVelocity.magnitude;
                     if (Mathf.Abs(NetworkSpeed.Value - currentSpeed) > 0.1f)
                     {
                         NetworkSpeed.Value = currentSpeed;
                     }
+
                     if (Quaternion.Angle(NetworkBodyRotation.Value, Motor.TransientRotation) > 0.1f)
                     {
                         NetworkBodyRotation.Value = Motor.TransientRotation;
@@ -214,6 +235,7 @@ namespace Player
             }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+
             //if (Input.GetKeyDown(KeyCode.G) && networkObject.IsOwner)
             //{
             //    if (!isDead)
@@ -266,6 +288,7 @@ namespace Player
                 currentVelocity = Vector3.zero;
                 return;
             }
+
             Vector3 targetMovementVelocity;
 
             if (Motor.GroundingStatus.IsStableOnGround)
@@ -339,6 +362,7 @@ namespace Player
 
         // --- split control ---
         private void OnNetworkChanged(ulong id) => RefreshPermissions();
+
         private void RefreshPermissions()
         {
             if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening) return;
@@ -363,7 +387,7 @@ namespace Player
                 if (isSplit && !IsServer)
                 {
                     if (MeshRoot) MeshRoot.gameObject.SetActive(false);
-                    Motor.SetCapsuleCollisionsActivation(false); 
+                    Motor.SetCapsuleCollisionsActivation(false);
                 }
                 else
                 {
@@ -372,18 +396,21 @@ namespace Player
                 }
             }
         }
+
         [ServerRpc(RequireOwnership = false)]
         public void SendCameraSyncServerRpc(float pitch, float yaw)
         {
             this.SharedCamPitch.Value = pitch;
             this.SharedCamYaw.Value = yaw;
         }
+
         [ServerRpc(RequireOwnership = false)]
         public void SendMovementInputServerRpc(Vector2 move, bool jump, ServerRpcParams rpcParams = default)
         {
             _sharedMoveInputs[rpcParams.Receive.SenderClientId] = move;
             if (jump) _sharedJumpInput = true;
         }
+
         private void ApplyCombinedInput(Vector2 rawMove, bool forceJump)
         {
             Vector3 moveInputVector = new Vector3(rawMove.x, 0f, rawMove.y);
@@ -405,6 +432,7 @@ namespace Player
             if (forceJump && jumpComponent != null)
                 jumpComponent.JumpRequested = true;
         }
+
         //visual
         private void OnCharacterChanged(int oldId, int newId)
         {
@@ -439,30 +467,37 @@ namespace Player
                 r.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
             }
         }
-        public override void OnDestroy()
-        {
-            base.OnDestroy();
-            InputManager.OnMoveAxisChanged -= HandleInput;
-        }
 
         //-------------------------
-        public void BeforeCharacterUpdate(float deltaTime) { }
+        public void BeforeCharacterUpdate(float deltaTime)
+        {
+        }
 
-        public void PostGroundingUpdate(float deltaTime) { }
+        public void PostGroundingUpdate(float deltaTime)
+        {
+        }
 
-        public void AfterCharacterUpdate(float deltaTime) { }
+        public void AfterCharacterUpdate(float deltaTime)
+        {
+        }
 
         public bool IsColliderValidForCollisions(Collider coll)
         {
             return true;
         }
 
-        public void OnGroundHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, ref HitStabilityReport hitStabilityReport) { }
+        public void OnGroundHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, ref HitStabilityReport hitStabilityReport)
+        {
+        }
 
+        public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, Vector3 atCharacterPosition, Quaternion atCharacterRotation, ref HitStabilityReport hitStabilityReport)
+        {
+        }
 
-        public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, Vector3 atCharacterPosition, Quaternion atCharacterRotation, ref HitStabilityReport hitStabilityReport) { }
+        public void OnDiscreteCollisionDetected(Collider hitCollider)
+        {
+        }
 
-        public void OnDiscreteCollisionDetected(Collider hitCollider) { }
         public void OnMovementHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, ref HitStabilityReport hitStabilityReport)
         {
             hitCollider.GetComponentInParent<IKccHitReceiver>()?.OnKccHit(Motor);

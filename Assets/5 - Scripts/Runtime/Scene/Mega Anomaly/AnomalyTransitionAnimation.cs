@@ -1,6 +1,6 @@
+using Controls;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Managers;
 using Player.Components;
 using Scene;
 using Unity.Netcode;
@@ -10,14 +10,18 @@ namespace MegaAnomalies
 {
     public class AnomalyTransitionAnimation : NetworkBehaviour
     {
+        public static AnomalyTransitionAnimation Instance { get; private set; }
+
         [SerializeField] private PlayerCamera playerCamera;
         [SerializeField] private GameObject crack;
         [SerializeField] private GameObject hole;
 
+        [Header("Inputs")]
+        [SerializeField] private InputPreset cutsceneInputPreset;
+        [SerializeField] private InputPreset defaultInputPreset;
+
         private Transform camTransform;
         private bool x = true;
-
-        public static AnomalyTransitionAnimation Instance { get; private set; }
 
         private void Start()
         {
@@ -34,7 +38,8 @@ namespace MegaAnomalies
         public async UniTask Play()
         {
             playerCamera.enabled = false;
-            InputManager.Singleton.DisablePlayerMovement();
+
+            InputManager.Singleton.ActivatePreset(cutsceneInputPreset);
 
             var seq = DOTween.Sequence();
 
@@ -68,8 +73,12 @@ namespace MegaAnomalies
 
             await UniTask.WaitForSeconds(1);
 
-            playerCamera.enabled = true;
-            InputManager.Singleton.EnablePlayerMovement();
+            if (playerCamera)
+            {
+                playerCamera.enabled = true;
+            }
+
+            InputManager.Singleton.ActivatePreset(defaultInputPreset);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]

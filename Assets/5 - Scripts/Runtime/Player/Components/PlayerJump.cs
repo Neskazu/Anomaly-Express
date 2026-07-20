@@ -1,12 +1,15 @@
+using Controls;
 using DG.Tweening;
-using Managers;
+using R3;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Player.Components
 {
     public class PlayerJump : MonoBehaviour
     {
+        [SerializeField] private InputActionReference action;
         [SerializeField] private NetworkObject networkObject;
         [SerializeField] private PlayerAnimator playerAnimator;
         [SerializeField] private float jumpDelay = 0.1f;
@@ -22,23 +25,37 @@ namespace Player.Components
 
         private void Start()
         {
-            if (!networkObject.IsOwner) return;
-            InputManager.Singleton.OnJump += OnJumpInput;
+            if (!networkObject.IsOwner)
+            {
+                return;
+            }
+
+            InputManager.Singleton
+                .Subscribe(action, InputActionPhase.Started, OnJumpInput)
+                .AddTo(this);
         }
 
         private void OnJumpInput()
         {
             _lastJumpInputTime = Time.time;
         }
+
         public void ProcessJumpBuffer(bool hasPermissions)
         {
-            if (!IsJumpEnabled || !hasPermissions) return;
+            if (!IsJumpEnabled || !hasPermissions)
+            {
+                return;
+            }
 
-            bool hasBufferedJump = (Time.time - _lastJumpInputTime) <= jumpBufferTime;
+            var hasBufferedJump = (Time.time - _lastJumpInputTime) <= jumpBufferTime;
 
             if (hasBufferedJump)
             {
-                if (_jumpDelayTween != null && _jumpDelayTween.IsActive()) return;
+                if (_jumpDelayTween != null && _jumpDelayTween.IsActive())
+                {
+                    return;
+                }
+
                 _lastJumpInputTime = -100f;
                 ExecuteJumpSequence();
             }
@@ -48,19 +65,15 @@ namespace Player.Components
         {
             playerAnimator?.TriggerJump();
 
-            _jumpDelayTween = DOVirtual.DelayedCall(jumpDelay, () =>
-            {
-                JumpRequested = true;
-            }).SetLink(gameObject);
+            _jumpDelayTween = DOVirtual
+                .DelayedCall(jumpDelay, () => { JumpRequested = true; })
+                .SetLink(gameObject);
         }
 
         public void SetJumpEnabled(bool value) => IsJumpEnabled = value;
 
         private void OnDestroy()
         {
-            if (InputManager.Singleton != null)
-                InputManager.Singleton.OnJump -= OnJumpInput;
-
             _jumpDelayTween?.Kill();
         }
     }

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebc6b70bdee64a32b4af6c72113f8403, type: 3}
+  m_Name: Fantom Blocks Phone
+  m_EditorClassIdentifier: 
+  maps:
+  - {fileID: 11400000, guid: a0042294f46c2d241914da3169ad4886, type: 2}
+  toEnable: []
+  toDisable:
+  - {fileID: -5902845208163949286, guid: 052faaac586de48259a63d0c4782560b, type: 3}
