@@ -19,7 +19,7 @@ public class PlayerInteract : MonoBehaviour
 
     private RaycastHit hit;
 
-    void Awake()
+    void Start()
     {
         InputManager.Singleton
             .Subscribe(action, InputActionPhase.Started, Interact)
