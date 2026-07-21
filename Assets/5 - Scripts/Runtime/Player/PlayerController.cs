@@ -84,6 +84,7 @@ namespace Player
         private void OnEnable()
         {
             AnomalyBase.OnAnomalyStateChanged += RefreshPermissions;
+
             if (NetworkManager.Singleton != null)
             {
                 NetworkManager.Singleton.OnClientConnectedCallback += OnNetworkChanged;
@@ -96,6 +97,7 @@ namespace Player
         private void OnDisable()
         {
             AnomalyBase.OnAnomalyStateChanged -= RefreshPermissions;
+
             if (NetworkManager.Singleton != null)
             {
                 NetworkManager.Singleton.OnClientConnectedCallback -= OnNetworkChanged;
@@ -457,6 +459,7 @@ namespace Player
             {
                 playerAnimator.SetupNewCharacter(newCharacter);
             }
+            UpdateVisuals();
         }
 
         private void SetShadowsOnly(GameObject target)
@@ -467,7 +470,18 @@ namespace Player
                 r.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
             }
         }
-
+        private void UpdateVisuals()
+        {
+            bool hide = Anomalies.SplitControlAnomaly.IsSplitActive;
+            if ( hide )
+            {
+                var renderers = MeshRoot.GetComponentsInChildren<Renderer>();
+                foreach (var r in renderers)
+                {
+                    r.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+                }
+            }
+        }
         //-------------------------
         public void BeforeCharacterUpdate(float deltaTime)
         {
