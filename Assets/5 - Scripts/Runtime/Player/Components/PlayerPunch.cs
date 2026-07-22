@@ -29,7 +29,7 @@ namespace Player.Components
             MultiplayerManager.Players.OnUpdated += ApplyPunch;
 
             InputManager.Singleton
-                .Subscribe(action, InputActionPhase.Started, Punch)
+                .Subscribe(action, ReactiveInputPhase.Started, Punch)
                 .AddTo(this);
         }
 

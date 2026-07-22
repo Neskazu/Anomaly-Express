@@ -13,8 +13,8 @@ namespace Controls
 
         [SerializeField] private InputActionAsset inputActionAsset;
 
-        private readonly Dictionary<Guid, Subject<InputAction.CallbackContext>> subjects = new();
-        private readonly List<InputActionReference> active = new();
+        private readonly Dictionary<Guid, List<IReactiveInput>> reactiveInputs = new();
+        private readonly HashSet<Guid> active = new();
 
         #region Unity
 
@@ -26,109 +26,130 @@ namespace Controls
                 Destroy(gameObject);
             }
 
-            foreach (var action in inputActionAsset)
-            {
-                var subject = new Subject<InputAction.CallbackContext>();
-
-                action.started += subject.OnNext;
-                action.performed += subject.OnNext;
-                action.canceled += subject.OnNext;
-
-                subjects.Add(action.id, subject);
-            }
-
             DontDestroyOnLoad(gameObject);
             Singleton = this;
-        }
-
-        private void OnDestroy()
-        {
-            foreach (var action in inputActionAsset)
-            {
-                var subject = subjects[action.id];
-
-                action.started -= subject.OnNext;
-                action.performed -= subject.OnNext;
-                action.canceled -= subject.OnNext;
-
-                subject.Dispose();
-            }
         }
 
         #endregion
 
         #region Subscriptions
 
-        public IDisposable Subscribe<T>(InputActionReference reference, InputActionPhase phase, Action<T> action)
+        public IDisposable Subscribe<T>(InputActionReference reference, ReactiveInputPhase phase, Action<T> action, bool resetOnDisable = false)
             where T : struct
         {
-            if (subjects.TryGetValue(reference.action.id, out var subject))
+            var inputAction = inputActionAsset.FindAction(reference.action.id);
+            var input = new ReactiveInput<T>(inputAction, phase, resetOnDisable);
+
+            if (!reactiveInputs.TryGetValue(reference.action.id, out var reactiveInput))
             {
-                return subject
-                    .Where(ctx => ctx.phase == phase)
-                    .Subscribe(ctx => action.Invoke(ctx.ReadValue<T>()));
+                reactiveInput = new List<IReactiveInput>();
+                reactiveInputs.Add(reference.action.id, reactiveInput);
             }
 
-            Debug.LogError($"InputAction [{reference.action.name}] not found in [{inputActionAsset.name}].");
-            return null;
+            reactiveInput.Add(input);
+
+            if (active.Contains(inputAction.id))
+            {
+                input.Enable();
+            }
+
+            return input.Subscribe(action.Invoke);
         }
 
-        public IDisposable Subscribe(InputActionReference reference, InputActionPhase phase, Action action)
+        public IDisposable Subscribe(InputActionReference reference, ReactiveInputPhase phase, Action action)
         {
-            if (subjects.TryGetValue(reference.action.id, out var subject))
+            var inputAction = inputActionAsset.FindAction(reference.action.id);
+            var input = new ReactiveInput(reference, phase);
+
+            if (!reactiveInputs.TryGetValue(reference.action.id, out var reactiveInput))
             {
-                return subject
-                    .Where(ctx => ctx.phase == phase)
-                    .Subscribe(_ => action.Invoke());
+                reactiveInput = new List<IReactiveInput>();
+                reactiveInputs.Add(reference.action.id, reactiveInput);
             }
 
-            Debug.LogError($"InputAction [{reference.action.name}] not found in [{inputActionAsset.name}].");
-            return null;
+            reactiveInput.Add(input);
+
+            if (active.Contains(inputAction.id))
+            {
+                input.Enable();
+            }
+
+            return input.Subscribe(_ => action.Invoke());
         }
 
         public IDisposable Subscribe(InputActionReference reference, Action<InputAction.CallbackContext> action)
         {
-            if (subjects.TryGetValue(reference.action.id, out var subject))
+            var inputAction = inputActionAsset.FindAction(reference.action.id);
+            var input = new ReactiveInput(reference, ReactiveInputPhase.All);
+
+            if (!reactiveInputs.TryGetValue(reference.action.id, out var reactiveInput))
             {
-                return subject.Subscribe(action.Invoke);
+                reactiveInput = new List<IReactiveInput>();
+                reactiveInputs.Add(reference.action.id, reactiveInput);
             }
 
-            Debug.LogError($"InputAction [{reference.action.name}] not found in [{inputActionAsset.name}].");
-            return null;
+            reactiveInput.Add(input);
+
+            if (active.Contains(inputAction.id))
+            {
+                input.Enable();
+            }
+
+            return input.Subscribe(action.Invoke);
         }
 
         public IDisposable Subscribe(InputActionReference reference, Action action)
         {
-            if (subjects.TryGetValue(reference.action.id, out var subject))
+            var inputAction = inputActionAsset.FindAction(reference.action.id);
+            var input = new ReactiveInput(reference, ReactiveInputPhase.All);
+
+            if (!reactiveInputs.TryGetValue(reference.action.id, out var reactiveInput))
             {
-                return subject.Subscribe(_ => action.Invoke());
+                reactiveInput = new List<IReactiveInput>();
+                reactiveInputs.Add(reference.action.id, reactiveInput);
             }
 
-            Debug.LogError($"InputAction [{reference.action.name}] not found in [{inputActionAsset.name}].");
-            return null;
+            if (active.Contains(inputAction.id))
+            {
+                input.Enable();
+            }
+
+            reactiveInput.Add(input);
+            return input.Subscribe(_ => action.Invoke());
         }
 
         #endregion
 
         public void ActivatePreset(InputPreset inputPreset)
         {
-            foreach (var reference in active)
+            foreach (var id in active)
             {
-                reference.action.Disable();
+                if (!reactiveInputs.TryGetValue(id, out var inputs)) continue;
+
+                foreach (var input in inputs)
+                {
+                    input.Disable();
+                }
             }
 
             active.Clear();
 
             var toEnable = inputPreset.Maps
                 .SelectMany(m => m.Actions)
-                .Union(inputPreset.ToEnable)
-                .Except(inputPreset.ToDisable);
+                .Select(iar => iar.action.id)
+                .Union(inputPreset.ToEnableIds)
+                .Except(inputPreset.ToDisableIds);
 
-            foreach (var reference in toEnable)
+            foreach (var id in toEnable)
             {
-                reference.action.Enable();
+                active.Add(id);
 
-                active.Add(reference);
+                if (!reactiveInputs.TryGetValue(id, out var inputs)) continue;
+
+                foreach (var input in inputs)
+                {
+                    input.Enable();
+                }
             }
         }
     }

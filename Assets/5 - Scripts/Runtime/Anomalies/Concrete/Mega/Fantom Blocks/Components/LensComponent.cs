@@ -9,14 +9,15 @@ namespace Anomalies
         public static IReadOnlyCollection<LensComponent> Active => Lens;
 
         [Header("References")]
-        [SerializeField] private Camera cam;
+        [SerializeField] private Transform cam;
 
         [Header("Settings")]
         [SerializeField] private Color color;
 
         public Vector3 RGB { get; private set; }
 
-        public Plane[] Planes { get; private set; }
+        public Vector3 Position => cam.transform.position;
+        public Vector3 Forward => cam.transform.forward;
 
         private void Start()
         {
@@ -37,13 +38,6 @@ namespace Anomalies
         {
             color = clr;
             RGB = new Vector3(clr.r, clr.g, clr.b);
-
-            Debug.Log(clr);
-        }
-
-        private void Update()
-        {
-            Planes = GeometryUtility.CalculateFrustumPlanes(cam);
         }
     }
 }

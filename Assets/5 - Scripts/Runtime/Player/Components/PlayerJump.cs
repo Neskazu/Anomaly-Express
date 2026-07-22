@@ -31,7 +31,7 @@ namespace Player.Components
             }
 
             InputManager.Singleton
-                .Subscribe(action, InputActionPhase.Started, OnJumpInput)
+                .Subscribe(action, ReactiveInputPhase.Started, OnJumpInput)
                 .AddTo(this);
         }
 

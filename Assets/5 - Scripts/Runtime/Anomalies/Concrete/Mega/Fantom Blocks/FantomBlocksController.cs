@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Managers;
 using Network.Players;
@@ -15,9 +14,10 @@ namespace Anomalies
 
         [SerializeField] FantomBlockGuild neutralGuild;
         [SerializeField] FantomBlockGuild[] guilds;
-        [SerializeField] LensComponent ownerLens;
+        [SerializeField] LensComponent localLens;
 
         private static PlayerDataProvider Players => MultiplayerManager.Players;
+        public LensComponent LocalPlayerLens => localLens;
 
         private void Awake()
         {
@@ -60,7 +60,8 @@ namespace Anomalies
             var guild = guilds[player.CharacterId];
             var color = guild.Color;
 
-            ownerLens.UpdateColor(color.RGBA);
+            localLens.UpdateColor(color.RGBA);
+            localLens.enabled = false;
 
             if (!IsServer)
             {
@@ -116,10 +117,10 @@ namespace Anomalies
 
                 foreach (var fantomComponent in guild.Components)
                 {
-                    fantomComponent.UpdateColorRpc(guild.Id);
+                    fantomComponent.UpdateColorRpc((ulong)characterId + 1);
                 }
 
-                Debug.Log($"Assigned Guild {guild.Id} to character id {characterId}");
+                Debug.Log($"Distribute guild {guild.Id} to players {characterId}");
             }
         }
 

@@ -63,7 +63,7 @@ namespace Player.Components
         private void OnEnable()
         {
             subscription = InputManager.Singleton
-                .Subscribe<Vector2>(action, InputActionPhase.Performed, OnMouseMove)
+                .Subscribe<Vector2>(action, ReactiveInputPhase.Performed, OnMouseMove, true)
                 .AddTo(this);
 
             if (lockCursor) Cursor.lockState = CursorLockMode.Locked;

@@ -132,7 +132,7 @@ namespace Player
                 cameraTransform = Camera.main.transform;
 
                 InputManager
-                    .Subscribe<Vector2>(movementActionReference, InputActionPhase.Performed, HandleInput)
+                    .Subscribe<Vector2>(movementActionReference, ReactiveInputPhase.Performed, HandleInput, true)
                     .AddTo(this);
             }
 

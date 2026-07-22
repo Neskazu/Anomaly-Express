@@ -22,7 +22,7 @@ public class PlayerInteract : MonoBehaviour
     void Start()
     {
         InputManager.Singleton
-            .Subscribe(action, InputActionPhase.Started, Interact)
+            .Subscribe(action, ReactiveInputPhase.Started, Interact)
             .AddTo(this);
     }
 

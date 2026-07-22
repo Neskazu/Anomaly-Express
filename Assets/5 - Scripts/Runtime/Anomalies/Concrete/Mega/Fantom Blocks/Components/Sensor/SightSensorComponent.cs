@@ -5,6 +5,7 @@ namespace Anomalies
     public class SightSensorComponent : SensorComponent
     {
         [SerializeField] private Renderer sightRenderer;
+        [SerializeField] private LayerMask mask;
         [SerializeField] private Color color;
 
         private Vector3 rgb;
@@ -14,16 +15,25 @@ namespace Anomalies
             rgb = new Vector3(color.r, color.g, color.b);
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             foreach (var lens in LensComponent.Active)
             {
-                if (!Similar(lens.RGB, rgb) || lens.Planes == null)
+                if (!Similar(lens.RGB, rgb))
                 {
                     continue;
                 }
 
-                if (!GeometryUtility.TestPlanesAABB(lens.Planes, sightRenderer.bounds))
+                var dir = (sightRenderer.bounds.center - lens.Position);
+
+                if (Vector3.Angle(lens.Forward, dir.normalized) > 45f)
+                {
+                    continue;
+                }
+
+                var dist = dir.magnitude;
+
+                if (Physics.Raycast(lens.Position, dir.normalized, out _, dist, mask))
                 {
                     continue;
                 }
