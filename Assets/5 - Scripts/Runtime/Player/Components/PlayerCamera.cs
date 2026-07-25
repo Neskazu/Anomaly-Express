@@ -184,26 +184,34 @@ namespace Player.Components
                 Vector3 velocity = PlayerController.LocalInstance.Motor.Velocity;
                 Vector3 localVelocity = body.InverseTransformDirection(velocity);
 
-                Vector3 acceleration = (localVelocity - _previousLocalVelocity) / Time.deltaTime;
-                _previousLocalVelocity = localVelocity;
-                targetRoll = Mathf.Clamp(-acceleration.x * 0.02f, -maxRoll, maxRoll);
-                targetPitchOffset = Mathf.Clamp(-acceleration.z * 0.01f, -maxPitchOffset, maxPitchOffset);
-
-                if (acceleration.magnitude < 0.5f)
+                if (Time.deltaTime > 0f)
                 {
-                    targetRoll = 0f;
-                    targetPitchOffset = 0f;
+                    Vector3 acceleration = (localVelocity - _previousLocalVelocity) / Time.deltaTime;
+
+                    targetRoll = Mathf.Clamp(-acceleration.x * 0.02f, -maxRoll, maxRoll);
+                    targetPitchOffset = Mathf.Clamp(-acceleration.z * 0.01f, -maxPitchOffset, maxPitchOffset);
+
+                    if (acceleration.magnitude < 0.5f)
+                    {
+                        targetRoll = 0f;
+                        targetPitchOffset = 0f;
+                    }
                 }
+
+                _previousLocalVelocity = localVelocity;
             }
 
             _currentRoll = Mathf.Lerp(_currentRoll, targetRoll, Time.deltaTime * swaySmoothness);
             _currentPitchOffset = Mathf.Lerp(_currentPitchOffset, targetPitchOffset, Time.deltaTime * swaySmoothness);
 
-            _camTransform.localRotation = Quaternion.Euler(
-                verticalRotation + _currentPitchOffset,
-                horizontalRotation,
-                _currentRoll
-            );
+            if (!float.IsNaN(_currentPitchOffset) && !float.IsNaN(_currentRoll) && !float.IsNaN(verticalRotation) && !float.IsNaN(horizontalRotation))
+            {
+                _camTransform.localRotation = Quaternion.Euler(
+                    verticalRotation + _currentPitchOffset,
+                    horizontalRotation,
+                    _currentRoll
+                );
+            }
         }
 
         private void OnMouseMove(Vector2 value)
