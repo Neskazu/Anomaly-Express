@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c30c4b8915ea01547add31eef911d118
+guid: 78873bf39d3e6554aaa5fa9273e141a5
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -17,12 +17,15 @@ ModelImporter:
     removeConstantScaleCurves: 0
     motionNodeName: 
     animationImportErrors: 
-    animationImportWarnings: 
+    animationImportWarnings: "\nClip 'Armature | Neutral To Photo' has import animation
+      warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'J_Bip_R_Shoulder' has translation
+      animation that will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -31,14 +34,14 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: end_phone
-      takeName: end_phone
-      internalID: 6469842718025545597
+      name: Armature | Rest To Neutral
+      takeName: Armature | Rest To Neutral
+      internalID: 3744842267785117215
       firstFrame: 0
       lastFrame: 30
       wrapMode: 0
       orientationOffsetY: 0
-      level: 0
+      level: -1
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
@@ -60,18 +63,18 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: idle
-      takeName: idle
-      internalID: -5252816984213320552
-      firstFrame: 2
+      name: Armature | Rest To Photo
+      takeName: Armature | Rest To Photo
+      internalID: 9123852543724897369
+      firstFrame: 0
       lastFrame: 30
       wrapMode: 0
       orientationOffsetY: 0
-      level: 0
+      level: -1
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -89,14 +92,14 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: start_phone
-      takeName: start_phone
-      internalID: 1074181209015286756
+      name: Armature | Neutral To Photo
+      takeName: Armature | Neutral To Photo
+      internalID: -6488783215092287144
       firstFrame: 0
       lastFrame: 30
       wrapMode: 0
       orientationOffsetY: 0
-      level: 0
+      level: -1
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
@@ -120,7 +123,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.01
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -1352,7 +1355,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.01
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
