@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6425313543857495609
+--- !u!1 &2250087038851299774
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,36 +8,152 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7889117145170258245}
+  - component: {fileID: 3225500106724118512}
   m_Layer: 0
-  m_Name: _look_at_origin_
+  m_Name: Phone Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7889117145170258245
+--- !u!4 &3225500106724118512
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6425313543857495609}
+  m_GameObject: {fileID: 2250087038851299774}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.005393217, y: 0.0000003615986, z: 0.00000023908288, w: 0.99998546}
-  m_LocalPosition: {x: -0.000000028532678, y: 0.060000062, z: 0.000000010244548}
-  m_LocalScale: {x: 1.0000001, y: 1.000001, z: 1.0000005}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1225563497537461459}
+  m_Children:
+  - {fileID: 1482954609496685298}
+  m_Father: {fileID: 7897626961355548587}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &540385849938475154
+--- !u!1 &7053554624503709620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7897626961355548587}
+  - component: {fileID: 4299233513415220228}
+  m_Layer: 0
+  m_Name: FCA Diana's Hands
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7897626961355548587
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7053554624503709620}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4064993498709432456}
+  - {fileID: 3225500106724118512}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4299233513415220228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7053554624503709620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45f09693559c43b29b753264b88ae688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handAnimator: {fileID: 4352401263973952249}
+  phoneAnimator: {fileID: 2662681649685957968}
+--- !u!1001 &6378150922765780232
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 3225500106724118512}
+    m_Modifications:
+    - target: {fileID: 5142246043138352448, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+      propertyPath: m_Name
+      value: FCA Diana's Phone
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+--- !u!4 &1482954609496685298 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+  m_PrefabInstance: {fileID: 6378150922765780232}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2662681649685957968 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8966667558110578776, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
+  m_PrefabInstance: {fileID: 6378150922765780232}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &9219281933267293432
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7897626961355548587}
     m_Modifications:
     - target: {fileID: -7170107415729031574, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
       propertyPath: m_DirtyAABB
@@ -95,21 +211,9 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.09936465
       objectReference: {fileID: 0}
-    - target: {fileID: -2599908320530139495, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
-      propertyPath: m_DynamicOccludee
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -2599908320530139495, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
-      propertyPath: m_UpdateWhenOffscreen
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -2599908320530139495, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: b6161458b3430574e905655451ee32c3, type: 2}
     - target: {fileID: -1728013695380148634, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
       propertyPath: m_Name
-      value: FCA Diana's Hands
+      value: Hands
       objectReference: {fileID: 0}
     - target: {fileID: 26152637520850016, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
       propertyPath: m_DirtyAABB
@@ -142,7 +246,7 @@ PrefabInstance:
     - target: {fileID: 4870552773557632513, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: cba062a0582068b4ea51a36aa37c4aec, type: 2}
+      objectReference: {fileID: 9100000, guid: bccc15abcd9fca544bf85b017a0358e8, type: 2}
     - target: {fileID: 5159078012444724336, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -185,96 +289,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 1620668666332652609, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7889117145170258245}
-    - targetCorrespondingSourceObject: {fileID: 9214343989853238122, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
-      insertIndex: 0
-      addedObject: {fileID: 190172977965547051}
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: -3956505258223990651, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
---- !u!4 &1225563497537461459 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1620668666332652609, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
-  m_PrefabInstance: {fileID: 540385849938475154}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &8692012269087738872 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 9214343989853238122, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
-  m_PrefabInstance: {fileID: 540385849938475154}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &5671329854068916689
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 8692012269087738872}
-    m_Modifications:
-    - target: {fileID: 5142246043138352448, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_Name
-      value: FCA Diana's Phone
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.035
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.092
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.03
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.016373947
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.09976762
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.85529405
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.5081835
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -60
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 165
-      objectReference: {fileID: 0}
-    - target: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 22
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
---- !u!4 &190172977965547051 stripped
+  m_SourcePrefab: {fileID: -3956505258223990651, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
+--- !u!4 &4064993498709432456 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 5482918298697547770, guid: 6cdc2bf85519402478e3c0808717e54a, type: 3}
-  m_PrefabInstance: {fileID: 5671329854068916689}
+  m_CorrespondingSourceObject: {fileID: 5159078012444724336, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
+  m_PrefabInstance: {fileID: 9219281933267293432}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &4352401263973952249 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4870552773557632513, guid: 86f0f4595725ef846b0dc9288f8c270e, type: 3}
+  m_PrefabInstance: {fileID: 9219281933267293432}
   m_PrefabAsset: {fileID: 0}

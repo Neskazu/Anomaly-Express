@@ -1851,6 +1851,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1157093240893244617, guid: fba6f107e60137045a4d8707859dd652, type: 3}
   m_PrefabInstance: {fileID: 701516045}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &703574402 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+  m_PrefabInstance: {fileID: 1038445248472924116}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &771177693
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2668,6 +2673,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 950246278}
+  - {fileID: 703574402}
   m_Father: {fileID: 35892230}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1365976551
@@ -3470,6 +3476,74 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 478857334c9e4248adba59cefd60760a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &1038445248472924116
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1257061846}
+    m_Modifications:
+    - target: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3476751832057247999, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: m_Name
+      value: Hands Animations
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+--- !u!114 &1038445248472924117 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -7479417668004161482, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+  m_PrefabInstance: {fileID: 1038445248472924116}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f821eacb7f45d3a7512ecb76ed6008, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8275663249975306053
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3486,6 +3560,10 @@ PrefabInstance:
       propertyPath: handsRoot
       value: 
       objectReference: {fileID: 1365976552}
+    - target: {fileID: 5477892595196855728, guid: 868c1632b586f8c48bf6c9a6f1c14fb4, type: 3}
+      propertyPath: handsAnimation
+      value: 
+      objectReference: {fileID: 1038445248472924117}
     - target: {fileID: 6841527162099931744, guid: 868c1632b586f8c48bf6c9a6f1c14fb4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

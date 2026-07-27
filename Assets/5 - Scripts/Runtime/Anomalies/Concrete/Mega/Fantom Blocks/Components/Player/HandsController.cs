@@ -1,3 +1,4 @@
+using System;
 using Managers;
 using Nac.Extensions;
 using Network.Players;
@@ -9,11 +10,11 @@ namespace Anomalies
 {
     public class HandsController : NetworkBehaviour
     {
+        private static PlayerDataProvider Players => MultiplayerManager.Players;
+
         [SerializeField] private Transform handsRoot;
         [SerializeField] private GameObject[] personalPrefabs;
         [SerializeField] private HandsAnimations handsAnimation;
-
-        private static PlayerDataProvider Players => MultiplayerManager.Players;
 
         private readonly NetworkVariable<bool> active = new();
         private readonly NetworkVariable<bool> photoMode = new();

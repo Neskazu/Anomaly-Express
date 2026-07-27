@@ -1,21 +1,18 @@
 using R3;
-using Unity.Netcode;
 using UnityEngine;
 
 namespace Anomalies
 {
-    public class HandsAnimations : NetworkBehaviour
+    public class HandsAnimations : MonoBehaviour
     {
         private static readonly int Active = Animator.StringToHash("Active");
         private static readonly int PhotoMode = Animator.StringToHash("Photo Mode");
 
-        private HandsController controller;
-        private Animator animator;
+        private HandsComponent handsComponent;
 
-        public void Setup(HandsController handsController, GameObject hands)
+        public void Setup(HandsController controller, GameObject hands)
         {
-            controller = handsController;
-            animator = hands.GetComponentInChildren<Animator>();
+            handsComponent = hands.GetComponentInChildren<HandsComponent>();
 
             controller.Active
                 .Subscribe(OnPhoneActive)
@@ -28,18 +25,14 @@ namespace Anomalies
 
         private void OnPhoneActive(bool active)
         {
-            if (IsOwner)
-            {
-                animator.SetBool(Active, active);
-            }
+            handsComponent.HandAnimator.SetBool(Active, active);
+            handsComponent.PhoneAnimator.SetBool(Active, active);
         }
 
         private void OnPhotoMode(bool active)
         {
-            if (IsOwner)
-            {
-                animator.SetBool(PhotoMode, active);
-            }
+            handsComponent.HandAnimator.SetBool(PhotoMode, active);
+            handsComponent.PhoneAnimator.SetBool(PhotoMode, active);
         }
     }
 }
