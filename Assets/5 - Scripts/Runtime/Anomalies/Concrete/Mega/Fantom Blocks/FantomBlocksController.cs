@@ -15,6 +15,7 @@ namespace Anomalies
         [SerializeField] FantomBlockGuild neutralGuild;
         [SerializeField] FantomBlockGuild[] guilds;
         [SerializeField] LensComponent localLens;
+        [SerializeField] private AnomalyLevitatingObjects anomalyLevitatingObjects;
 
         private static PlayerDataProvider Players => MultiplayerManager.Players;
         public LensComponent LocalPlayerLens => localLens;
@@ -38,6 +39,7 @@ namespace Anomalies
             if (IsServer)
             {
                 Activate();
+                anomalyLevitatingObjects.Activate();
             }
         }
 
