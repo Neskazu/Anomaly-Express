@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6841527162099931744}
   - component: {fileID: 1381867902201768202}
   - component: {fileID: 5477892595196855728}
-  - component: {fileID: -352029223139079114}
   m_Layer: 0
   m_Name: Hands Controller
   m_TagString: Untagged
@@ -74,22 +73,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   handsRoot: {fileID: 0}
   personalPrefabs:
-  - {fileID: 8033026052536260340, guid: 5e2f22756ae8c4a469f6e36079246d18, type: 3}
-  - {fileID: 1030065353902550508, guid: 7cc860912973c99469462fa2aa643a6d, type: 3}
-  - {fileID: 851886579208451368, guid: 131964ca934064f46bb55ec6fd2c62b5, type: 3}
-  - {fileID: 25302851774594190, guid: 609e2c94af4c7e74ba2bc27dcdc2415a, type: 3}
-  handsAnimation: {fileID: -352029223139079114}
---- !u!114 &-352029223139079114
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8023408349853602255}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96f821eacb7f45d3a7512ecb76ed6008, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  controller: {fileID: 0}
+  - {fileID: 7053554624503709620, guid: 06b545d785060b74aa04be63d1667ea5, type: 3}
+  - {fileID: 7053554624503709620, guid: 52e2057123418b74593dadb8b34eef23, type: 3}
+  - {fileID: 7053554624503709620, guid: 04ee9c9a39ee21b4a946656d0baa4fb5, type: 3}
+  - {fileID: 7053554624503709620, guid: 5e2f22756ae8c4a469f6e36079246d18, type: 3}
+  handsAnimation: {fileID: 0}

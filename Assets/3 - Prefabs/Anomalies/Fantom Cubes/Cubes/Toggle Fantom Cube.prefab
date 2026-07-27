@@ -56,6 +56,62 @@ PrefabInstance:
       propertyPath: sensor
       value: 
       objectReference: {fileID: 1788821403342876057}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_Bool.m_Array.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_NamedObject.m_Array.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_Bool.m_Array.Array.data[0].m_Name
+      value: Activate
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_Bool.m_Array.Array.data[0].m_Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[0].m_Name
+      value: Scale
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_Bool.m_Array.Array.data[0].m_Overridden
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_NamedObject.m_Array.Array.data[0].m_Name
+      value: Mesh
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[0].m_Value.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[0].m_Value.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[0].m_Value.z
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_NamedObject.m_Array.Array.data[0].m_Value
+      value: 
+      objectReference: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[0].m_Overridden
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186622824075564827, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
+      propertyPath: m_PropertySheet.m_NamedObject.m_Array.Array.data[0].m_Overridden
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5921671579301459390, guid: f7a42b704f35fc34981e097cfdcbdb9c, type: 3}
       propertyPath: m_Name
       value: Toggle Fantom Cube
