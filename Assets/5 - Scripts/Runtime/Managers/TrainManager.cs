@@ -64,35 +64,13 @@ namespace Managers
                 InitializeAnomalyPools();
             }
         }
-        //public void SpawnWagon(VestibuleType vestibuleType, Vector3 position, bool isBackward)
-        //{
-        //    if (!IsServer)
-        //    {
-        //        return;
-        //    }
-
-        //    _currentWagonIndex = (_currentWagonIndex + 1) % anomalyWagons.Length;
-        //    Debug.Log(_currentWagonIndex);
-        //    if (_currentWagonIndex == 0)
-        //    {
-        //        LoadToMegaAnomaly();
-        //        return;
-        //    }
-
-        //    bool shouldSpawnDefault = (currentWagonHasAnomaly && !isBackward) || (!currentWagonHasAnomaly && isBackward);
-
-        //    if (shouldSpawnDefault)
-        //    {
-        //        SpawnFirstWagon(vestibuleType, position);
-        //    }
-        //    else
-        //    {
-        //        SpawnAnomalyWagon(vestibuleType, position);
-        //    }
-        //}
         public async void LoadToMegaAnomaly()
         {
             await AnomalyTransitionAnimation.Instance.Play();
+            if (IsServer)
+            {
+                ClearAllWagons();
+            }
             await SceneTransitionController.Instance.Play(sequence);
         }
         public void SpawnWagon(VestibuleType vestibuleType, Vector3 position, bool isBackward)
@@ -290,6 +268,24 @@ namespace Managers
             }
 
             return anomalyWagons[selectedPrefabIndex];
+        }
+        private void ClearAllWagons()
+        {
+            _currentAnomaly?.Deactivate();
+            _currentAnomaly = null;
+
+            foreach (var trainObj in trainPool)
+            {
+                if (trainObj != null && trainObj.TryGetComponent(out NetworkObject netObj))
+                {
+                    if (netObj.IsSpawned)
+                    {
+                        netObj.Despawn();
+                    }
+                }
+            }
+
+            trainPool.Clear();
         }
     }
 }
