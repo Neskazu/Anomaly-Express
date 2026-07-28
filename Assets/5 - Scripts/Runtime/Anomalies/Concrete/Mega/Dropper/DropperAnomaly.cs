@@ -14,16 +14,22 @@ public class DropperAnomaly : AnomalyBase, IKccHitReceiver
     [SerializeField] private GameObject[] _obstacles;
     [SerializeField] private GameObject[] _floor;
 
+    [Header("Finish Settings")]
+    [SerializeField] private GameObject _finishPool;
+
     [Header("Floating Settings")]
     [SerializeField] private float amplitude = 0.2f;
     [SerializeField] private float frequency = 1f;
 
     private Vector3[] _startPositions;
     private float[] _phaseOffsets;
+    private bool _isFinishedLocal = false;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
+        _isFinishedLocal = false;
 
         int count = _obstacles.Length;
         _startPositions = new Vector3[count];
@@ -48,7 +54,12 @@ public class DropperAnomaly : AnomalyBase, IKccHitReceiver
                 router.Anomaly = this;
             }
         }
-            OnAnomalyStateChanged += OnAnomalyToggled;
+        if (_finishPool != null)
+        {
+            var finishRouter = _finishPool.AddComponent<DropperFinishRouter>();
+            finishRouter.Anomaly = this;
+        }
+        OnAnomalyStateChanged += OnAnomalyToggled;
     }
 
     private void Start()
@@ -101,13 +112,24 @@ public class DropperAnomaly : AnomalyBase, IKccHitReceiver
     }
     public void OnKccHit(KinematicCharacterMotor motor)
     {
-        if (!IsActive) return;
+        if (!IsActive || _isFinishedLocal) return;
 
         var netObj = motor.GetComponent<NetworkObject>();
 
         if (netObj != null && netObj.IsOwner)
         {
             StartCoroutine(SafeTeleportCoroutine(motor));
+        }
+    }
+    public void OnPlayerReachedFinish(Collider playerCollider)
+    {
+        if (!IsActive || _isFinishedLocal) return;
+
+        var netObj = playerCollider.GetComponent<NetworkObject>();
+
+        if (netObj != null && netObj.IsOwner)
+        {
+            _isFinishedLocal = true;
         }
     }
 
@@ -138,6 +160,18 @@ public class DropperHitRouter : MonoBehaviour, IKccHitReceiver
         if (Anomaly != null)
         {
             Anomaly.OnKccHit(motor);
+        }
+    }
+}
+public class DropperFinishRouter : MonoBehaviour
+{
+    public DropperAnomaly Anomaly { get; set; }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (Anomaly != null)
+        {
+            Anomaly.OnPlayerReachedFinish(other);
         }
     }
 }
