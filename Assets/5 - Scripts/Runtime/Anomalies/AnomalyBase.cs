@@ -8,6 +8,17 @@ namespace Anomalies
     {
         public static event Action OnAnomalyStateChanged;
 
+        private string _anomalyId;
+        public string Id => _anomalyId;
+
+        private void OnValidate()
+        {
+            if (string.IsNullOrEmpty(_anomalyId))
+            {
+                _anomalyId = Guid.NewGuid().ToString();
+            }
+        }
+
         private readonly NetworkVariable<bool> _isActiveNet = new NetworkVariable<bool>(
             false,
             NetworkVariableReadPermission.Everyone,

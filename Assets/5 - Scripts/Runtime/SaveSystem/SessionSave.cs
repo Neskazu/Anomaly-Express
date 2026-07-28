@@ -6,6 +6,6 @@ using UnityEngine;
 public class SessionSave
 {
     public bool ShowFeedbackPopup;
-    public List<int> SeenAnomalies = new List<int>();
-    public List<int> SeenMegaAnomalies = new List<int>();
+    public List<string> SeenAnomalies = new List<string>();
+    public List<string> SeenMegaAnomalies = new List<string>();
 }

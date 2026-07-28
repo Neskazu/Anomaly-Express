@@ -23,8 +23,8 @@ namespace Managers
         [SerializeField] private GameObject defaultWagon;
 
         [SerializeField] private GameObject[] anomalyWagons;
-        private List<int> _unseenAnomalies = new List<int>();
-        private List<int> _seenAnomalies = new List<int>();
+        private List<string> _unseenAnomalies = new List<string>();
+        private List<string> _seenAnomalies = new List<string>();
 
         [SerializeField] private GameObject vestibulePrefab;
 
@@ -52,8 +52,11 @@ namespace Managers
         [SerializeField] private SceneTransitionSequence[] megaAnomalySequences;
         [SerializeField, Range(0f, 1f)] private float unseenMegaAnomalyChance = 1.0f;
 
-        private List<int> _unseenMegaAnomalies = new List<int>();
-        private List<int> _seenMegaAnomalies = new List<int>();
+        private List<string> _unseenMegaAnomalies = new List<string>();
+        private List<string> _seenMegaAnomalies = new List<string>();
+
+        private List<string> _allAnomalyIds = new List<string>();
+        private List<string> _allMegaAnomalyIds = new List<string>();
 
         private void Awake()
         {
@@ -80,24 +83,30 @@ namespace Managers
             {
                 ClearAllWagons();
             }
-            int index = GetNextIndex(
-                megaAnomalySequences.Length,
-                _unseenMegaAnomalies,
-                _seenMegaAnomalies,
-                unseenMegaAnomalyChance,
-                () =>
-                {
-                    SaveManager.Save.Session.SeenMegaAnomalies = _seenMegaAnomalies;
-                    SaveManager.SaveGame();
-                });
 
-            if (index != -1)
+            string nextMegaId = GetNextId(_allMegaAnomalyIds, _unseenMegaAnomalies, _seenMegaAnomalies, unseenMegaAnomalyChance, () =>
             {
-                await SceneTransitionController.Instance.Play(megaAnomalySequences[index]);
+                SaveManager.Save.Session.SeenMegaAnomalies = _seenMegaAnomalies;
+                SaveManager.SaveGame();
+            });
+
+            SceneTransitionSequence selectedSequence = null;
+            foreach (var seq in megaAnomalySequences)
+            {
+                if (seq.name == nextMegaId)
+                {
+                    selectedSequence = seq;
+                    break;
+                }
+            }
+
+            if (selectedSequence != null)
+            {
+                await SceneTransitionController.Instance.Play(selectedSequence);
             }
             else
             {
-                Debug.LogError("No Mega Anomaly sequences assigned!");
+                Debug.LogError("No Mega Anomaly sequence found or assigned!");
             }
         }
         public void SpawnWagon(VestibuleType vestibuleType, Vector3 position, bool isBackward)
@@ -227,42 +236,53 @@ namespace Managers
                 trainPool.Reverse();
             }
         }
-        // Random and pools
         private void InitializeAnomalyPools()
         {
             SaveManager.Load();
 
-            // Инициализация пула обычных аномалий
-            _seenAnomalies = SaveManager.Save.Session.SeenAnomalies ?? new List<int>();
-            InitializePool(anomalyWagons.Length, _seenAnomalies, _unseenAnomalies, () => {
+            _allAnomalyIds.Clear();
+            foreach (var prefab in anomalyWagons)
+            {
+                if (prefab.TryGetComponent(out AnomalyBase anomaly))
+                    _allAnomalyIds.Add(anomaly.Id);
+                else
+                    Debug.LogWarning($"Prefab {prefab.name} does not have AnomalyBase!");
+            }
+
+            _allMegaAnomalyIds.Clear();
+            foreach (var seq in megaAnomalySequences)
+            {
+                _allMegaAnomalyIds.Add(seq.name);
+            }
+
+            _seenAnomalies = SaveManager.Save.Session.SeenAnomalies ?? new List<string>();
+            InitializePool(_allAnomalyIds, _seenAnomalies, _unseenAnomalies, () => {
                 SaveManager.Save.Session.SeenAnomalies = _seenAnomalies;
                 SaveManager.SaveGame();
             });
 
-            // Инициализация пула мега-аномалий
-            _seenMegaAnomalies = SaveManager.Save.Session.SeenMegaAnomalies ?? new List<int>();
-            InitializePool(megaAnomalySequences.Length, _seenMegaAnomalies, _unseenMegaAnomalies, () => {
+            _seenMegaAnomalies = SaveManager.Save.Session.SeenMegaAnomalies ?? new List<string>();
+            InitializePool(_allMegaAnomalyIds, _seenMegaAnomalies, _unseenMegaAnomalies, () => {
                 SaveManager.Save.Session.SeenMegaAnomalies = _seenMegaAnomalies;
                 SaveManager.SaveGame();
             });
         }
 
-        private void InitializePool(int totalItems, List<int> seen, List<int> unseen, Action saveCallback)
+        private void InitializePool(List<string> allIds, List<string> seen, List<string> unseen, Action saveCallback)
         {
+            seen.RemoveAll(id => !allIds.Contains(id));
+
             unseen.Clear();
-            for (int i = 0; i < totalItems; i++)
+            foreach (var id in allIds)
             {
-                if (!seen.Contains(i))
+                if (!seen.Contains(id))
                 {
-                    unseen.Add(i);
+                    unseen.Add(id);
                 }
             }
-
-            // Если все элементы просмотрены, сбрасываем прогресс
-            if (unseen.Count == 0 && totalItems > 0)
+            if (unseen.Count == 0 && allIds.Count > 0)
             {
-                unseen.Clear();
-                for (int i = 0; i < totalItems; i++) unseen.Add(i);
+                unseen.AddRange(allIds);
                 seen.Clear();
                 saveCallback?.Invoke();
             }
@@ -270,31 +290,31 @@ namespace Managers
 
         private GameObject GetNextAnomalyPrefab()
         {
-            int index = GetNextIndex(
-                anomalyWagons.Length,
-                _unseenAnomalies,
-                _seenAnomalies,
-                unseenAnomalyChance,
-                () =>
+            string nextId = GetNextId(_allAnomalyIds, _unseenAnomalies, _seenAnomalies, unseenAnomalyChance, () =>
+            {
+                SaveManager.Save.Session.SeenAnomalies = _seenAnomalies;
+                SaveManager.SaveGame();
+            });
+
+            if (string.IsNullOrEmpty(nextId)) return null;
+
+            // Находим префаб по полученному ID
+            foreach (var prefab in anomalyWagons)
+            {
+                if (prefab.TryGetComponent(out AnomalyBase anomaly) && anomaly.Id == nextId)
                 {
-                    SaveManager.Save.Session.SeenAnomalies = _seenAnomalies;
-                    SaveManager.SaveGame();
-                });
-
-            return index != -1 ? anomalyWagons[index] : null;
+                    return prefab;
+                }
+            }
+            return null;
         }
-
-        /// <summary>
-        /// Универсальный метод для получения следующего случайного индекса (с учетом увиденных/неувиденных)
-        /// </summary>
-        private int GetNextIndex(int totalItems, List<int> unseen, List<int> seen, float unseenChance, Action saveCallback)
+        private string GetNextId(List<string> allIds, List<string> unseen, List<string> seen, float unseenChance, Action saveCallback)
         {
-            if (totalItems == 0) return -1;
+            if (allIds.Count == 0) return null;
 
-            // На всякий случай проверяем, не пуст ли список (хотя InitializePool должен это обрабатывать)
             if (unseen.Count == 0)
             {
-                for (int i = 0; i < totalItems; i++) unseen.Add(i);
+                unseen.AddRange(allIds);
                 seen.Clear();
                 saveCallback?.Invoke();
             }
@@ -306,25 +326,25 @@ namespace Managers
                 pickUnseen = Random.value <= unseenChance;
             }
 
-            int selectedIndex = 0;
+            string selectedId = null;
 
             if (pickUnseen && unseen.Count > 0)
             {
                 int randomListIndex = Random.Range(0, unseen.Count);
-                selectedIndex = unseen[randomListIndex];
+                selectedId = unseen[randomListIndex];
 
                 unseen.RemoveAt(randomListIndex);
-                seen.Add(selectedIndex);
+                seen.Add(selectedId);
 
                 saveCallback?.Invoke();
             }
             else if (seen.Count > 0)
             {
                 int randomListIndex = Random.Range(0, seen.Count);
-                selectedIndex = seen[randomListIndex];
+                selectedId = seen[randomListIndex];
             }
 
-            return selectedIndex;
+            return selectedId;
         }
 
         private void ClearAllWagons()
