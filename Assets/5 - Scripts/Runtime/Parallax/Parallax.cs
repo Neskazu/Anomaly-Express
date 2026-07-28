@@ -96,9 +96,9 @@ namespace Parallax
             Vector3 spawn = transform.position - direction * (size / 2);
             Vector3 despawn = transform.position + direction * (size / 2);
 
-            Handles.DrawWireDisc(spawn, direction, 5);
-            Handles.DrawWireDisc(despawn, -direction, 5);
-            Handles.DrawDottedLine(spawn, despawn, 5);
+            //Handles.DrawWireDisc(spawn, direction, 5);
+            //Handles.DrawWireDisc(despawn, -direction, 5);
+            //Handles.DrawDottedLine(spawn, despawn, 5);
 
             float spacing = chunkSize.z;
             int amount = Mathf.CeilToInt(size / spacing);

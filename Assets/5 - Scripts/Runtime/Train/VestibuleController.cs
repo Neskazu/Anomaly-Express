@@ -66,7 +66,7 @@ namespace Train
             {
                 return;
             }
-            AnimateWagonNumbersClientRpc(TrainManager.Instance.CurrentWagonIndex);
+            AnimateWagonNumbersClientRpc(TrainManager.Instance.CurrentWagonIndex + 1);
             doorBackward.ToggleLockServerRpc();
 
             DOVirtual.DelayedCall(doorTweenDuration, () =>
@@ -89,13 +89,20 @@ namespace Train
             {
                 if (animator != null)
                 {
-                    Debug.Log("animation"+nextIndex);
                     animator.PlayScroll(nextIndex);
                 }
             }
         }
         private void Start()
         {
+            foreach (var animator in wagonNumberAnimators)
+            {
+                if (animator != null)
+                {
+                    animator.SetWagon(TrainManager.Instance.CurrentWagonIndex);
+                }
+            }
+
             if (!IsServer)
             {
                 return;

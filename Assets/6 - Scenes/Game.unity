@@ -896,8 +896,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: -49.944656, y: -238.7539, z: 189.60794}
-    m_Extent: {x: 355.8333, y: 180.09897, z: 185.11499}
+    m_Center: {x: -117.62641, y: -148.07108, z: 203.1544}
+    m_Extent: {x: 339.95505, y: 159.46942, z: 250.00853}
 --- !u!1 &1027178276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1242,8 +1242,13 @@ MonoBehaviour:
   anomalyChanceIncrease: 0.05
   maxMissStreak: 5
   unseenAnomalyChance: 0.8
-  WagonsBeforeMega: 0
-  sequence: {fileID: 11400000, guid: 149179e9b98cca7409a893a977d1120d, type: 2}
+  WagonsBeforeMega: 8
+  megaAnomalySequences:
+  - {fileID: 11400000, guid: 5cb1bf5f3e4a6c14c809f35e3de77cf7, type: 2}
+  - {fileID: 11400000, guid: 149179e9b98cca7409a893a977d1120d, type: 2}
+  - {fileID: 11400000, guid: e3fdd9ec871d10b4f8806e46ec93e39e, type: 2}
+  - {fileID: 11400000, guid: a666820506123114e9da135ed1c4902e, type: 2}
+  unseenMegaAnomalyChance: 1
 --- !u!4 &1446546833
 Transform:
   m_ObjectHideFlags: 0
@@ -1386,9 +1391,9 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 9d3df944cfe90ec49b2e65690a08647f, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.1
+  m_Volume: 0.025
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

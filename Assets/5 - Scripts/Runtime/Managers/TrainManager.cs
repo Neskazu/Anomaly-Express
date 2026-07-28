@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Anomalies;
 using MegaAnomalies;
@@ -7,6 +8,7 @@ using Scene;
 using Train;
 using Unity.Netcode;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Managers
 {
@@ -15,6 +17,8 @@ namespace Managers
         public static TrainManager Instance { get; private set; }
 
         public Observable<GameObject> OnNewWagon => _onNewWagon;
+
+        [Header("Standard Anomalies")]
 
         [SerializeField] private GameObject defaultWagon;
 
@@ -44,7 +48,12 @@ namespace Managers
         private AnomalyBase _currentAnomaly = null;
 
         private Subject<GameObject> _onNewWagon;
-        [SerializeField] private SceneTransitionSequence sequence;
+        [Header("Mega Anomalies")]
+        [SerializeField] private SceneTransitionSequence[] megaAnomalySequences;
+        [SerializeField, Range(0f, 1f)] private float unseenMegaAnomalyChance = 1.0f;
+
+        private List<int> _unseenMegaAnomalies = new List<int>();
+        private List<int> _seenMegaAnomalies = new List<int>();
 
         private void Awake()
         {
@@ -71,7 +80,25 @@ namespace Managers
             {
                 ClearAllWagons();
             }
-            await SceneTransitionController.Instance.Play(sequence);
+            int index = GetNextIndex(
+                megaAnomalySequences.Length,
+                _unseenMegaAnomalies,
+                _seenMegaAnomalies,
+                unseenMegaAnomalyChance,
+                () =>
+                {
+                    SaveManager.Save.Session.SeenMegaAnomalies = _seenMegaAnomalies;
+                    SaveManager.SaveGame();
+                });
+
+            if (index != -1)
+            {
+                await SceneTransitionController.Instance.Play(megaAnomalySequences[index]);
+            }
+            else
+            {
+                Debug.LogError("No Mega Anomaly sequences assigned!");
+            }
         }
         public void SpawnWagon(VestibuleType vestibuleType, Vector3 position, bool isBackward)
         {
@@ -200,75 +227,106 @@ namespace Managers
                 trainPool.Reverse();
             }
         }
+        // Random and pools
         private void InitializeAnomalyPools()
         {
             SaveManager.Load();
 
+            // »нициализаци€ пула обычных аномалий
             _seenAnomalies = SaveManager.Save.Session.SeenAnomalies ?? new List<int>();
-            _unseenAnomalies.Clear();
+            InitializePool(anomalyWagons.Length, _seenAnomalies, _unseenAnomalies, () => {
+                SaveManager.Save.Session.SeenAnomalies = _seenAnomalies;
+                SaveManager.SaveGame();
+            });
 
-            for (int i = 0; i < anomalyWagons.Length; i++)
+            // »нициализаци€ пула мега-аномалий
+            _seenMegaAnomalies = SaveManager.Save.Session.SeenMegaAnomalies ?? new List<int>();
+            InitializePool(megaAnomalySequences.Length, _seenMegaAnomalies, _unseenMegaAnomalies, () => {
+                SaveManager.Save.Session.SeenMegaAnomalies = _seenMegaAnomalies;
+                SaveManager.SaveGame();
+            });
+        }
+
+        private void InitializePool(int totalItems, List<int> seen, List<int> unseen, Action saveCallback)
+        {
+            unseen.Clear();
+            for (int i = 0; i < totalItems; i++)
             {
-                if (!_seenAnomalies.Contains(i))
+                if (!seen.Contains(i))
                 {
-                    _unseenAnomalies.Add(i);
+                    unseen.Add(i);
                 }
             }
 
-            if (_unseenAnomalies.Count == 0 && anomalyWagons.Length > 0)
+            // ≈сли все элементы просмотрены, сбрасываем прогресс
+            if (unseen.Count == 0 && totalItems > 0)
             {
-                ResetAnomaliesProgress();
+                unseen.Clear();
+                for (int i = 0; i < totalItems; i++) unseen.Add(i);
+                seen.Clear();
+                saveCallback?.Invoke();
             }
         }
-        private void ResetAnomaliesProgress()
-        {
-            _unseenAnomalies.Clear();
-            for (int i = 0; i < anomalyWagons.Length; i++)
-            {
-                _unseenAnomalies.Add(i);
-            }
 
-            _seenAnomalies.Clear();
-            SaveManager.Save.Session.SeenAnomalies = _seenAnomalies;
-            SaveManager.SaveGame();
-        }
         private GameObject GetNextAnomalyPrefab()
         {
-            if (anomalyWagons.Length == 0) return null;
+            int index = GetNextIndex(
+                anomalyWagons.Length,
+                _unseenAnomalies,
+                _seenAnomalies,
+                unseenAnomalyChance,
+                () =>
+                {
+                    SaveManager.Save.Session.SeenAnomalies = _seenAnomalies;
+                    SaveManager.SaveGame();
+                });
 
-            if (_unseenAnomalies.Count == 0)
+            return index != -1 ? anomalyWagons[index] : null;
+        }
+
+        /// <summary>
+        /// ”ниверсальный метод дл€ получени€ следующего случайного индекса (с учетом увиденных/неувиденных)
+        /// </summary>
+        private int GetNextIndex(int totalItems, List<int> unseen, List<int> seen, float unseenChance, Action saveCallback)
+        {
+            if (totalItems == 0) return -1;
+
+            // Ќа вс€кий случай провер€ем, не пуст ли список (хот€ InitializePool должен это обрабатывать)
+            if (unseen.Count == 0)
             {
-                ResetAnomaliesProgress();
+                for (int i = 0; i < totalItems; i++) unseen.Add(i);
+                seen.Clear();
+                saveCallback?.Invoke();
             }
 
             bool pickUnseen = true;
 
-            if (_seenAnomalies.Count > 0)
+            if (seen.Count > 0)
             {
-                pickUnseen = Random.value <= unseenAnomalyChance;
+                pickUnseen = Random.value <= unseenChance;
             }
 
-            int selectedPrefabIndex = 0;
+            int selectedIndex = 0;
 
-            if (pickUnseen)
+            if (pickUnseen && unseen.Count > 0)
             {
-                int randomListIndex = Random.Range(0, _unseenAnomalies.Count);
-                selectedPrefabIndex = _unseenAnomalies[randomListIndex];
+                int randomListIndex = Random.Range(0, unseen.Count);
+                selectedIndex = unseen[randomListIndex];
 
-                _unseenAnomalies.RemoveAt(randomListIndex);
-                _seenAnomalies.Add(selectedPrefabIndex);
+                unseen.RemoveAt(randomListIndex);
+                seen.Add(selectedIndex);
 
-                SaveManager.Save.Session.SeenAnomalies = _seenAnomalies;
-                SaveManager.SaveGame();
+                saveCallback?.Invoke();
             }
-            else
+            else if (seen.Count > 0)
             {
-                int randomListIndex = Random.Range(0, _seenAnomalies.Count);
-                selectedPrefabIndex = _seenAnomalies[randomListIndex];
+                int randomListIndex = Random.Range(0, seen.Count);
+                selectedIndex = seen[randomListIndex];
             }
 
-            return anomalyWagons[selectedPrefabIndex];
+            return selectedIndex;
         }
+
         private void ClearAllWagons()
         {
             _currentAnomaly?.Deactivate();

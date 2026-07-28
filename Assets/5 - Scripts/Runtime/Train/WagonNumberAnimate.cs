@@ -19,6 +19,11 @@ public class WagonNumberAnimate : MonoBehaviour
         if (targetRenderer == null) targetRenderer = GetComponent<MeshRenderer>();
         _material = targetRenderer.material;
         _propID = Shader.PropertyToID(propertyName);
+        
+    }
+    public void SetWagon(int targetIndex)
+    {
+        _material.SetTextureOffset(_propID, new Vector2(startXOffset, stepY * targetIndex));
     }
 
     public void PlayScroll(int targetIndex)
