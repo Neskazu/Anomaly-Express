@@ -56,6 +56,7 @@ namespace Train
 
             if (!_forwardIsOpen && !_backwardIsOpen && IsAllPlayerInVestibule())
             {
+                ReviveAllDeadPlayers();
                 LoadNextLevel();
             }
         }
@@ -188,6 +189,20 @@ namespace Train
 
             ulong clientId = networkObject.OwnerClientId;
             clientsInVestibule.Remove(clientId);
+        }
+        private void ReviveAllDeadPlayers()
+        {
+            if (!IsServer) return;
+
+            foreach (ulong clientId in clientsInVestibule)
+            {
+                var data = MultiplayerManager.Players.Get(clientId);
+
+                if (data.IsDead)
+                {
+                    GameManager.Instance.RevivePlayerServerRpc(clientId);
+                }
+            }
         }
     }
 
