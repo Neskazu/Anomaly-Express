@@ -66,13 +66,17 @@ namespace Train
             {
                 return;
             }
-            AnimateWagonNumbersClientRpc(TrainManager.Instance.CurrentWagonIndex + 1);
+            int nextWagonIndex = TrainManager.Instance.GetExpectedNextIndex(isBackward);
+
+            AnimateWagonNumbersClientRpc(nextWagonIndex);
+
             doorBackward.ToggleLockServerRpc();
 
             DOVirtual.DelayedCall(doorTweenDuration, () =>
             {
                 SpawnWagonBasedOnDirection();
                 isBackward = true;
+
                 doorForward.ToggleLockServerRpc();
                 SwapDoors();
             });

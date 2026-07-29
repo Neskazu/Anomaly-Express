@@ -365,5 +365,19 @@ namespace Managers
 
             trainPool.Clear();
         }
+        //helper good to be refactored
+        public int GetExpectedNextIndex(bool playerWentBackward)
+        {
+            bool isMistake = (currentWagonHasAnomaly && !playerWentBackward) || (!currentWagonHasAnomaly && playerWentBackward);
+
+            if (isMistake)
+            {
+                return 0;
+            }
+            else
+            {
+                return _currentWagonIndex + 1;
+            }
+        }
     }
 }
