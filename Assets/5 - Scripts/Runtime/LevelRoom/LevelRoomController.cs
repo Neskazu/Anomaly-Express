@@ -33,17 +33,30 @@ public class LevelRoomController : NetworkBehaviour
         {
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
         }
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
     }
 
     public override void OnNetworkDespawn()
     {
-        if (IsServer)
+        if (!IsServer) return;
+
+        if (door != null) door.OnDoorStateChanged -= HandleDoorState;
+
+        if (NetworkManager.Singleton != null)
         {
-            door.OnDoorStateChanged -= HandleDoorState;
-            if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
+            if (NetworkManager.Singleton.SceneManager != null)
             {
                 NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnSceneLoaded;
             }
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
+        }
+    }
+
+    private void OnClientDisconnect(ulong clientId)
+    {
+        if (_clientsInside.Remove(clientId))
+        {
+            CheckDoorLockState();
         }
     }
 
@@ -55,11 +68,7 @@ public class LevelRoomController : NetworkBehaviour
         if (netObj != null && netObj.IsPlayerObject)
         {
             _clientsInside.Add(netObj.OwnerClientId);
-
-            if (!_isTransitioning && IsAllPlayersInside())
-            {
-                door.SetLockServerRpc(false);
-            }
+            CheckDoorLockState();
         }
     }
 
@@ -71,11 +80,21 @@ public class LevelRoomController : NetworkBehaviour
         if (netObj != null && netObj.IsPlayerObject)
         {
             _clientsInside.Remove(netObj.OwnerClientId);
+            CheckDoorLockState();
 
             if (_isNewLevelLoaded && _clientsInside.Count == 0)
             {
                 NetworkObject.Despawn();
             }
+        }
+    }
+    private void CheckDoorLockState()
+    {
+        if (_isTransitioning || _isNewLevelLoaded) return;
+
+        if (IsAllPlayersInside())
+        {
+            door.SetLockServerRpc(false);
         }
     }
 
@@ -86,7 +105,7 @@ public class LevelRoomController : NetworkBehaviour
         if (isOpen)
         {
             door.SetLockServerRpc(true);
-            if (IsAllPlayersInside()) door.SetLockServerRpc(false);
+            CheckDoorLockState();
         }
         else
         {
@@ -137,27 +156,19 @@ public class LevelRoomController : NetworkBehaviour
             transform.position = Vector3.zero;
             transform.rotation = Quaternion.identity;
         }
-
         foreach (ulong clientId in _clientsInside)
         {
-            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client) && client.PlayerObject != null)
+            if (_playerLocalPositions.TryGetValue(clientId, out var localPos))
             {
-                if (_playerLocalPositions.TryGetValue(clientId, out var localPos))
-                {
-                    Vector3 newWorldPos = transform.TransformPoint(localPos);
-                    Quaternion newWorldRot = transform.rotation * _playerLocalRotations[clientId];
+                Vector3 newWorldPos = transform.TransformPoint(localPos);
+                Quaternion newWorldRot = transform.rotation * _playerLocalRotations[clientId];
 
-                    var playerNetTransform = client.PlayerObject.GetComponent<NetworkTransform>();
-                    if (playerNetTransform != null)
-                    {
-                        playerNetTransform.Teleport(newWorldPos, newWorldRot, client.PlayerObject.transform.localScale);
-                    }
-                    else
-                    {
-                        client.PlayerObject.transform.position = newWorldPos;
-                        client.PlayerObject.transform.rotation = newWorldRot;
-                    }
-                }
+                ClientRpcParams clientRpcParams = new ClientRpcParams
+                {
+                    Send = new ClientRpcSendParams { TargetClientIds = new[] { clientId } }
+                };
+
+                TeleportPlayerClientRpc(newWorldPos, newWorldRot, clientRpcParams);
             }
         }
 
@@ -166,6 +177,29 @@ public class LevelRoomController : NetworkBehaviour
         _isTransitioning = false;
 
         CheckPositionsAfterFrames().Forget();
+    }
+    [ClientRpc]
+    private void TeleportPlayerClientRpc(Vector3 position, Quaternion rotation, ClientRpcParams clientRpcParams = default)
+    {
+        var localPlayer = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
+        if (localPlayer != null)
+        {
+            var characterController = localPlayer.GetComponent<CharacterController>();
+            if (characterController != null) characterController.enabled = false;
+
+            var playerNetTransform = localPlayer.GetComponent<NetworkTransform>();
+            if (playerNetTransform != null)
+            {
+                playerNetTransform.Teleport(position, rotation, localPlayer.transform.localScale);
+            }
+            else
+            {
+                localPlayer.transform.position = position;
+                localPlayer.transform.rotation = rotation;
+            }
+
+            if (characterController != null) characterController.enabled = true;
+        }
     }
 
     private async UniTaskVoid CheckPositionsAfterFrames()
