@@ -410,8 +410,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 482414874}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.014830524, y: 0.9997821, z: 0.0013605498, w: -0.014627909}
+  m_LocalPosition: {x: 0.5793976, y: 0.80082756, z: 0.92536354}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -896,8 +896,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: -117.62641, y: -148.07108, z: 203.1544}
-    m_Extent: {x: 339.95505, y: 159.46942, z: 250.00853}
+    m_Center: {x: -134.27512, y: -81.67085, z: -213.74037}
+    m_Extent: {x: 277.26398, y: 175.33293, z: 215.56425}
 --- !u!1 &1027178276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1339,13 +1339,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1608923706}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.457, z: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.701, y: 0.8, z: 0.461}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1657292243
 GameObject:
   m_ObjectHideFlags: 0

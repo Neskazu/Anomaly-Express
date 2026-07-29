@@ -1,67 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &4652734845859362901
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 3620444079216464988}
-    m_Modifications:
-    - target: {fileID: 2723361856348137396, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.1415
-      objectReference: {fileID: 0}
-    - target: {fileID: 2723361856348137396, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.0474
-      objectReference: {fileID: 0}
-    - target: {fileID: 2723361856348137396, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.0076
-      objectReference: {fileID: 0}
-    - target: {fileID: 2723361856348137396, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.08233741
-      objectReference: {fileID: 0}
-    - target: {fileID: 2723361856348137396, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.82743484
-      objectReference: {fileID: 0}
-    - target: {fileID: 2723361856348137396, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.55549216
-      objectReference: {fileID: 0}
-    - target: {fileID: 2723361856348137396, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.0008429732
-      objectReference: {fileID: 0}
-    - target: {fileID: 2723361856348137396, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 187.886
-      objectReference: {fileID: 0}
-    - target: {fileID: 2723361856348137396, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 5.2180023
-      objectReference: {fileID: 0}
-    - target: {fileID: 2723361856348137396, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: -68.109985
-      objectReference: {fileID: 0}
-    - target: {fileID: 3350822714730020110, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-      propertyPath: m_Name
-      value: Sasha's Phone
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
---- !u!4 &7303297754669637601 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2723361856348137396, guid: db1fe327eb7f5b246a0bb6833a0f7dae, type: 3}
-  m_PrefabInstance: {fileID: 4652734845859362901}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6627067717463211260
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -125,14 +63,27 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 7049731587287895996, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 7621907304019355808, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4557961453584437428, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7303297754669637601}
-    m_AddedComponents: []
+      addedObject: {fileID: 650454774953881851}
   m_SourcePrefab: {fileID: 100100000, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
---- !u!4 &3620444079216464988 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7621907304019355808, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
+--- !u!1 &7257888559175609416 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4557961453584437428, guid: 4ade84fa95b6c154fb6bf6dbaeefa529, type: 3}
   m_PrefabInstance: {fileID: 6627067717463211260}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &650454774953881851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7257888559175609416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ecb889909e540bc83e4a93d02696ac5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
