@@ -14,25 +14,21 @@ public class TrainLooper : MonoBehaviour
     [SerializeField] private float speed = 2f;
     [SerializeField] private float border = 10f;
 
+    [SerializeField] private Vector3 moveDirection = Vector3.forward;
+
     private void Update()
     {
         foreach (var segment in segments)
         {
-            segment.transform.position += Vector3.forward * speed * Time.deltaTime;
+            segment.transform.position += moveDirection * speed * Time.deltaTime;
         }
 
         Segment first = segments[0];
 
-        if (first.transform.position.z >= border)
+        if (Vector3.Dot(first.transform.position, moveDirection) >= border)
         {
             Segment last = segments[segments.Count - 1];
-
-            float newZ = last.transform.position.z - first.length;
-
-            first.transform.position = new Vector3(
-                first.transform.position.x,
-                first.transform.position.y,
-                newZ);
+            first.transform.position = last.transform.position - (moveDirection * first.length);
 
             segments.RemoveAt(0);
             segments.Add(first);
