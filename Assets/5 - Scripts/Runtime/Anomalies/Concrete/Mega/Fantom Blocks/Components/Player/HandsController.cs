@@ -1,6 +1,4 @@
-using System;
 using Managers;
-using Nac.Extensions;
 using Network.Players;
 using R3;
 using Unity.Netcode;
@@ -8,7 +6,7 @@ using UnityEngine;
 
 namespace Anomalies
 {
-    public class HandsController : NetworkBehaviour
+    public class HandsController : MonoBehaviour
     {
         private static PlayerDataProvider Players => MultiplayerManager.Players;
 
@@ -16,26 +14,14 @@ namespace Anomalies
         [SerializeField] private GameObject[] personalPrefabs;
         [SerializeField] private HandsAnimations handsAnimation;
 
-        private readonly NetworkVariable<bool> active = new();
-        private readonly NetworkVariable<bool> photoMode = new();
+        private readonly ReactiveProperty<bool> active = new();
+        private readonly ReactiveProperty<bool> photoMode = new();
 
-        public ReadOnlyReactiveProperty<bool> Active { get; private set; }
-        public ReadOnlyReactiveProperty<bool> PhotoMode { get; private set; }
+        public ReadOnlyReactiveProperty<bool> Active => active;
+        public ReadOnlyReactiveProperty<bool> PhotoMode => photoMode;
 
-        protected override void OnNetworkPostSpawn()
+        public void Start()
         {
-            base.OnNetworkPostSpawn();
-
-            Active = active
-                .AsObservable()
-                .ToReadOnlyReactiveProperty()
-                .AddTo(this);
-
-            PhotoMode = photoMode
-                .AsObservable()
-                .ToReadOnlyReactiveProperty()
-                .AddTo(this);
-
             var hands = CreateHands();
             var phone = hands.GetComponentInChildren<PhoneController>();
 

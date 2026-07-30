@@ -27,7 +27,6 @@ namespace Player
         [SerializeField] private InputActionReference movementActionReference;
 
         //visual
-        [SerializeField] private GameObject[] characterPrefabs;
         public Transform MeshRoot;
 
         public KinematicCharacterMotor Motor;
@@ -446,9 +445,13 @@ namespace Player
             foreach (Transform child in MeshRoot)
                 Destroy(child.gameObject);
 
-            if (id < 0 || id >= characterPrefabs.Length) return;
+            var character = InfoManager.Instance.GetCharacter(id);
+            if (character == null)
+            {
+                return;
+            }
 
-            GameObject newCharacter = Instantiate(characterPrefabs[id], MeshRoot);
+            var newCharacter = Instantiate(character.Character, MeshRoot);
             if (IsOwner)
             {
                 SetShadowsOnly(newCharacter);
@@ -459,6 +462,7 @@ namespace Player
             {
                 playerAnimator.SetupNewCharacter(newCharacter);
             }
+
             UpdateVisuals();
         }
 
@@ -470,10 +474,11 @@ namespace Player
                 r.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
             }
         }
+
         private void UpdateVisuals()
         {
             bool hide = Anomalies.SplitControlAnomaly.IsSplitActive;
-            if ( hide )
+            if (hide)
             {
                 var renderers = MeshRoot.GetComponentsInChildren<Renderer>();
                 foreach (var r in renderers)
@@ -482,6 +487,7 @@ namespace Player
                 }
             }
         }
+
         //-------------------------
         public void BeforeCharacterUpdate(float deltaTime)
         {

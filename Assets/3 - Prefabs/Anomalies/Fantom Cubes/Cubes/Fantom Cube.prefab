@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &292852511776897648
 Transform:
   m_ObjectHideFlags: 0
@@ -51,7 +51,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 1, z: 2}
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1414346165664449146
 GameObject:
@@ -194,6 +194,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   sensor: {fileID: 3920141028462516211}
   visual: {fileID: 8802029647851070410}
+  collision: {fileID: 754449520852718863}
 --- !u!114 &8802029647851070410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 146911651661880165}
-  onRevealed: {fileID: 754449520852718863}
+  onRevealed: {fileID: 8604197443036962319}
   onConcealed: {fileID: 6099323196424693220}
   effect: {fileID: 1186622824075564827}
 --- !u!1 &6099323196424693220
@@ -384,7 +385,10 @@ VisualEffect:
     m_Vector2f:
       m_Array: []
     m_Vector3f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 1.5, y: 1.5, z: 1.5}
+        m_Name: Scale
+        m_Overridden: 1
     m_Vector4f:
       m_Array: []
     m_Uint:
@@ -400,7 +404,10 @@ VisualEffect:
     m_NamedObject:
       m_Array: []
     m_Bool:
-      m_Array: []
+      m_Array:
+      - m_Value: 1
+        m_Name: Activate
+        m_Overridden: 1
 --- !u!73398921 &3547696651642368008
 VFXRenderer:
   serializedVersion: 1
@@ -491,7 +498,7 @@ MonoBehaviour:
   sightRenderer: {fileID: 7515351418736497832}
   mask:
     serializedVersion: 2
-    m_Bits: 33783
+    m_Bits: 33779
   color: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &8604197443036962319
 GameObject:

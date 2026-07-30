@@ -53,7 +53,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Active
+    m_ConditionEvent: Phone Active
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 7746032694188304766}
@@ -78,7 +78,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Photo Mode
+    m_ConditionEvent: Phone Photo Mode
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -91561087750964347}
@@ -103,7 +103,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Active
+    m_ConditionEvent: Phone Active
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6624615018511105920}
@@ -128,10 +128,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Active
+    m_ConditionEvent: Phone Active
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: Photo Mode
+    m_ConditionEvent: Phone Photo Mode
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 464086644705352886}
@@ -184,13 +184,13 @@ AnimatorController:
   m_Name: Hands
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Active
+  - m_Name: Phone Active
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Photo Mode
+  - m_Name: Phone Photo Mode
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -284,10 +284,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Active
+    m_ConditionEvent: Phone Active
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: Photo Mode
+    m_ConditionEvent: Phone Photo Mode
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 5136488217116176093}
@@ -480,7 +480,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Active
+    m_ConditionEvent: Phone Active
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 7746032694188304766}

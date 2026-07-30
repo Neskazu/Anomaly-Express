@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Managers;
+using Network.Players;
 using UnityEngine;
 
 namespace Anomalies
@@ -7,12 +9,25 @@ namespace Anomalies
     [Serializable]
     public class FantomBlockGuild
     {
-        [SerializeField] private ulong id;
-        [SerializeField] private FantomBlockColor color;
         [SerializeField] private FantomComponent[] components;
 
-        public ulong Id => id;
-        public FantomBlockColor Color => color;
-        public IReadOnlyCollection<FantomComponent> Components => components;
+        public IReadOnlyList<FantomComponent> Components => components;
+
+        public ulong OwnerId { get; private set; }
+
+        public void SetOwner(ulong id)
+        {
+            OwnerId = id;
+        }
+
+        public void SetColor(Color clr)
+        {
+            var data = MultiplayerManager.Players.Get(OwnerId);
+
+            foreach (var fantomComponent in components)
+            {
+                fantomComponent.UpdateColorRpc(data.CharacterId);
+            }
+        }
     }
 }

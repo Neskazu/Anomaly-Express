@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Managers;
 using Network.Players;
@@ -12,9 +13,8 @@ namespace Anomalies
     {
         public static FantomBlocksController Singleton { get; private set; }
 
-        [SerializeField] FantomBlockGuild neutralGuild;
-        [SerializeField] FantomBlockGuild[] guilds;
-        [SerializeField] LensComponent localLens;
+        [SerializeField] private FantomBlockGuild[] guilds;
+        [SerializeField] private LensComponent localLens;
         [SerializeField] private AnomalyLevitatingObjects anomalyLevitatingObjects;
 
         private static PlayerDataProvider Players => MultiplayerManager.Players;
@@ -58,11 +58,9 @@ namespace Anomalies
             base.OnNetworkSpawn();
 
             var owner = NetworkManager.Singleton.LocalClientId;
-            var player = Players.Get(owner);
-            var guild = guilds[player.CharacterId];
-            var color = guild.Color;
+            var info = InfoManager.Instance.GetCharacter(owner);
 
-            localLens.UpdateColor(color.RGBA);
+            localLens.UpdateColor(info.Color);
             localLens.enabled = false;
 
             if (!IsServer)
@@ -97,8 +95,7 @@ namespace Anomalies
 
         private void DistributeGuilds()
         {
-            var players = Players.ToList();
-            var ids = players.Select(p => p.CharacterId).ToArray();
+            var ids = NetworkManager.Singleton.ConnectedClients.Keys.ToArray();
 
             if (ids.Length == 0)
             {
@@ -115,14 +112,12 @@ namespace Anomalies
             for (var i = 0; i < guilds.Length; i++)
             {
                 var guild = guilds[i];
-                var characterId = ids[i % ids.Length];
+                var clientId = ids[i % ids.Length];
+                var characterId = Players.Get(clientId).CharacterId;
+                var character = InfoManager.Instance.GetCharacter(characterId);
 
-                foreach (var fantomComponent in guild.Components)
-                {
-                    fantomComponent.UpdateColorRpc((ulong)characterId + 1);
-                }
-
-                Debug.Log($"Distribute guild {guild.Id} to players {characterId}");
+                guild.SetOwner(clientId);
+                guild.SetColor(character.Color);
             }
         }
 
@@ -146,9 +141,9 @@ namespace Anomalies
             }
         }
 
-        public FantomBlockGuild GetGuild(ulong guildID)
+        public IEnumerable<FantomBlockGuild> GetGuilds(ulong ownerId)
         {
-            return guilds.First(g => g.Id == guildID);
+            return guilds.Where(g => g.OwnerId == ownerId);
         }
     }
 }

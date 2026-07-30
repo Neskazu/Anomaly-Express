@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Managers;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
@@ -10,12 +12,14 @@ namespace Anomalies
         [SerializeField] private SensorComponent sensor;
         [SerializeField] private FantomVisualComponent visual;
 
+        [SerializeField] private GameObject collision;
+
         // Shared
         private readonly NetworkVariable<int> detected = new();
 
         // Local
         private readonly ReactiveProperty<bool> revealed = new();
-        private IDisposable subscription;
+        private readonly CompositeDisposable compositeDisposable = new();
 
         public ReadOnlyReactiveProperty<bool> Revealed => revealed;
 
@@ -23,21 +27,46 @@ namespace Anomalies
         {
             base.OnNetworkSpawn();
 
-            subscription = sensor.Detected
+            sensor.Detected
                 .Subscribe(DetectedCallback)
-                .AddTo(this);
+                .AddTo(compositeDisposable);
+
+            revealed
+                .Subscribe(UpdateCollision)
+                .AddTo(compositeDisposable);
         }
 
         public override void OnNetworkDespawn()
         {
-            base.OnNetworkDespawn();
+            compositeDisposable?.Dispose();
 
-            subscription?.Dispose();
+            base.OnNetworkDespawn();
         }
 
         private void DetectedCallback(bool value)
         {
             UpdateCounterRpc(value);
+        }
+
+        private void UpdateCollision(bool state)
+        {
+            if (state)
+            {
+                var controller = FantomBlocksController.Singleton;
+                var localClientId = NetworkManager.Singleton.LocalClientId;
+                var guilds = controller.GetGuilds(localClientId);
+                var components = guilds.SelectMany(g => g.Components);
+
+                if (components.Contains(this))
+                {
+                    return;
+                }
+
+                collision.SetActive(true);
+                return;
+            }
+
+            collision.SetActive(false);
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
@@ -56,27 +85,20 @@ namespace Anomalies
         }
 
         [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
-        private void UpdateStateRpc(bool state)
+        private void UpdateStateRpc(bool state, RpcParams rpcParams = default)
         {
             revealed.Value = state;
         }
 
         [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
-        public void UpdateColorRpc(ulong guildID)
+        public void UpdateColorRpc(int characterId)
         {
-            var controller = FantomBlocksController.Singleton;
-            var guild = controller.GetGuild(guildID);
+            var info = InfoManager.Instance.GetCharacter(characterId);
 
-            if (guild.Color.RGBA.a < 0.001)
-            {
-                return;
-            }
-
-            visual.SetColor(guild.Color.Gradient);
-
+            visual.SetColor(info.Gradient);
             if (sensor is SightSensorComponent sightSensorComponent)
             {
-                sightSensorComponent.SetColor(guild.Color.RGBA);
+                sightSensorComponent.SetColor(info.Color);
             }
         }
     }

@@ -33,8 +33,9 @@ namespace Anomalies
 
                 var dist = dir.magnitude;
 
-                if (Physics.Raycast(lens.Position, dir.normalized, out _, dist, mask))
+                if (Physics.Raycast(lens.Position, dir.normalized, out var x, dist, mask))
                 {
+                    Debug.Log(x.collider.name);
                     continue;
                 }
 

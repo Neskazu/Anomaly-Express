@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7241382538499880395}
   - component: {fileID: 360490594590315534}
-  - component: {fileID: 3551944120313646565}
+  - component: {fileID: 894977890983677403}
   m_Layer: 8
   m_Name: FCA Camera
   m_TagString: Untagged
@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensors: []
---- !u!64 &3551944120313646565
-MeshCollider:
+--- !u!136 &894977890983677403
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -65,10 +65,11 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 2161397572382743345, guid: 491cb5c90e3e01b42bafb2ec5625e37f, type: 3}
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &6554863842838904347
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,23 +124,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6090799310425913786, guid: 143395974ad3e9e4391cfa77e45d659f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 6090799310425913786, guid: 143395974ad3e9e4391cfa77e45d659f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 6090799310425913786, guid: 143395974ad3e9e4391cfa77e45d659f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6090799310425913786, guid: 143395974ad3e9e4391cfa77e45d659f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6090799310425913786, guid: 143395974ad3e9e4391cfa77e45d659f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 6090799310425913786, guid: 143395974ad3e9e4391cfa77e45d659f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y

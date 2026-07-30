@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46a335943b9a4db9a19b29f84332620f, type: 3}
+  m_Name: Lisa
+  m_EditorClassIdentifier: 
+  character: {fileID: -1728013695380148634, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
+  chibi: {fileID: -1728013695380148634, guid: d02ae8b3ee06a6a499292e404517aa7f, type: 3}
+  hands: {fileID: -1728013695380148634, guid: 7ceba1c027d23e4418713dc82f09cd45, type: 3}
+  color: {r: 1, g: 0.74509805, b: 0, a: 1}
+  gradient:
+    serializedVersion: 2
+    key0: {r: 0.7490196, g: 1, b: 0, a: 1}
+    key1: {r: 1, g: 0.7490196, b: 0, a: 1}
+    key2: {r: 1, g: 0.2509804, b: 0, a: 0}
+    key3: {r: 1, g: 0, b: 0.39215687, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 3277
+    ctime2: 62258
+    ctime3: 65535
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 4
+    m_NumAlphaKeys: 2
