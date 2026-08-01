@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using R3;
 using Unity.Netcode;
@@ -15,6 +16,7 @@ namespace Anomalies
         [SerializeField] private float animationDuration;
         [SerializeField] private float idleRestSpeed;
         [SerializeField] private float idlePhotoSpeed;
+        [SerializeField] private HandsSync handsSync;
 
         private HandsComponent handsComponent;
         private Transform handsRoot;
@@ -41,6 +43,18 @@ namespace Anomalies
         {
             handsComponent.HandAnimator.SetBool(Active, active);
 
+            if (active)
+            {
+                handsSync.SyncPhoneRpc(true, false);
+            }
+            else
+            {
+                Observable
+                    .Timer(TimeSpan.FromSeconds(animationDuration))
+                    .Subscribe(_ => handsSync.SyncPhoneRpc(false, false))
+                    .AddTo(this);
+            }
+
             PlayBodyAnimation(Active, active);
         }
 
@@ -63,6 +77,7 @@ namespace Anomalies
             handsComponent.Phone.DOLocalMove(phoneOffset, animationDuration);
             handsComponent.HandAnimator.SetBool(PhotoMode, active);
 
+            handsSync.SyncPhoneRpc(true, active);
             PlayBodyAnimation(PhotoMode, active);
         }
 
