@@ -6548,8 +6548,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: -17.486786, y: -146.23401, z: 198.92737}
-    m_Extent: {x: 387.03323, y: 162.62286, z: 177.70493}
+    m_Center: {x: -205.40425, y: -74.74158, z: -73.27588}
+    m_Extent: {x: 206.493, y: 168.01546, z: 350.03928}
 --- !u!4 &1397641026
 Transform:
   m_ObjectHideFlags: 0
@@ -8976,6 +8976,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1257061846}
     m_Modifications:
+    - target: {fileID: -7479417668004161482, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: idleRestSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7479417668004161482, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: idlePhotoSpeed
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7479417668004161482, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: restRotation.x
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: -7479417668004161482, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: restRotation.y
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: -7479417668004161482, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: animationDuration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7479417668004161482, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
+      propertyPath: photomodeRotation.x
+      value: -3
+      objectReference: {fileID: 0}
     - target: {fileID: 2682802216580559882, guid: b13da421d4f11c54191d76364efc2ad2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

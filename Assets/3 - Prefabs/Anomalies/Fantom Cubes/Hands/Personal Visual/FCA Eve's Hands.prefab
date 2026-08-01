@@ -46,6 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handAnimator: {fileID: 2061140558718438807}
+  phone: {fileID: 5476403608104857409}
+  handsRestOffset: {x: 0, y: -1.4, z: 0}
+  handsPhotoOffset: {x: 0, y: -1.37, z: -0.12}
+  phoneRestOffset: {x: 0, y: 0, z: -0.012}
+  phonePhotoOffset: {x: 0.0045, y: -0.017, z: 0.0065}
 --- !u!1001 &6514831571734715
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72,11 +77,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5482918298697547770, guid: 0fedf782c7a2bae48911d1bf8988972e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 5482918298697547770, guid: 0fedf782c7a2bae48911d1bf8988972e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 5482918298697547770, guid: 0fedf782c7a2bae48911d1bf8988972e, type: 3}
       propertyPath: m_LocalRotation.y
@@ -88,7 +93,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5482918298697547770, guid: 0fedf782c7a2bae48911d1bf8988972e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 5482918298697547770, guid: 0fedf782c7a2bae48911d1bf8988972e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -143,6 +148,10 @@ PrefabInstance:
     - target: {fileID: -5694092435888646316, guid: 29154cf1e2201fc4b81910bdbb9a1ca3, type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.08591911
+      objectReference: {fileID: 0}
+    - target: {fileID: -5694092435888646316, guid: 29154cf1e2201fc4b81910bdbb9a1ca3, type: 3}
+      propertyPath: m_UpdateWhenOffscreen
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -5694092435888646316, guid: 29154cf1e2201fc4b81910bdbb9a1ca3, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

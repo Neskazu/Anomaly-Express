@@ -25,17 +25,14 @@ namespace Anomalies
                 }
 
                 var dir = (sightRenderer.bounds.center - lens.Position);
-
                 if (Vector3.Angle(lens.Forward, dir.normalized) > 45f)
                 {
                     continue;
                 }
 
                 var dist = dir.magnitude;
-
                 if (Physics.Raycast(lens.Position, dir.normalized, out var x, dist, mask))
                 {
-                    Debug.Log(x.collider.name);
                     continue;
                 }
 

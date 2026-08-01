@@ -18,10 +18,14 @@ namespace Anomalies
         [SerializeField] private InputActionReference goAction;
         [SerializeField] private InputActionReference backAction;
 
+        [Header("Settings")]
+        [SerializeField] private float cooldownTime = 1.0f;
+
         private readonly CompositeDisposable disposable = new();
 
         private HandsController handsController;
         private LensComponent phoneLens;
+        private float cooldown;
         private bool active;
 
         public void Setup(HandsController controller)
@@ -53,13 +57,22 @@ namespace Anomalies
             disposable.Dispose();
         }
 
+        private void FixedUpdate()
+        {
+            if (cooldown >= Mathf.Epsilon)
+            {
+                cooldown = Mathf.Max(cooldown - Time.fixedDeltaTime, 0f);
+            }
+        }
+
         private void EnablePhone()
         {
-            if (active)
+            if (cooldown >= Mathf.Epsilon || active)
             {
                 return;
             }
 
+            cooldown = cooldownTime;
             active = true;
             handsController.UpdatePhoneState(true);
 
@@ -68,13 +81,14 @@ namespace Anomalies
 
         private void DisablePhone()
         {
-            if (!active)
+            if (cooldown >= Mathf.Epsilon || !active)
             {
                 return;
             }
 
             DisablePhotoMode();
 
+            cooldown = cooldownTime;
             active = false;
             handsController.UpdatePhoneState(false);
 
@@ -83,11 +97,12 @@ namespace Anomalies
 
         private void EnablePhotoMode()
         {
-            if (!active || phoneLens.enabled)
+            if (cooldown >= Mathf.Epsilon || !active || phoneLens.enabled)
             {
                 return;
             }
 
+            cooldown = cooldownTime;
             phoneLens.enabled = true;
             handsController.UpdatePhotoModeState(true);
 
@@ -96,11 +111,12 @@ namespace Anomalies
 
         private void DisablePhotoMode()
         {
-            if (!active || !phoneLens.enabled)
+            if (cooldown >= Mathf.Epsilon || !active || !phoneLens.enabled)
             {
                 return;
             }
 
+            cooldown = cooldownTime;
             phoneLens.enabled = false;
             handsController.UpdatePhotoModeState(false);
 

@@ -46,6 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handAnimator: {fileID: 449581434980891323}
+  phone: {fileID: 5242273684045127817}
+  handsRestOffset: {x: 0, y: -1.4, z: 0}
+  handsPhotoOffset: {x: 0, y: -1.39, z: -0.13}
+  phoneRestOffset: {x: 0, y: 0, z: -0.0125}
+  phonePhotoOffset: {x: 0.005, y: -0.02, z: 0.008}
 --- !u!1001 &348871743218671475
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -57,6 +62,18 @@ PrefabInstance:
     - target: {fileID: 5142246043138352448, guid: d07c6e782ab5af444a89eba28cfb5d99, type: 3}
       propertyPath: m_Name
       value: FCA Lisa's Phone
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: d07c6e782ab5af444a89eba28cfb5d99, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: d07c6e782ab5af444a89eba28cfb5d99, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482918298697547770, guid: d07c6e782ab5af444a89eba28cfb5d99, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.01
       objectReference: {fileID: 0}
     - target: {fileID: 5482918298697547770, guid: d07c6e782ab5af444a89eba28cfb5d99, type: 3}
       propertyPath: m_LocalPosition.x
@@ -72,11 +89,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5482918298697547770, guid: d07c6e782ab5af444a89eba28cfb5d99, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 5482918298697547770, guid: d07c6e782ab5af444a89eba28cfb5d99, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 5482918298697547770, guid: d07c6e782ab5af444a89eba28cfb5d99, type: 3}
       propertyPath: m_LocalRotation.y
@@ -88,7 +105,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5482918298697547770, guid: d07c6e782ab5af444a89eba28cfb5d99, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 5482918298697547770, guid: d07c6e782ab5af444a89eba28cfb5d99, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -143,6 +160,10 @@ PrefabInstance:
     - target: {fileID: -2599908320530139495, guid: 7ceba1c027d23e4418713dc82f09cd45, type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.08322388
+      objectReference: {fileID: 0}
+    - target: {fileID: -2599908320530139495, guid: 7ceba1c027d23e4418713dc82f09cd45, type: 3}
+      propertyPath: m_UpdateWhenOffscreen
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2599908320530139495, guid: 7ceba1c027d23e4418713dc82f09cd45, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
