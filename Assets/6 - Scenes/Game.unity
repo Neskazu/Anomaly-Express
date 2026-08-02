@@ -896,8 +896,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: -134.27512, y: -81.67085, z: -213.74037}
-    m_Extent: {x: 277.26398, y: 175.33293, z: 215.56425}
+    m_Center: {x: 70.33533, y: 17.211494, z: 177.61879}
+    m_Extent: {x: 282.38623, y: 175.36981, z: 184.72896}
 --- !u!1 &1027178276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,9 +1198,12 @@ MonoBehaviour:
   - {fileID: 7257888559175609416, guid: be5588bc8d86a6e4ebb6c744155b9e31, type: 3}
   - {fileID: 7257888559175609416, guid: c11c98c7769e2824b828a0b09ac44213, type: 3}
   - {fileID: 814886696707810400, guid: 53a7ce0378510874b8deada697b867ec, type: 3}
+  - {fileID: 7257888559175609416, guid: 45387cbc4814cf843b2c82bd1971397f, type: 3}
+  - {fileID: 7257888559175609416, guid: 270725e87fcf73c4ab6baa77eb1c8f53, type: 3}
   - {fileID: 7257888559175609416, guid: 42fb7513b5ca82e48be65791d42c7e86, type: 3}
   - {fileID: 7257888559175609416, guid: 6d07a8148e2ee4f409b331f9473e45ce, type: 3}
   - {fileID: 4873716067174661901, guid: 5adf9873abebd254e8509042d579feb7, type: 3}
+  - {fileID: 7257888559175609416, guid: 0c2ebb09243c09e4e9f11d626ff8f03a, type: 3}
   - {fileID: 7257888559175609416, guid: b079e2f2696466546b32e365abea6791, type: 3}
   - {fileID: 7257888559175609416, guid: 4a7cb148340e40043a3dd3b74dc4664a, type: 3}
   - {fileID: 7257888559175609416, guid: 27940c8450361e74b984d7e9d831ba0d, type: 3}
@@ -1225,6 +1228,7 @@ MonoBehaviour:
   - {fileID: 7257888559175609416, guid: 0ee30ec7f914b4b47ac723c7d7bb007c, type: 3}
   - {fileID: 7257888559175609416, guid: ac83b32ce004e484aaafa944653f0e66, type: 3}
   - {fileID: 7257888559175609416, guid: 61884baa8ca70ed42bac83c66b3472f6, type: 3}
+  - {fileID: 2508138778654440965, guid: afcb009d68f9efb459d8a77d5b837b69, type: 3}
   - {fileID: 7257888559175609416, guid: 752c4949960da4647831219fe3f80143, type: 3}
   - {fileID: 1185684130287848555, guid: edf6d848d41b324469182fec294e9c04, type: 3}
   - {fileID: 1185684130287848555, guid: d3a02e2fbc59a5d43b8bb444c66055b7, type: 3}
@@ -1238,16 +1242,17 @@ MonoBehaviour:
   - {fileID: 29279506}
   - {fileID: 1917009940}
   currentWagonHasAnomaly: 0
-  baseAnomalyChance: 0.6
+  baseAnomalyChance: 1
   anomalyChanceIncrease: 0.05
   maxMissStreak: 5
-  unseenAnomalyChance: 0.8
-  WagonsBeforeMega: 8
+  unseenAnomalyChance: 1
+  WagonsBeforeMega: 42
   megaAnomalySequences:
   - {fileID: 11400000, guid: 5cb1bf5f3e4a6c14c809f35e3de77cf7, type: 2}
   - {fileID: 11400000, guid: 149179e9b98cca7409a893a977d1120d, type: 2}
   - {fileID: 11400000, guid: e3fdd9ec871d10b4f8806e46ec93e39e, type: 2}
   - {fileID: 11400000, guid: a666820506123114e9da135ed1c4902e, type: 2}
+  - {fileID: 11400000, guid: 124ef383a639654439cf2d20571320df, type: 2}
   unseenMegaAnomalyChance: 1
 --- !u!4 &1446546833
 Transform:
