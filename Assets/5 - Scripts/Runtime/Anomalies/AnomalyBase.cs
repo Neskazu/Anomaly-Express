@@ -1,4 +1,6 @@
 using System;
+using Nac.Extensions;
+using R3;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,22 +10,9 @@ namespace Anomalies
     {
         public static event Action OnAnomalyStateChanged;
 
-        private string _anomalyId;
-        public string Id => _anomalyId;
+        private readonly NetworkVariable<bool> _isActiveNet = new();
 
-        private void OnValidate()
-        {
-            if (string.IsNullOrEmpty(_anomalyId))
-            {
-                _anomalyId = Guid.NewGuid().ToString();
-            }
-        }
-
-        private readonly NetworkVariable<bool> _isActiveNet = new NetworkVariable<bool>(
-            false,
-            NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server
-        );
+        public string Id { get; private set; }
 
         public bool IsActive
         {
@@ -32,6 +21,16 @@ namespace Anomalies
             {
                 if (value) Activate();
                 else Deactivate();
+            }
+        }
+
+        private void OnValidate()
+        {
+            if (string.IsNullOrEmpty(Id))
+            {
+                Id = Guid
+                    .NewGuid()
+                    .ToString();
             }
         }
 
@@ -48,15 +47,21 @@ namespace Anomalies
 
         public override void OnNetworkDespawn()
         {
+            OnDeactivate();
+
             _isActiveNet.OnValueChanged -= HandleStateChanged;
         }
 
         private void HandleStateChanged(bool previousValue, bool newValue)
         {
             if (newValue)
+            {
                 OnActivate();
+            }
             else
+            {
                 OnDeactivate();
+            }
 
             OnAnomalyStateChanged?.Invoke();
         }
@@ -77,12 +82,17 @@ namespace Anomalies
 
         protected abstract void OnActivate();
         protected abstract void OnDeactivate();
-        protected virtual void OnUpdate() { }
+
+        protected virtual void OnUpdate()
+        {
+        }
 
         private void Update()
         {
             if (_isActiveNet.Value)
+            {
                 OnUpdate();
+            }
         }
     }
 }
