@@ -52,27 +52,29 @@ public class PlayerAnimator : MonoBehaviour
     private void Update()
     {
         if (animator == null || controller == null) return;
+
         if (!controller.IsOwner)
         {
             motor.SetRotation(controller.NetworkBodyRotation.Value);
-            speed = controller.NetworkSpeed.Value;
+            return; 
         }
-        else
-        {
-            speed = motor.BaseVelocity.magnitude;
-        }
+
+
+        speed = motor.BaseVelocity.magnitude;
         animator.SetFloat(SpeedHash, speed);
 
         float currentRotationY = motor.TransientRotation.eulerAngles.y;
         float deltaRotation = Mathf.DeltaAngle(_lastRotationY, currentRotationY);
         _lastRotationY = currentRotationY;
         float targetTurnValue = (deltaRotation / Time.deltaTime) / 100f;
+
         if (Mathf.Abs(targetTurnValue) < turnDeadzone)
             targetTurnValue = 0;
 
         _currentTurnValue = Mathf.SmoothDamp(_currentTurnValue, targetTurnValue, ref _turnVelocityRef, turnSmoothTime);
-        
+
         bool isGrounded = motor.GroundingStatus.IsStableOnGround;
+
         animator.SetFloat(TurnSpeedHash, _currentTurnValue);
         animator.SetBool(IsGroundedHash, isGrounded);
     }
