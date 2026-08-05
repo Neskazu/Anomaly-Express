@@ -176,7 +176,8 @@ namespace Player
             if (jumpComponent != null)
             {
                 bool hasPermissions = !SplitControlAnomaly.IsSplitActive || CurrentPermissions.CanJump;
-                jumpComponent.ProcessJumpBuffer(hasPermissions);
+                bool isGrounded = Motor.GroundingStatus.IsStableOnGround;
+                jumpComponent.ProcessJumpBuffer(hasPermissions, isGrounded);
             }
 
             if (SplitControlAnomaly.IsSplitActive)

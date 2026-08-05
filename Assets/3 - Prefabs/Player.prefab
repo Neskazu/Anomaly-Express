@@ -136,6 +136,7 @@ Transform:
   - {fileID: 4887484890801616532}
   - {fileID: 9183450001016548870}
   - {fileID: 8696177650955079215}
+  - {fileID: 2537215792474036542}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &6479078452582669956
@@ -290,11 +291,6 @@ MonoBehaviour:
   jumpComponent: {fileID: 622537546768920616}
   jumpForce: 8
   movementActionReference: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  characterPrefabs:
-  - {fileID: 7140913627159581200, guid: 1a4e0c40f9e64b942bd1a595960a4840, type: 3}
-  - {fileID: 7882089421815437136, guid: 9387aa5c75ecab44caf061bd475aa32b, type: 3}
-  - {fileID: 6585557110533127784, guid: 328ff3400a96eeb4787debc58710e374, type: 3}
-  - {fileID: 9212417457940923746, guid: b46b95fc73454494b973a718587844a0, type: 3}
   MeshRoot: {fileID: 3221174744902066890}
   Motor: {fileID: 4930454702381990741}
   MaxStableMoveSpeed: 3.5
@@ -477,11 +473,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12a1f6e0b69db19458cf93842aa946d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   action: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  networkObject: {fileID: 8626299152645079788}
   playerAnimator: {fileID: -1045929615171509631}
   jumpDelay: 0.1
   jumpBufferTime: 0.07
+  audioSource: {fileID: 4697863027332240889}
+  jumpSound: {fileID: 8300000, guid: ac5d54f7500882345bd99ec5c1bee6bc, type: 3}
   IsJumpEnabled: 0
 --- !u!114 &-1045929615171509631
 MonoBehaviour:
@@ -532,14 +530,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -453240694
-    DestinationState: 125937960
-    TransitionDuration: 0.25
-    TriggerNameHash: 125937960
-    TransitionIndex: 1
+  TransitionStateInfoList: []
   m_Animator: {fileID: 9209634065725576970}
 --- !u!114 &6529251113482655050
 MonoBehaviour:
@@ -554,14 +545,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -453240694
-    DestinationState: 125937960
-    TransitionDuration: 0.25
-    TriggerNameHash: 125937960
-    TransitionIndex: 1
+  TransitionStateInfoList: []
   m_Animator: {fileID: 9209634065725576970}
 --- !u!95 &9209634065725576970
 Animator:
@@ -662,6 +646,135 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -3176697092649291267, guid: 49c3e72c071e9fb42b04677c971119eb, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 7067f13324d86894da65b78e2df9f997, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.15
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1.2
+  MaxDistance: 3
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!1 &5024789174201218730
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2537215792474036542}
+  - component: {fileID: 4697863027332240889}
+  m_Layer: 6
+  m_Name: PlayerSounds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2537215792474036542
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5024789174201218730}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2223953529884092654}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &4697863027332240889
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5024789174201218730}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -3176697092649291267, guid: 49c3e72c071e9fb42b04677c971119eb, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.15
   m_Pitch: 1
