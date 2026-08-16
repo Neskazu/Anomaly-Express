@@ -1,8 +1,8 @@
-using System.Linq;
 using Cysharp.Threading.Tasks;
-using Managers;
-using Network.Players;
+using Nac.Network;
 using Scene;
+using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,40 +10,40 @@ namespace UI
 {
     public class UiSingleplayerMenu : MonoBehaviour
     {
-        private static PlayerDataProvider Players => MultiplayerManager.Players;
-
         [Header("References")]
         [SerializeField] private Button button;
 
         [Header("Settings")]
         [SerializeField] private SceneTransitionSequence toGame;
 
+        private bool hosting;
+
         private void Start()
         {
             button.onClick.AddListener(LaunchGame);
         }
 
-        private void LaunchGame()
+        private async void LaunchGame()
         {
-            // TODO: Заменить "player" на имя
-            var settings = new MultiplayerManager.Settings
+            if (hosting)
             {
-                Name = "Player",
-                Address = "127.0.0.1",
-                Port = 0
-            };
+                return;
+            }
 
-            MultiplayerManager.Instance.Host(settings);
+            NetworkManager.Singleton
+                .GetComponent<UnityTransport>()
+                .SetConnectionData("127.0.0.1", 0);
 
-            var player = Players.ToList().First();
+            hosting = true;
+            var hosted = await NetworkController.Instance.HostAsync();
 
-            player.CharacterId = Random.Range(0, 4);
-
-            Players.Update(player);
-
-            SceneTransitionController.Instance
-                .Play(toGame)
-                .Forget();
+            if (hosted)
+            {
+                hosting = false;
+                SceneTransitionManager.Instance
+                    .Play(toGame)
+                    .Forget();
+            }
         }
     }
 }

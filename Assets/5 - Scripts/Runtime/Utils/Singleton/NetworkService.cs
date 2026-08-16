@@ -8,36 +8,33 @@ namespace Nac.Singleton
     {
         public static T Instance { get; private set; }
 
+        public static string Tag => typeof(T).Name;
+
         public virtual void Awake()
         {
-            DontDestroyOnLoad(this);
-        }
-
-        public override void OnNetworkSpawn()
-        {
-            base.OnNetworkSpawn();
+            DontDestroyOnLoad(gameObject);
 
             if (Instance)
             {
-                Debug.LogError($"[{nameof(NetworkService<T>)}] Service is already running.");
+                Debug.LogError($"[{Tag}] Network service is already running.");
 
                 Destroy(this);
                 return;
             }
 
-            Debug.Log($"[{nameof(NetworkService<T>)}] Service is running.");
+            Debug.Log($"[{Tag}] Network service is running.");
             Instance = this as T;
         }
 
-        public override void OnNetworkDespawn()
+        public override void OnDestroy()
         {
-            base.OnNetworkDespawn();
-
             if (Instance == this)
             {
-                Debug.Log($"[{nameof(NetworkService<T>)}] Service shutting down.");
+                Debug.Log($"[{Tag}] Network service shutting down.");
                 Instance = null;
             }
+
+            base.OnDestroy();
         }
     }
 }

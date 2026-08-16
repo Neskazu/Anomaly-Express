@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Network.Players;
+using Nac;
+using Nac.Singleton;
 using Player;
 using R3;
 using Unity.Netcode;
@@ -8,14 +9,10 @@ using UnityEngine.SceneManagement;
 
 namespace Managers
 {
-    public class GameManager : NetworkBehaviour
+    public class GameManager : NetworkService<GameManager>
     {
         [SerializeField] private PlayerController playerPrefab;
         [SerializeField] private Transform[] spawnPoints;
-
-        private static PlayerDataProvider Players => MultiplayerManager.Players;
-
-        public static GameManager Instance { get; private set; }
 
         private readonly Subject<ulong> onLocalPlayerSpawn = new();
 
@@ -23,30 +20,14 @@ namespace Managers
 
         public Observable<ulong> OnLocalPlayerSpawn => onLocalPlayerSpawn;
 
-        private void Awake()
-        {
-            if (Instance != null)
-            {
-                Destroy(this);
-                return;
-            }
-
-            Instance = this;
-        }
-
         public override void OnDestroy()
         {
-            base.OnDestroy();
-
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
             {
                 NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= SceneManager_OnLoadEventCompleted;
             }
 
-            if (Instance == this)
-            {
-                Instance = null;
-            }
+            base.OnDestroy();
         }
 
         public override void OnNetworkSpawn()
@@ -61,7 +42,9 @@ namespace Managers
             List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
         {
             if (!IsServer)
+            {
                 return;
+            }
 
             foreach (var clientId in clientsCompleted)
             {
@@ -78,7 +61,7 @@ namespace Managers
                 var netObj = player.GetComponent<NetworkObject>();
                 netObj.SpawnAsPlayerObject(clientId, true);
 
-                var data = Players.Get(clientId);
+                var data = PlayersManager.Instance.GetPlayerData(clientId);
                 player.CharacterId.Value = data.CharacterId;
 
                 OnLocalPlayerSpawnRpc(clientId, RpcTarget.Single(clientId, RpcTargetUse.Temp));
@@ -124,45 +107,51 @@ namespace Managers
         [ServerRpc(RequireOwnership = false)]
         public void KillPlayerServerRpc(ulong clientId)
         {
-            var data = Players.Get(clientId);
+            var data = PlayersManager.Instance.GetPlayerData(clientId);
+
             data.IsDead = true;
-            Players.Update(data);
+
+            PlayersManager.Instance.UpdatePlayerServerRpc(clientId, data);
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void RevivePlayerServerRpc(ulong clientId)
         {
-            var data = Players.Get(clientId);
+            var data = PlayersManager.Instance.GetPlayerData(clientId);
 
             data.IsDead = false;
-            Players.Update(data);
+
+            PlayersManager.Instance.UpdatePlayerServerRpc(clientId, data);
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void UpdatePlayerVelocityServerRpc(ulong clientId, Vector3 velocity)
         {
-            var data = Players.Get(clientId);
+            var data = PlayersManager.Instance.GetPlayerData(clientId);
 
             data.Velocity = velocity;
-            Players.Update(data);
+
+            PlayersManager.Instance.UpdatePlayerServerRpc(clientId, data);
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void PunchPlayerServerRpc(ulong clientId, Vector3 velocity)
         {
-            var data = Players.Get(clientId);
+            var data = PlayersManager.Instance.GetPlayerData(clientId);
 
             data.Punch += velocity;
-            Players.Update(data);
+
+            PlayersManager.Instance.UpdatePlayerServerRpc(clientId, data);
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void ResetPlayerPunchVelocityServerRpc(ulong clientId)
         {
-            var data = Players.Get(clientId);
+            var data = PlayersManager.Instance.GetPlayerData(clientId);
 
             data.Punch = Vector3.zero;
-            Players.Update(data);
+
+            PlayersManager.Instance.UpdatePlayerServerRpc(clientId, data);
         }
     }
 }

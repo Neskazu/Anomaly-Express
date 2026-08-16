@@ -17,7 +17,7 @@ namespace Scene
 
             Application.targetFrameRate = (int)targetFrameRate;
 
-            await SceneTransitionController.Instance.Play(sequence);
+            await SceneTransitionManager.Instance.Play(sequence);
         }
     }
 }

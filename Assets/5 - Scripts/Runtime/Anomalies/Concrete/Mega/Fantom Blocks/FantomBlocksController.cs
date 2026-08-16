@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Managers;
-using Network.Players;
+using Nac;
 using Player.Components;
 using R3;
 using Unity.Netcode;
@@ -17,7 +17,6 @@ namespace Anomalies
         [SerializeField] private LensComponent localLens;
         [SerializeField] private AnomalyLevitatingObjects anomalyLevitatingObjects;
 
-        private static PlayerDataProvider Players => MultiplayerManager.Players;
         public LensComponent LocalPlayerLens => localLens;
 
         private void Awake()
@@ -58,9 +57,9 @@ namespace Anomalies
             base.OnNetworkSpawn();
 
             var owner = NetworkManager.Singleton.LocalClientId;
-            var info = InfoManager.Instance.GetCharacter(owner);
+            var character = PlayersManager.Instance.GetPlayerCharacter(owner);
 
-            localLens.UpdateColor(info.Color);
+            localLens.UpdateColor(character.Color);
             localLens.enabled = false;
 
             if (!IsServer)
@@ -113,8 +112,7 @@ namespace Anomalies
             {
                 var guild = guilds[i];
                 var clientId = ids[i % ids.Length];
-                var characterId = Players.Get(clientId).CharacterId;
-                var character = InfoManager.Instance.GetCharacter(characterId);
+                var character = PlayersManager.Instance.GetPlayerCharacter(clientId);
 
                 guild.SetOwner(clientId);
                 guild.SetColor(character.Color);

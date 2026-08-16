@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Managers;
+using Nac;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
@@ -91,9 +92,9 @@ namespace Anomalies
         }
 
         [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
-        public void UpdateColorRpc(int characterId)
+        public void UpdateColorRpc(ulong clientId)
         {
-            var info = InfoManager.Instance.GetCharacter(characterId);
+            var info = PlayersManager.Instance.GetPlayerCharacter(clientId);
 
             visual.SetColor(info.Gradient);
             if (sensor is SightSensorComponent sightSensorComponent)

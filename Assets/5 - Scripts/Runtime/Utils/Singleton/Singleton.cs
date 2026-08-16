@@ -7,21 +7,25 @@ namespace Nac.Singleton
     {
         public static T Instance { get; private set; }
 
-        private void Awake()
+        public static string Tag => typeof(T).Name;
+
+        public virtual void Awake()
         {
             if (Instance)
             {
-                Debug.LogError($"[{name}] Instance already exists!");
+                Debug.LogError($"[{Tag}] Instance already exists!");
                 Destroy(this);
             }
 
+            Debug.Log($"[{Tag}] Instance created.");
             Instance = this as T;
         }
 
-        private void OnDestroy()
+        public virtual void OnDestroy()
         {
             if (Instance == this)
             {
+                Debug.Log($"[{Tag}] Instance destroyed.");
                 Instance = null;
             }
         }

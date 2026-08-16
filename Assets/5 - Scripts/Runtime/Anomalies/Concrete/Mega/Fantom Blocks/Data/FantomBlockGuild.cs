@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Managers;
-using Network.Players;
 using UnityEngine;
 
 namespace Anomalies
@@ -22,11 +20,9 @@ namespace Anomalies
 
         public void SetColor(Color clr)
         {
-            var data = MultiplayerManager.Players.Get(OwnerId);
-
             foreach (var fantomComponent in components)
             {
-                fantomComponent.UpdateColorRpc(data.CharacterId);
+                fantomComponent.UpdateColorRpc(OwnerId);
             }
         }
     }

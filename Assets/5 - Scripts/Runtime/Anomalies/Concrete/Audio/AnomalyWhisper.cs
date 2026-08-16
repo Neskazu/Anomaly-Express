@@ -1,7 +1,8 @@
 ﻿using DG.Tweening;
-using Managers;
+using Nac;
 using Network;
 using Player;
+using R3;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -33,7 +34,9 @@ namespace Anomalies.Concrete.Audio
 
         protected override void OnActivate()
         {
-            MultiplayerManager.Players.OnUpdated += PlayerUpdated;
+            PlayersManager.Instance.OnPlayerUpdated
+                .Subscribe(PlayerUpdated)
+                .AddTo(this);
 
             mixer.GetFloat(musicParameterName, out _initialMusicVolume);
             mixer.SetFloat(anomaliesParameterName, Mute);
@@ -43,8 +46,6 @@ namespace Anomalies.Concrete.Audio
 
         protected override void OnDeactivate()
         {
-            MultiplayerManager.Players.OnUpdated -= PlayerUpdated;
-
             _tween?.Kill();
             source.Stop();
 
@@ -54,8 +55,10 @@ namespace Anomalies.Concrete.Audio
 
         private void PlayerUpdated(PlayerData data)
         {
-            if (data.ClientId != PlayerController.LocalPlayerId)
+            if (data.Owner != PlayerController.LocalPlayerId)
+            {
                 return;
+            }
 
             switch (_triggered)
             {

@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
-using Managers;
+using Nac;
 using Network;
-using Sessions;
+using R3;
 using UI.Base;
 using Unity.Netcode;
 using UnityEngine;
@@ -18,33 +18,31 @@ namespace Player.Components
 
         [SerializeField] private NetworkObject networkObject;
 
-        private bool _isDead;
+        private bool isDead;
 
         private IWindow DeathScreen =>
             UI.DeathScreen.Instance;
 
         private void Awake()
         {
-            MultiplayerManager.Players.OnUpdated += ChangePlayerState;
+            PlayersManager.Instance.OnPlayerUpdated
+                .Where(d => d.Owner == networkObject.OwnerClientId)
+                .Subscribe(ChangePlayerState)
+                .AddTo(this);
 
-            var data = MultiplayerManager.Players.Get(networkObject.OwnerClientId);
-            _isDead = data.IsDead;
-        }
+            var data = PlayersManager.Instance.GetPlayerData(networkObject.OwnerClientId);
 
-        public void OnDestroy()
-        {
-            MultiplayerManager.Players.OnUpdated -= ChangePlayerState;
+            isDead = data.IsDead;
         }
 
         private async void ChangePlayerState(PlayerData playerData)
         {
-            if (playerData.ClientId != networkObject.OwnerClientId)
+            if (playerData.IsDead == isDead)
+            {
                 return;
+            }
 
-            if (playerData.IsDead == _isDead)
-                return;
-
-            _isDead = playerData.IsDead;
+            isDead = playerData.IsDead;
 
             if (networkObject.IsOwner)
             {

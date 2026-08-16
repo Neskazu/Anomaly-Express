@@ -1,4 +1,5 @@
 using Scene;
+using R3;
 using UnityEngine;
 
 namespace Managers
@@ -17,7 +18,9 @@ namespace Managers
             DontDestroyOnLoad(gameObject);
             _instance = this;
 
-            SceneTransitionController.Instance.Loaded += PlayMusic;
+            SceneTransitionManager.Instance.Loaded
+                .Subscribe(PlayMusic)
+                .AddTo(this);
         }
 
         private void PlayMusic(SceneTransitionSequence sequence)

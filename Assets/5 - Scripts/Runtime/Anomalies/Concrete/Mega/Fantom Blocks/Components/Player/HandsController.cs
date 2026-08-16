@@ -1,5 +1,4 @@
-using Managers;
-using Network.Players;
+using Nac;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
@@ -8,8 +7,6 @@ namespace Anomalies
 {
     public class HandsController : MonoBehaviour
     {
-        private static PlayerDataProvider Players => MultiplayerManager.Players;
-
         [SerializeField] private Transform handsRoot;
         [SerializeField] private GameObject[] personalPrefabs;
         [SerializeField] private HandsAnimations handsAnimation;
@@ -32,7 +29,7 @@ namespace Anomalies
         private GameObject CreateHands()
         {
             var owner = NetworkManager.Singleton.LocalClientId;
-            var data = Players.Get(owner);
+            var data = PlayersManager.Instance.GetPlayerData(owner);
 
             foreach (Transform child in handsRoot)
             {

@@ -7,27 +7,29 @@ namespace Nac.Singleton
     {
         public static T Instance { get; private set; }
 
-        private void Awake()
+        public static string Tag => typeof(T).Name;
+
+        public virtual void Awake()
         {
             DontDestroyOnLoad(gameObject);
 
             if (Instance)
             {
-                Debug.LogError($"[{nameof(Service<T>)}] Service is already running.");
+                Debug.LogError($"[{Tag}] Service is already running.");
 
                 Destroy(this);
                 return;
             }
 
-            Debug.Log($"[{nameof(Service<T>)}] Service is running.");
+            Debug.Log($"[{Tag}] Service is running.");
             Instance = this as T;
         }
 
-        private void OnDestroy()
+        public virtual void OnDestroy()
         {
             if (Instance == this)
             {
-                Debug.Log($"[{nameof(Service<T>)}] Service shutting down.");
+                Debug.Log($"[{Tag}] Service shutting down.");
                 Instance = null;
             }
         }

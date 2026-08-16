@@ -1,34 +1,19 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Nac.Singleton;
 using Tween.Base;
 using UI.Base;
 using UnityEngine;
 
 namespace Scene
 {
-    public class SceneTransitionWindow : MonoBehaviour, IWindow
+    public class SceneTransitionWindow : Service<SceneTransitionWindow>, IWindow
     {
         [SerializeField] private MonoTweenSequence tweenSequence;
 
         private Sequence _sequence;
         private UniTask _task;
         private bool _active;
-
-        public static SceneTransitionWindow Instance { get; private set; }
-
-        private void Awake()
-        {
-            if (Instance)
-            {
-                Destroy(Instance);
-            }
-
-            DontDestroyOnLoad(gameObject);
-
-            Instance = this;
-
-            _ = new SceneTransitionController(this);
-        }
 
         public UniTask Show()
         {

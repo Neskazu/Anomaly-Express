@@ -102,7 +102,7 @@ namespace Managers
 
             if (selectedSequence != null)
             {
-                await SceneTransitionController.Instance.Play(selectedSequence);
+                await SceneTransitionManager.Instance.Play(selectedSequence);
             }
             else
             {
@@ -298,7 +298,7 @@ namespace Managers
 
             if (string.IsNullOrEmpty(nextId)) return null;
 
-            // Находим префаб по полученному ID
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ID
             foreach (var prefab in anomalyWagons)
             {
                 if (prefab.TryGetComponent(out AnomalyBase anomaly) && anomaly.Id == nextId)

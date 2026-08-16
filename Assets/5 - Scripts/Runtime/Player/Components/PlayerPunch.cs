@@ -1,5 +1,6 @@
 ﻿using Controls;
 using Managers;
+using Nac;
 using Network;
 using R3;
 using Unity.Netcode;
@@ -26,7 +27,9 @@ namespace Player.Components
 
         private void Start()
         {
-            MultiplayerManager.Players.OnUpdated += ApplyPunch;
+            PlayersManager.Instance.OnPlayerUpdated
+                .Subscribe(ApplyPunch)
+                .AddTo(this);
 
             InputManager.Singleton
                 .Subscribe(action, ReactiveInputPhase.Started, Punch)
@@ -35,7 +38,7 @@ namespace Player.Components
 
         private void ApplyPunch(PlayerData playerData)
         {
-            if (playerData.ClientId != networkObject.OwnerClientId)
+            if (playerData.Owner != networkObject.OwnerClientId)
             {
                 return;
             }
@@ -67,11 +70,6 @@ namespace Player.Components
 
             var target = _hit.collider.GetComponent<NetworkObject>();
             GameManager.Instance.PunchPlayerServerRpc(target.OwnerClientId, target.transform.position - transform.position);
-        }
-
-        private void OnDestroy()
-        {
-            MultiplayerManager.Players.OnUpdated -= ApplyPunch;
         }
     }
 }

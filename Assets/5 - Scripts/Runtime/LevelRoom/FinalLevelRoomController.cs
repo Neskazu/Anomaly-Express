@@ -98,7 +98,7 @@ public class FinalLevelRoomController : NetworkBehaviour
         SaveManager.Save.Session.ShowFeedbackPopup = true;
         SaveManager.SaveGame();
 
-        await SceneTransitionController.Instance.Play(
+        await SceneTransitionManager.Instance.Play(
             endGameSequence,
             showLoadingScreen: true);
     }

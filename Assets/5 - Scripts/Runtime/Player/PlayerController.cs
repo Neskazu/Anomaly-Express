@@ -5,6 +5,7 @@ using Player.Components;
 using Player.Input;
 using System.Collections.Generic;
 using Controls;
+using Nac;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
@@ -65,7 +66,7 @@ namespace Player
 
         public NetworkVariable<float> SharedCamPitch = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         public NetworkVariable<float> SharedCamYaw = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-        public NetworkVariable<int> CharacterId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<ulong> CharacterId = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         public NetworkVariable<Quaternion> NetworkBodyRotation = new NetworkVariable<Quaternion>(Quaternion.identity, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         public NetworkVariable<float> NetworkSpeed = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         public Transform CameraTransform => cameraTransform;
@@ -436,17 +437,17 @@ namespace Player
         }
 
         //visual
-        private void OnCharacterChanged(int oldId, int newId)
+        private void OnCharacterChanged(ulong oldId, ulong newId)
         {
             ApplyCharacter(newId);
         }
 
-        private void ApplyCharacter(int id)
+        private void ApplyCharacter(ulong id)
         {
             foreach (Transform child in MeshRoot)
                 Destroy(child.gameObject);
 
-            var character = InfoManager.Instance.GetCharacter(id);
+            var character = PlayersManager.Instance.GetCharacter(id);
             if (character == null)
             {
                 return;

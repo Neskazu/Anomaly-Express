@@ -1,9 +1,8 @@
-﻿using Managers;
-using Network;
-using Network.Players;
+﻿using Network;
 using Scene;
-using System.Collections.Generic;
 using System.Linq;
+using Nac;
+using R3;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,8 +10,6 @@ namespace Lobby
 {
     public class LobbyController : NetworkBehaviour
     {
-        private static PlayerDataProvider Players => MultiplayerManager.Players;
-
         [SerializeField] private SceneTransitionSequence toGame;
 
         private bool _gameStarted;
@@ -21,31 +18,23 @@ namespace Lobby
         {
             if (NetworkManager.IsServer)
             {
-                MultiplayerManager.Players.OnUpdated += IsAllReady;
-                MultiplayerManager.Players.OnConnected += OnPlayersChanged;
-                MultiplayerManager.Players.OnDisconnected += OnPlayersChanged;
+                PlayersManager.Instance.OnPlayerUpdated
+                    .Subscribe(IsAllReady)
+                    .AddTo(this);
             }
-        }
-
-        private void Start()
-        {
-            MultiplayerManager.Instance.SetNameServerRpc("Name");
-            AssignCharacters();
-        }
-
-        public override void OnDestroy()
-        {
-            MultiplayerManager.Players.OnUpdated -= IsAllReady;
-            MultiplayerManager.Players.OnDisconnected -= OnPlayersChanged;
-            MultiplayerManager.Players.OnConnected -= OnPlayersChanged;
         }
 
         private void IsAllReady(PlayerData _)
         {
             if (_gameStarted)
+            {
                 return;
-            if (Players.Any(player => !player.IsReady))
+            }
+
+            if (PlayersManager.Instance.Players.Any(player => !player.IsReady))
+            {
                 return;
+            }
 
             StartGame();
             _gameStarted = true;
@@ -53,56 +42,17 @@ namespace Lobby
 
         public async void StartGame()
         {
-            AssignCharacters();
-
-            await SceneTransitionController.Instance.Play(toGame);
+            await SceneTransitionManager.Instance.Play(toGame);
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        public void SetReadyServerRpc(bool isReady, ServerRpcParams serverRpcParams = default)
+        public void SetReady(bool isReady)
         {
-            var data = Players.Get(serverRpcParams.Receive.SenderClientId);
+            var clientId = NetworkManager.Singleton.LocalClientId;
+            var data = PlayersManager.Instance.GetPlayerData(clientId);
 
             data.IsReady = isReady;
-            Players.Update(data);
-        }
 
-        private void AssignCharacters()
-        {
-            var players = Players.ToList();
-
-            var allCharacters = new List<int> { 0, 1, 2, 3 };
-
-            var takenCharacters = players
-                .Where(p => p.CharacterId >= 0)
-                .Select(p => p.CharacterId)
-                .ToHashSet();
-
-            var freeCharacters = allCharacters
-                .Where(id => !takenCharacters.Contains(id))
-                .OrderBy(_ => UnityEngine.Random.value)
-                .ToList();
-
-            int freeIndex = 0;
-
-            for (int i = 0; i < players.Count; i++)
-            {
-                var player = players[i];
-
-                if (player.CharacterId >= 0)
-                    continue;
-
-                if (freeIndex >= freeCharacters.Count)
-                    break;
-
-                player.CharacterId = freeCharacters[freeIndex++];
-                Players.Update(player);
-            }
-        }
-
-        private void OnPlayersChanged(PlayerData _)
-        {
-            AssignCharacters();
+            PlayersManager.Instance.UpdatePlayerServerRpc(clientId, data);
         }
     }
 }

@@ -2,6 +2,7 @@ using Managers;
 using Unity.Netcode;
 using UnityEngine;
 using KinematicCharacterController;
+using Nac;
 
 namespace Train
 {
@@ -37,7 +38,8 @@ namespace Train
             int playerCount = NetworkManager.Singleton.ConnectedClients.Count;
             if (playerCount > 1)
             {
-                var data = MultiplayerManager.Players.Get(clientId);
+                var data = PlayersManager.Instance.GetPlayerData(clientId);
+
                 if (!data.IsDead)
                 {
                     GameManager.Instance.KillPlayerServerRpc(clientId);

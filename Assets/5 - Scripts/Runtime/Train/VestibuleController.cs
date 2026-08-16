@@ -1,9 +1,9 @@
 using Managers;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using DG.Tweening;
+using Nac;
 
 namespace Train
 {
@@ -67,6 +67,7 @@ namespace Train
             {
                 return;
             }
+
             int nextWagonIndex = TrainManager.Instance.GetExpectedNextIndex(isBackward);
 
             AnimateWagonNumbersClientRpc(nextWagonIndex);
@@ -87,6 +88,7 @@ namespace Train
         {
             (doorForward, doorBackward) = (doorBackward, doorForward);
         }
+
         [ClientRpc]
         private void AnimateWagonNumbersClientRpc(int nextIndex)
         {
@@ -98,6 +100,7 @@ namespace Train
                 }
             }
         }
+
         private void Start()
         {
             foreach (var animator in wagonNumberAnimators)
@@ -190,13 +193,14 @@ namespace Train
             ulong clientId = networkObject.OwnerClientId;
             clientsInVestibule.Remove(clientId);
         }
+
         private void ReviveAllDeadPlayers()
         {
             if (!IsServer) return;
 
             foreach (ulong clientId in clientsInVestibule)
             {
-                var data = MultiplayerManager.Players.Get(clientId);
+                var data = PlayersManager.Instance.GetPlayerData(clientId);
 
                 if (data.IsDead)
                 {

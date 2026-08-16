@@ -8,31 +8,31 @@ namespace Nac.Singleton
     {
         public static T Instance { get; private set; }
 
-        public override void OnNetworkSpawn()
-        {
-            base.OnNetworkSpawn();
+        public static string Tag => typeof(T).Name;
 
+        public virtual void Awake()
+        {
             if (Instance)
             {
-                Debug.LogError($"[{nameof(NetworkSingleton<T>)}] Singleton is already initialized!");
+                Debug.LogError($"[{Tag}] Network instance already exists!");
 
                 Destroy(this);
                 return;
             }
 
-            Debug.Log($"[{nameof(NetworkSingleton<T>)}] Singleton initialized.");
+            Debug.Log($"[{Tag}] Network instance created.");
             Instance = this as T;
         }
 
-        public override void OnNetworkDespawn()
+        public override void OnDestroy()
         {
-            base.OnNetworkDespawn();
-
             if (Instance == this)
             {
-                Debug.Log($"[{nameof(NetworkSingleton<T>)}] Singleton released.");
+                Debug.Log($"[{Tag}] Network instance destroyed.");
                 Instance = null;
             }
+
+            base.OnDestroy();
         }
     }
 }

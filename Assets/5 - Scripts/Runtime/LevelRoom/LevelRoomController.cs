@@ -139,7 +139,7 @@ public class LevelRoomController : NetworkBehaviour
             }
         }
 
-        await SceneTransitionController.Instance.Play(nextLevelSequence, showLoadingScreen: false);
+        await SceneTransitionManager.Instance.Play(nextLevelSequence, showLoadingScreen: false);
     }
 
     private void OnSceneLoaded(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
