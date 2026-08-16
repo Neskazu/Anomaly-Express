@@ -525,6 +525,18 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cef62bf1ef08d8541b4f645f7856ce51, type: 3}
       insertIndex: -1
       addedObject: {fileID: 155191788}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cef62bf1ef08d8541b4f645f7856ce51, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 155191793}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cef62bf1ef08d8541b4f645f7856ce51, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 155191792}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cef62bf1ef08d8541b4f645f7856ce51, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 155191791}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cef62bf1ef08d8541b4f645f7856ce51, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 155191790}
   m_SourcePrefab: {fileID: 100100000, guid: cef62bf1ef08d8541b4f645f7856ce51, type: 3}
 --- !u!1 &155191786 stripped
 GameObject:
@@ -548,6 +560,18 @@ MonoBehaviour:
   minInterval: 0.12
   baseStrength: 0.35
   maxStrength: 1.25
+  splashSound: {fileID: 8300000, guid: 88ad8721f74467b4ebf65340163004b8, type: 3}
+  sfxMixerGroup: {fileID: -3176697092649291267, guid: 49c3e72c071e9fb42b04677c971119eb, type: 2}
+  audioMinDistance: 2
+  audioMaxDistance: 15
+  minFallSpeed: 2
+  maxFallSpeed: 15
+  minSplashVolume: 0.1
+  maxSplashVolume: 0.5
+  minPitch: 0.8
+  maxPitch: 1.2
+  walkingVolume: 0.02
+  stepSoundInterval: 0.65
 --- !u!65 &155191788
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -564,11 +588,95 @@ BoxCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 7.28, y: 1.5, z: 7.28}
+  m_Size: {x: 5, y: 1.5, z: 5}
   m_Center: {x: 0, y: -0.02101332, z: 0}
+--- !u!65 &155191790
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155191786}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 1
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 4.2}
+  m_Center: {x: 3.03, y: -0.02101332, z: 0}
+--- !u!65 &155191791
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155191786}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 1
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 4.2}
+  m_Center: {x: -3.03, y: -0.02101332, z: 0}
+--- !u!65 &155191792
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155191786}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 1
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.2, y: 1, z: 1}
+  m_Center: {x: 0, y: -0.02101332, z: -3.03}
+--- !u!65 &155191793
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155191786}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 1
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.2, y: 1, z: 1}
+  m_Center: {x: 0, y: -0.02101332, z: 3.03}
 --- !u!1 &174482638
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,6 +803,18 @@ MonoBehaviour:
   minInterval: 0.12
   baseStrength: 0.35
   maxStrength: 1.25
+  splashSound: {fileID: 0}
+  sfxMixerGroup: {fileID: 0}
+  audioMinDistance: 2
+  audioMaxDistance: 15
+  minFallSpeed: 2
+  maxFallSpeed: 15
+  minSplashVolume: 0.3
+  maxSplashVolume: 1
+  minPitch: 0.8
+  maxPitch: 1.2
+  walkingVolume: 0.15
+  stepSoundInterval: 0.35
 --- !u!1001 &185605175
 PrefabInstance:
   m_ObjectHideFlags: 0

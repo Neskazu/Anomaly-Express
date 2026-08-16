@@ -18,6 +18,7 @@ namespace Train
         [SerializeField] private bool isLocked = true;
 
         public event Action<DoorController, bool> OnDoorStateChanged;
+        public event Action OnDoorShaken;
 
         // Сетевой флаг заблокированости двери
         private NetworkVariable<bool> _netIsLocked = new NetworkVariable<bool>(true);
@@ -188,6 +189,7 @@ namespace Train
 
         private void ShakeDoor(float shakeAngle)
         {
+            OnDoorShaken?.Invoke();
             Sequence seq = DOTween.Sequence();
             seq.Append(doorMesh.DOLocalRotate(
                     _closedRotationMesh.eulerAngles + new Vector3(0f, shakeAngle, 0f), shakeDuration))
