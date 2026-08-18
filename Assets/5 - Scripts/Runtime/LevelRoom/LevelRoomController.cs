@@ -1,3 +1,4 @@
+using Anomalies;
 using Cysharp.Threading.Tasks;
 using Scene;
 using System.Collections.Generic;
@@ -119,7 +120,14 @@ public class LevelRoomController : NetworkBehaviour
 
     private bool IsAllPlayersInside()
     {
-        return _clientsInside.Count > 0 && _clientsInside.Count == NetworkManager.Singleton.ConnectedClients.Count;
+        if (_clientsInside.Count == 0) return false;
+
+        if (SplitControlAnomaly.IsSplitActive)
+        {
+            return true;
+        }
+
+        return _clientsInside.Count == NetworkManager.Singleton.ConnectedClients.Count;
     }
 
     private async UniTaskVoid StartLevelTransition()
@@ -130,12 +138,26 @@ public class LevelRoomController : NetworkBehaviour
         _playerLocalPositions.Clear();
         _playerLocalRotations.Clear();
 
-        foreach (ulong clientId in _clientsInside)
+        IEnumerable<ulong> clientsToTeleport = SplitControlAnomaly.IsSplitActive
+            ? NetworkManager.Singleton.ConnectedClients.Keys
+            : _clientsInside;
+
+        NetworkObject hostPlayerObject = null;
+        if (SplitControlAnomaly.IsSplitActive && NetworkManager.Singleton.ConnectedClients.TryGetValue(NetworkManager.ServerClientId, out var hostClient))
+        {
+            hostPlayerObject = hostClient.PlayerObject;
+        }
+
+        foreach (ulong clientId in clientsToTeleport)
         {
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client) && client.PlayerObject != null)
             {
-                _playerLocalPositions[clientId] = transform.InverseTransformPoint(client.PlayerObject.transform.position);
-                _playerLocalRotations[clientId] = Quaternion.Inverse(transform.rotation) * client.PlayerObject.transform.rotation;
+                Transform targetTransform = (SplitControlAnomaly.IsSplitActive && hostPlayerObject != null)
+                    ? hostPlayerObject.transform
+                    : client.PlayerObject.transform;
+
+                _playerLocalPositions[clientId] = transform.InverseTransformPoint(targetTransform.position);
+                _playerLocalRotations[clientId] = Quaternion.Inverse(transform.rotation) * targetTransform.rotation;
             }
         }
 
@@ -156,20 +178,21 @@ public class LevelRoomController : NetworkBehaviour
             transform.position = Vector3.zero;
             transform.rotation = Quaternion.identity;
         }
-        foreach (ulong clientId in _clientsInside)
+
+        foreach (var kvp in _playerLocalPositions)
         {
-            if (_playerLocalPositions.TryGetValue(clientId, out var localPos))
+            ulong clientId = kvp.Key;
+            Vector3 localPos = kvp.Value;
+
+            Vector3 newWorldPos = transform.TransformPoint(localPos);
+            Quaternion newWorldRot = transform.rotation * _playerLocalRotations[clientId];
+
+            ClientRpcParams clientRpcParams = new ClientRpcParams
             {
-                Vector3 newWorldPos = transform.TransformPoint(localPos);
-                Quaternion newWorldRot = transform.rotation * _playerLocalRotations[clientId];
+                Send = new ClientRpcSendParams { TargetClientIds = new[] { clientId } }
+            };
 
-                ClientRpcParams clientRpcParams = new ClientRpcParams
-                {
-                    Send = new ClientRpcSendParams { TargetClientIds = new[] { clientId } }
-                };
-
-                TeleportPlayerClientRpc(newWorldPos, newWorldRot, clientRpcParams);
-            }
+            TeleportPlayerClientRpc(newWorldPos, newWorldRot, clientRpcParams);
         }
 
         door.SetLockServerRpc(false);
@@ -178,6 +201,7 @@ public class LevelRoomController : NetworkBehaviour
 
         CheckPositionsAfterFrames().Forget();
     }
+
     [ClientRpc]
     private void TeleportPlayerClientRpc(Vector3 position, Quaternion rotation, ClientRpcParams clientRpcParams = default)
     {
