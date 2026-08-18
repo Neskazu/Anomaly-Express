@@ -98,12 +98,51 @@ namespace Anomalies
             }
         }
 
+        [Header("Debug")]
+        [Tooltip("Поставь галочку во время игры, чтобы принудительно открыть дверь")]
+        public bool forceUnlockDoor = false;
+
         private void Update()
         {
-            if (NetworkManager.Singleton.LocalClientId != _whitePlayerId.Value) return;
-            if (Input.GetMouseButtonDown(0)) HandleInput();
-        }
+            // Твой старый код Update:
+            if (NetworkManager.Singleton.LocalClientId == _whitePlayerId.Value)
+            {
+                if (Input.GetMouseButtonDown(0)) HandleInput();
+            }
 
+            // --- НОВЫЙ ДЕБАГ КОД ---
+            if (forceUnlockDoor)
+            {
+                forceUnlockDoor = false; // Сразу сбрасываем галочку обратно
+                DebugForceWin();
+            }
+        }
+        [ContextMenu("Debug: Принудительно Выиграть и Открыть Дверь")]
+        public void DebugForceWin()
+        {
+            if (door == null)
+            {
+                Debug.LogError("<color=red>[Debug]</color> Ссылка на дверь (door) не назначена в инспекторе!");
+                return;
+            }
+
+            Debug.Log("<color=green>[Debug]</color> Принудительное открытие двери вызвано!");
+
+            if (IsServer)
+            {
+                door.SetLockServerRpc(false); // Открываем дверь
+                NotifyGameOverClientRpc(ChessDotNet.Player.White); // Уведомляем клиентов о победе
+                Deactivate(); // Деактивируем аномалию
+            }
+            else
+            {
+                Debug.LogWarning("<color=orange>[Debug]</color> Внимание: Открытие двери вызвано с клиента. " +
+                                 "Если у SetLockServerRpc стоит RequireOwnership=true, это выдаст ошибку. " +
+                                 "Лучше нажимать эту кнопку у Хоста/Сервера.");
+
+                door.SetLockServerRpc(false);
+            }
+        }
         private void HandleInput()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

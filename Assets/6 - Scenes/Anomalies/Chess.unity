@@ -431,7 +431,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 99319
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -1630,7 +1630,7 @@ Transform:
   m_GameObject: {fileID: 1018393258}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.27, z: 1.12}
+  m_LocalPosition: {x: 0, y: -0.27, z: 3.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1781,7 +1781,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 99319
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -2049,7 +2049,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1061712899084342198, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.242
+      value: 0.29
       objectReference: {fileID: 0}
     - target: {fileID: 1061712899084342198, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2083,9 +2083,53 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2699336541362274560, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 2726120320604196890, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3329043458279504831, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 3570200085918645161, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 3751473995701264786, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 3761019743638527949, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4024669567801931840, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4123216121494466270, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4288022144048862910, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 5073610356935802370, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
     - target: {fileID: 5622299990670358851, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
       propertyPath: m_Name
       value: door Next Level
+      objectReference: {fileID: 0}
+    - target: {fileID: 5622299990670358851, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 6216133881969099774, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -2094,6 +2138,14 @@ PrefabInstance:
     - target: {fileID: 6216133881969099774, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 3020563781
+      objectReference: {fileID: 0}
+    - target: {fileID: 7549086567163395280, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 8835264704540901309, guid: 913c3120ee14edb4e80eb20e324a3398, type: 3}
+      propertyPath: m_Layer
+      value: 17
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

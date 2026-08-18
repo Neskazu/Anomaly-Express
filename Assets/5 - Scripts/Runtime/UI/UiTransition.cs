@@ -31,14 +31,14 @@ namespace UI
         private ContentSizeFitter _fitter;
         private Vector2[] _initial;
 
-        // Счетчик для предотвращения отключения объекта, если во время Hide() был вызван Show()
+        private LayoutElement _layoutElement;
         private int _transitionSequence;
 
         private void Awake()
         {
-            // Подтягиваем компоненты, если они не были заданы (в твоем коде они были null)
             container.TryGetComponent(out _layoutGroup);
             container.TryGetComponent(out _fitter);
+            TryGetComponent(out _layoutElement);
 
             Prepare().Forget();
         }
@@ -90,6 +90,7 @@ namespace UI
         [Button]
         public async UniTask Show()
         {
+            if (_layoutElement) _layoutElement.ignoreLayout = false;
             _transitionSequence++;
             await Prepare();
 
@@ -142,6 +143,7 @@ namespace UI
         [Button]
         public async UniTask Hide()
         {
+            if (_layoutElement) _layoutElement.ignoreLayout = true;
             _transitionSequence++;
             int currentSequence = _transitionSequence;
 
