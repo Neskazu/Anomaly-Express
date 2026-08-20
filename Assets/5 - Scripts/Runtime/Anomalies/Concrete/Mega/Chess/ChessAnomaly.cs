@@ -8,6 +8,7 @@ using Unity.Collections;
 using Train;
 using System.Threading.Tasks;
 using ChessDotNet.Pieces;
+using Core.Audio;
 
 namespace Anomalies
 {
@@ -29,6 +30,14 @@ namespace Anomalies
         [SerializeField] private PieceModelMapping[] _mappings;
 
         [SerializeField] private DoorController door;
+
+        [Header("Audio")]
+        [SerializeField] private AudioClip[] _pawnLandSounds;
+        [Range(0f, 1f)]
+        [SerializeField] private float _soundVolume = 0.3f; 
+        [SerializeField] private float _soundMinDistance = 0.2f;
+        [SerializeField] private float _soundMaxDistance = 2.0f;
+        // ------------------------------------
 
         public System.Action<ChessDotNet.Player> OnGameOver;
 
@@ -98,51 +107,14 @@ namespace Anomalies
             }
         }
 
-        [Header("Debug")]
-        [Tooltip("Поставь галочку во время игры, чтобы принудительно открыть дверь")]
-        public bool forceUnlockDoor = false;
-
         private void Update()
         {
-            // Твой старый код Update:
             if (NetworkManager.Singleton.LocalClientId == _whitePlayerId.Value)
             {
                 if (Input.GetMouseButtonDown(0)) HandleInput();
             }
-
-            // --- НОВЫЙ ДЕБАГ КОД ---
-            if (forceUnlockDoor)
-            {
-                forceUnlockDoor = false; // Сразу сбрасываем галочку обратно
-                DebugForceWin();
-            }
         }
-        [ContextMenu("Debug: Принудительно Выиграть и Открыть Дверь")]
-        public void DebugForceWin()
-        {
-            if (door == null)
-            {
-                Debug.LogError("<color=red>[Debug]</color> Ссылка на дверь (door) не назначена в инспекторе!");
-                return;
-            }
 
-            Debug.Log("<color=green>[Debug]</color> Принудительное открытие двери вызвано!");
-
-            if (IsServer)
-            {
-                door.SetLockServerRpc(false); // Открываем дверь
-                NotifyGameOverClientRpc(ChessDotNet.Player.White); // Уведомляем клиентов о победе
-                Deactivate(); // Деактивируем аномалию
-            }
-            else
-            {
-                Debug.LogWarning("<color=orange>[Debug]</color> Внимание: Открытие двери вызвано с клиента. " +
-                                 "Если у SetLockServerRpc стоит RequireOwnership=true, это выдаст ошибку. " +
-                                 "Лучше нажимать эту кнопку у Хоста/Сервера.");
-
-                door.SetLockServerRpc(false);
-            }
-        }
         private void HandleInput()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -309,6 +281,7 @@ namespace Anomalies
         {
             UpdateBoardVisuals(newFen.ToString());
         }
+
         private void UpdateBoardVisuals(string fen)
         {
             char[,] newBoardState = ParseFen(fen);
@@ -351,11 +324,14 @@ namespace Anomalies
 
                 if (movingPiece != null)
                 {
-                    // Фигура переместилась
                     disappearedPieces.Remove(movingPiece);
-                    movingPiece.MoveTo(new Vector3(pos.x * _cellSize, 0, pos.y * _cellSize));
+
+                    Vector3 targetLocalPos = new Vector3(pos.x * _cellSize, 0, pos.y * _cellSize);
+                    movingPiece.MoveTo(targetLocalPos);
                     movingPiece.name = $"{newChar}_{pos.x}_{pos.y}";
                     nextActivePieces[pos.x, pos.y] = movingPiece;
+                    StartCoroutine(WaitAndPlayLandSound(movingPiece.transform, targetLocalPos));
+                   
                 }
                 else
                 {
@@ -369,6 +345,41 @@ namespace Anomalies
             }
 
             _activePieces = nextActivePieces;
+        }
+
+        private IEnumerator WaitAndPlayLandSound(Transform pieceTransform, Vector3 targetLocalPos)
+        {
+            if (pieceTransform == null) yield break;
+
+            float timeout = 2.0f;
+            while (pieceTransform != null && Vector3.Distance(pieceTransform.localPosition, targetLocalPos) > 0.05f && timeout > 0)
+            {
+                timeout -= Time.deltaTime;
+                yield return null;
+            }
+
+            if (pieceTransform != null)
+            {
+                Vector3 worldPos = _boardRoot.TransformPoint(targetLocalPos);
+                PlayPawnLandSound(worldPos);
+            }
+        }
+
+        private void PlayPawnLandSound(Vector3 position)
+        {
+            if (_pawnLandSounds == null || _pawnLandSounds.Length == 0) return;
+
+            AudioClip randomClip = _pawnLandSounds[Random.Range(0, _pawnLandSounds.Length)];
+            float randomPitch = Random.Range(0.95f, 1.05f);
+
+            AudioUtility.Play3D(
+                clip: randomClip,
+                position: position,
+                volume: _soundVolume,
+                pitch: randomPitch,
+                minDistance: _soundMinDistance,
+                maxDistance: _soundMaxDistance
+            );
         }
 
         private char[,] ParseFen(string fen)

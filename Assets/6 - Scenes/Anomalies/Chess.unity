@@ -2812,6 +2812,18 @@ PrefabInstance:
       propertyPath: _cellSize
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 4781064788806009798, guid: 5062e7ec658cb8640ba47c1f525514ef, type: 3}
+      propertyPath: _pawnLandSounds.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4781064788806009798, guid: 5062e7ec658cb8640ba47c1f525514ef, type: 3}
+      propertyPath: '_pawnLandSounds.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 279e958c9aaab1a49b5dadc52366eb59, type: 3}
+    - target: {fileID: 4781064788806009798, guid: 5062e7ec658cb8640ba47c1f525514ef, type: 3}
+      propertyPath: '_pawnLandSounds.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 031ab3694154d884792e6374a28220d6, type: 3}
     - target: {fileID: 5032536268803208541, guid: 5062e7ec658cb8640ba47c1f525514ef, type: 3}
       propertyPath: m_LocalScale.y
       value: 1
