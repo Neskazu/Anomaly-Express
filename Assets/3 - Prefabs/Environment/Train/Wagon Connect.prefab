@@ -1595,7 +1595,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1536367470351711756}
-  - component: {fileID: 5792164459203296550}
   - component: {fileID: 7110688637875980478}
   m_Layer: 8
   m_Name: Second
@@ -1619,28 +1618,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6135871987506275692}
   m_LocalEulerAnglesHint: {x: 0, y: -108, z: 0}
---- !u!114 &5792164459203296550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2330641646553027914}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07f1dc1c9a49c3a439d1e6a153269bea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  openAngle: 100
-  shakeAngle: 2
-  tweenDuration: 0.5
-  shakeDuration: 0.15
-  doorCollider: {fileID: 7110688637875980478}
-  doorMesh: {fileID: 5851327374244005772}
-  doorType: 0
-  vestibuleController: {fileID: 0}
-  isLocked: 0
 --- !u!65 &7110688637875980478
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5454,7 +5431,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1510442229763155258}
-  - component: {fileID: 1490635020340800418}
   - component: {fileID: 8449915629336988978}
   m_Layer: 8
   m_Name: Third
@@ -5478,28 +5454,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6135871987506275692}
   m_LocalEulerAnglesHint: {x: 0, y: 108, z: 0}
---- !u!114 &1490635020340800418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9196520860400130204}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07f1dc1c9a49c3a439d1e6a153269bea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  openAngle: 100
-  shakeAngle: 2
-  tweenDuration: 0.5
-  shakeDuration: 0.15
-  doorCollider: {fileID: 8449915629336988978}
-  doorMesh: {fileID: 1361274802168042705}
-  doorType: 0
-  vestibuleController: {fileID: 0}
-  isLocked: 0
 --- !u!65 &8449915629336988978
 BoxCollider:
   m_ObjectHideFlags: 0
