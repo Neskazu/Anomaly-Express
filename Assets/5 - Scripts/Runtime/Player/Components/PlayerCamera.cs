@@ -49,7 +49,7 @@ namespace Player.Components
         private Transform _camTransform;
 
         public Transform Head => head;
-        private static InputManager Input => InputManager.Singleton;
+        private static InputManager Input => InputManager.Instance;
 
         private Vector3 _previousLocalVelocity;
 
@@ -62,8 +62,8 @@ namespace Player.Components
 
         private void OnEnable()
         {
-            subscription = InputManager.Singleton
-                .Subscribe<Vector2>(action, ReactiveInputPhase.Performed, OnMouseMove, true)
+            subscription = InputManager.Instance
+                .Subscribe<Vector2>(action, InputPhaseFlags.Performed, OnMouseMove, true)
                 .AddTo(this);
 
             if (lockCursor) Cursor.lockState = CursorLockMode.Locked;

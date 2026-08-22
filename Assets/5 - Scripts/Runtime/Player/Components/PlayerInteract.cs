@@ -21,8 +21,8 @@ public class PlayerInteract : MonoBehaviour
 
     void Start()
     {
-        InputManager.Singleton
-            .Subscribe(action, ReactiveInputPhase.Started, Interact)
+        InputManager.Instance
+            .Subscribe(action, InputPhaseFlags.Started, Interact)
             .AddTo(this);
     }
 

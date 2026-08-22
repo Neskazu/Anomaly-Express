@@ -31,8 +31,8 @@ namespace Player.Components
                 .Subscribe(ApplyPunch)
                 .AddTo(this);
 
-            InputManager.Singleton
-                .Subscribe(action, ReactiveInputPhase.Started, Punch)
+            InputManager.Instance
+                .Subscribe(action, InputPhaseFlags.Started, Punch)
                 .AddTo(this);
         }
 

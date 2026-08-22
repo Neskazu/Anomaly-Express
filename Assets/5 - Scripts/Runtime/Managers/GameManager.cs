@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Nac;
 using Nac.Singleton;
+using Network;
 using Player;
 using R3;
 using Unity.Netcode;
@@ -20,22 +21,27 @@ namespace Managers
 
         public Observable<ulong> OnLocalPlayerSpawn => onLocalPlayerSpawn;
 
+        public override void OnNetworkSpawn()
+        {
+            if (!IsServer) return;
+
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+
+            PlayersManager.Instance.OnPlayerConnected
+                .Subscribe(OnPlayerConnectedCallback)
+                .AddTo(this);
+        }
+
         public override void OnDestroy()
         {
+            if (!IsServer) return;
+
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
             {
                 NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= SceneManager_OnLoadEventCompleted;
             }
 
             base.OnDestroy();
-        }
-
-        public override void OnNetworkSpawn()
-        {
-            if (IsServer)
-            {
-                NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
-            }
         }
 
         private void SceneManager_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode,
@@ -66,6 +72,18 @@ namespace Managers
 
                 OnLocalPlayerSpawnRpc(clientId, RpcTarget.Single(clientId, RpcTargetUse.Temp));
             }
+        }
+
+        private void OnPlayerConnectedCallback(PlayerData data)
+        {
+            var pos = NextSpawnPoint();
+            var player = Instantiate(playerPrefab, pos.position, pos.rotation);
+            var netObj = player.GetComponent<NetworkObject>();
+            netObj.SpawnAsPlayerObject(data.Owner, true);
+
+            player.CharacterId.Value = data.CharacterId;
+
+            OnLocalPlayerSpawnRpc(data.Owner, RpcTarget.Single(data.Owner, RpcTargetUse.Temp));
         }
 
         private Pose NextSpawnPoint()

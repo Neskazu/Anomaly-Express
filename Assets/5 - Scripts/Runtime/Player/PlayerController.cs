@@ -54,7 +54,7 @@ namespace Player
         public static ulong LocalPlayerId { get; private set; }
 
         private static InputManager InputManager
-            => InputManager.Singleton;
+            => InputManager.Instance;
 
         [SerializeField] private Transform cameraTransform;
 
@@ -132,7 +132,7 @@ namespace Player
                 cameraTransform = Camera.main.transform;
 
                 InputManager
-                    .Subscribe<Vector2>(movementActionReference, ReactiveInputPhase.Performed, HandleInput, true)
+                    .Subscribe<Vector2>(movementActionReference, InputPhaseFlags.Performed, HandleInput, true)
                     .AddTo(this);
             }
 

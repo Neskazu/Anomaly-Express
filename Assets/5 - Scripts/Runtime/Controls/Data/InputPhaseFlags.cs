@@ -1,7 +1,7 @@
 namespace Controls
 {
     [System.Flags]
-    public enum ReactiveInputPhase
+    public enum InputPhaseFlags
     {
         Started = 1 << 0,
         Performed = 1 << 1,

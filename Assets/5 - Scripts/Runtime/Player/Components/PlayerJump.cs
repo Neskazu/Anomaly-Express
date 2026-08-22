@@ -32,8 +32,8 @@ namespace Player.Components
         {
             if (!IsOwner) return;
 
-            InputManager.Singleton
-                .Subscribe(action, ReactiveInputPhase.Started, OnJumpInput)
+            InputManager.Instance
+                .Subscribe(action, InputPhaseFlags.Started, OnJumpInput)
                 .AddTo(this);
         }
 

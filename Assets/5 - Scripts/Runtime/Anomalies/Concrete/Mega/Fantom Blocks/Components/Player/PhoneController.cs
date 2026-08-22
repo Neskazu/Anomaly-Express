@@ -35,20 +35,20 @@ namespace Anomalies
 
             disposable.Clear();
 
-            InputManager.Singleton
-                .Subscribe(showAction, ReactiveInputPhase.Started, EnablePhone)
+            InputManager.Instance
+                .Subscribe(showAction, InputPhaseFlags.Started, EnablePhone)
                 .AddTo(disposable);
 
-            InputManager.Singleton
-                .Subscribe(hideAction, ReactiveInputPhase.Started, DisablePhone)
+            InputManager.Instance
+                .Subscribe(hideAction, InputPhaseFlags.Started, DisablePhone)
                 .AddTo(disposable);
 
-            InputManager.Singleton
-                .Subscribe(goAction, ReactiveInputPhase.Started, EnablePhotoMode)
+            InputManager.Instance
+                .Subscribe(goAction, InputPhaseFlags.Started, EnablePhotoMode)
                 .AddTo(disposable);
 
-            InputManager.Singleton
-                .Subscribe(backAction, ReactiveInputPhase.Started, DisablePhotoMode)
+            InputManager.Instance
+                .Subscribe(backAction, InputPhaseFlags.Started, DisablePhotoMode)
                 .AddTo(disposable);
         }
 
@@ -76,7 +76,7 @@ namespace Anomalies
             active = true;
             handsController.UpdatePhoneState(true);
 
-            InputManager.Singleton.ActivatePreset(phoneInputPreset);
+            InputManager.Instance.ActivatePreset(phoneInputPreset);
         }
 
         private void DisablePhone()
@@ -92,7 +92,7 @@ namespace Anomalies
             active = false;
             handsController.UpdatePhoneState(false);
 
-            InputManager.Singleton.ActivatePreset(defaultInputPreset);
+            InputManager.Instance.ActivatePreset(defaultInputPreset);
         }
 
         private void EnablePhotoMode()
@@ -106,7 +106,7 @@ namespace Anomalies
             phoneLens.enabled = true;
             handsController.UpdatePhotoModeState(true);
 
-            InputManager.Singleton.ActivatePreset(photoModeInputPreset);
+            InputManager.Instance.ActivatePreset(photoModeInputPreset);
         }
 
         private void DisablePhotoMode()
@@ -120,7 +120,7 @@ namespace Anomalies
             phoneLens.enabled = false;
             handsController.UpdatePhotoModeState(false);
 
-            InputManager.Singleton.ActivatePreset(phoneInputPreset);
+            InputManager.Instance.ActivatePreset(phoneInputPreset);
         }
     }
 }

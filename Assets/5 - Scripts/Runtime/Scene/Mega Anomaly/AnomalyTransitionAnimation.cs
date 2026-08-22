@@ -39,7 +39,7 @@ namespace MegaAnomalies
         {
             playerCamera.enabled = false;
 
-            InputManager.Singleton.ActivatePreset(cutsceneInputPreset);
+            InputManager.Instance.ActivatePreset(cutsceneInputPreset);
 
             var seq = DOTween.Sequence();
 
@@ -78,7 +78,7 @@ namespace MegaAnomalies
                 playerCamera.enabled = true;
             }
 
-            InputManager.Singleton.ActivatePreset(defaultInputPreset);
+            InputManager.Instance.ActivatePreset(defaultInputPreset);
         }
 
         [Rpc(SendTo.Everyone, RequireOwnership = false)]

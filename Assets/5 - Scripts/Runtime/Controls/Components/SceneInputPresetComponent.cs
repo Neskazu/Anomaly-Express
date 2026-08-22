@@ -8,7 +8,7 @@ namespace Controls
 
         private void Awake()
         {
-            InputManager.Singleton.ActivatePreset(preset);
+            InputManager.Instance.ActivatePreset(preset);
         }
     }
 }
