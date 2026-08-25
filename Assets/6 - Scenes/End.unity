@@ -170,11 +170,11 @@ MonoBehaviour:
       m_Calls: []
   m_text: '<size=150%><b>CREDITS</b></size>
 
-    
+
 
     <size=120%><b>Created by</b></size>
 
-    
+
 
     <b>Eric
     "Neskazu" Philippov</b>
@@ -185,70 +185,70 @@ MonoBehaviour:
 
     Art Direction
 
-    
+
 
     <b>Vladislav
     "Fuwii" Kruglov</b>
 
     Programming
 
-    
+
 
     <b>Dmitriy "Fostooh" Smirnov</b>
 
     3D
     Art
 
-    
+
 
     <size=120%><b>Music</b></size>
 
-    
+
 
     Special thanks to
 
-    
+
 
     <b>Chris
     Zabriskie</b>
 
-    
+
 
     Your music helped bring this world to life.
 
-    
+
 
     Featuring
 
-    
+
 
     Everybody''s
     Got Problems That Aren''t Mine
 
     No One In Star Wars Makes Art
 
-    The
-    Dark Glow of the Mountains
+    The Dark
+    Glow of the Mountains
 
     Cylinder Five
 
-    
 
-    <size=120%><b>Thank
-    You</b></size>
 
-    
+    <size=120%><b>Thank You</b></size>
 
-    Thank you for playing.
 
-    
 
-    We hope you enjoyed
-    the game.
+    Thank
+    you for playing.
 
-    
 
-    See you in our next game.
+
+    We hope you enjoyed the game.
+
+
+
+    See you in our next
+    game.
 
 '
   m_isRightToLeft: 0
@@ -438,7 +438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3a40e2945644ebeba99b502b295b91f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: {x: 0.1, y: 0.1}
+  inputActionAsset: {fileID: 0}
 --- !u!4 &1163332796
 Transform:
   m_ObjectHideFlags: 0
@@ -496,8 +496,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: -34.11644, y: -16.294243, z: -193.7349}
-    m_Extent: {x: 335.89624, y: 175.82767, z: 163.95206}
+    m_Center: {x: -135.4501, y: 10.4253845, z: -182.68614}
+    m_Extent: {x: 303.2519, y: 183.02206, z: 202.8405}
 --- !u!4 &1477615330
 Transform:
   m_ObjectHideFlags: 0
@@ -989,6 +989,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2124303174}
+  - component: {fileID: 2124303175}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -1014,6 +1015,18 @@ Transform:
   - {fileID: 1949590257}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2124303175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124303173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c758656ed81d58e498b31383b19c46a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5514993384312592862
 PrefabInstance:
   m_ObjectHideFlags: 0

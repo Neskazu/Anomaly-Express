@@ -896,8 +896,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: -130.02728, y: 6.034622, z: 209.1653}
-    m_Extent: {x: 312.57672, y: 182.13127, z: 212.44847}
+    m_Center: {x: -135.4501, y: 10.4253845, z: -182.68614}
+    m_Extent: {x: 303.2519, y: 183.02206, z: 202.8405}
 --- !u!1 &1027178276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1214,10 +1214,12 @@ MonoBehaviour:
   anomalyChanceIncrease: 0.05
   maxMissStreak: 5
   unseenAnomalyChance: 1
-  WagonsBeforeMega: 42
+  WagonsBeforeMega: 1
   megaAnomalySequences:
   - {fileID: 11400000, guid: 149179e9b98cca7409a893a977d1120d, type: 2}
   unseenMegaAnomalyChance: 1
+  megasBeforeWin: 1
+  finalSequence: {fileID: 11400000, guid: 4fc2348d48d26844bb00ba918794e140, type: 2}
 --- !u!4 &1446546833
 Transform:
   m_ObjectHideFlags: 0

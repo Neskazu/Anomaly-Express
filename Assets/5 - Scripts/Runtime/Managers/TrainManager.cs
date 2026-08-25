@@ -51,6 +51,11 @@ namespace Managers
         [Header("Mega Anomalies")]
         [SerializeField] private SceneTransitionSequence[] megaAnomalySequences;
         [SerializeField, Range(0f, 1f)] private float unseenMegaAnomalyChance = 1.0f;
+        //final 
+        [Header("Final")]
+        [SerializeField] private int megasBeforeWin = 2;
+        [SerializeField] private SceneTransitionSequence finalSequence;
+        private int _completedMegasThisRun = 0;
 
         private List<string> _unseenMegaAnomalies = new List<string>();
         private List<string> _seenMegaAnomalies = new List<string>();
@@ -109,6 +114,17 @@ namespace Managers
                 Debug.LogError("No Mega Anomaly sequence found or assigned!");
             }
         }
+        public async void LoadToFinal()
+        {
+            await AnomalyTransitionAnimation.Instance.Play();
+            if (IsServer)
+            {
+                ClearAllWagons();
+            }
+
+            await SceneTransitionManager.Instance.Play(finalSequence);
+        }
+
         public void SpawnWagon(VestibuleType vestibuleType, Vector3 position, bool isBackward)
         {
             if (!IsServer)
@@ -127,8 +143,20 @@ namespace Managers
             }
             if (_currentWagonIndex == WagonsBeforeMega)
             {
-                LoadToMegaAnomaly();
-                return;
+                if (_completedMegasThisRun >= megasBeforeWin)
+                {
+                    LoadToFinal();
+                }
+                else
+                {
+                    _completedMegasThisRun++;
+
+                    SaveManager.Save.Session.CompletedMegasThisRun = _completedMegasThisRun;
+                    SaveManager.SaveGame();
+
+                    LoadToMegaAnomaly();
+                    return;
+                }
             }
             _currentWagonIndex += 1;
 
@@ -266,6 +294,7 @@ namespace Managers
                 SaveManager.Save.Session.SeenMegaAnomalies = _seenMegaAnomalies;
                 SaveManager.SaveGame();
             });
+            _completedMegasThisRun = SaveManager.Save.Session.CompletedMegasThisRun;
         }
 
         private void InitializePool(List<string> allIds, List<string> seen, List<string> unseen, Action saveCallback)
