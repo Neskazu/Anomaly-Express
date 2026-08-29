@@ -55,7 +55,7 @@ namespace Managers
         [Header("Final")]
         [SerializeField] private int megasBeforeWin = 2;
         [SerializeField] private SceneTransitionSequence finalSequence;
-        private int _completedMegasThisRun = 0;
+        [SerializeField] private int _completedMegasThisRun = 0;
 
         private List<string> _unseenMegaAnomalies = new List<string>();
         private List<string> _seenMegaAnomalies = new List<string>();
@@ -146,6 +146,7 @@ namespace Managers
                 if (_completedMegasThisRun >= megasBeforeWin)
                 {
                     LoadToFinal();
+                    return;
                 }
                 else
                 {

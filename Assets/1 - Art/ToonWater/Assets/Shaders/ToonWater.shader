@@ -108,11 +108,12 @@
             float4 frag (v2f i) : SV_Target
             {
                 float screenW = max(i.screenPosition.w, 0.00001);
-                float2 screenUV = i.screenPosition.xy / screenW;
+                float2 screenUV = saturate(i.screenPosition.xy / screenW);
 
-                float existingDepth01 = tex2D(_CameraDepthTexture, screenUV).r;
+                float existingDepth01 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, screenUV);
                 float existingDepthLinear = LinearEyeDepth(existingDepth01);
-                float depthDifference = max(0, existingDepthLinear - screenW);
+
+                float depthDifference = max(0, existingDepthLinear - screenW + 0.01);
 
                 float waterDepthDifference01 = saturate(depthDifference / _DepthMaxDistance);
                 float4 waterColor = lerp(_DepthGradientShallow, _DepthGradientDeep, waterDepthDifference01);
