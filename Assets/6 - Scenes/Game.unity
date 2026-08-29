@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.001
   m_LinearFogStart: 0
   m_LinearFogEnd: 700
-  m_AmbientSkyColor: {r: 0.60784316, g: 0.5019608, b: 0.30588236, a: 1}
+  m_AmbientSkyColor: {r: 0.23032948, g: 0.19020759, b: 0.11590774, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -896,8 +896,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: -135.4501, y: 10.4253845, z: -182.68614}
-    m_Extent: {x: 303.2519, y: 183.02206, z: 202.8405}
+    m_Center: {x: -6.1856384, y: -17.97731, z: 136.88248}
+    m_Extent: {x: 343.0053, y: 173.36209, z: 158.893}
 --- !u!1 &1027178276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1220,6 +1220,7 @@ MonoBehaviour:
   unseenMegaAnomalyChance: 1
   megasBeforeWin: 1
   finalSequence: {fileID: 11400000, guid: 4fc2348d48d26844bb00ba918794e140, type: 2}
+  _completedMegasThisRun: 0
 --- !u!4 &1446546833
 Transform:
   m_ObjectHideFlags: 0
