@@ -18,6 +18,7 @@ namespace Train
         [SerializeField] private List<ulong> clientsInVestibule;
         [Header("Visuals")]
         [SerializeField] private List<WagonNumberAnimate> wagonNumberAnimators;
+        [SerializeField] private List<MegaIndicator> megaIndicators;
 
         // TODO: надо будет брать у двери
         [SerializeField] private float doorTweenDuration = .5f;
@@ -67,10 +68,11 @@ namespace Train
             {
                 return;
             }
-
             int nextWagonIndex = TrainManager.Instance.GetExpectedNextIndex(isBackward);
 
-            AnimateWagonNumbersClientRpc(nextWagonIndex);
+            int completedMegas = TrainManager.Instance.CompletedMegasThisRun;
+
+            AnimateWagonNumbersClientRpc(nextWagonIndex, completedMegas);
 
             doorBackward.ToggleLockServerRpc();
 
@@ -90,13 +92,21 @@ namespace Train
         }
 
         [ClientRpc]
-        private void AnimateWagonNumbersClientRpc(int nextIndex)
+        private void AnimateWagonNumbersClientRpc(int nextIndex, int completedMegas)
         {
             foreach (var animator in wagonNumberAnimators)
             {
                 if (animator != null)
                 {
                     animator.PlayScroll(nextIndex);
+                }
+            }
+
+            foreach (var indicator in megaIndicators)
+            {
+                if (indicator != null)
+                {
+                    indicator.SetIndicator(completedMegas);
                 }
             }
         }
@@ -110,7 +120,13 @@ namespace Train
                     animator.SetWagon(TrainManager.Instance.CurrentWagonIndex);
                 }
             }
-
+            foreach (var indicator in megaIndicators)
+            {
+                if (indicator != null)
+                {
+                    indicator.SetIndicator(TrainManager.Instance.CompletedMegasThisRun);
+                }
+            }
             if (!IsServer)
             {
                 return;

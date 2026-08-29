@@ -55,6 +55,7 @@ namespace Managers
         [Header("Final")]
         [SerializeField] private int megasBeforeWin = 2;
         [SerializeField] private SceneTransitionSequence finalSequence;
+        public int CompletedMegasThisRun => _completedMegasThisRun;
         [SerializeField] private int _completedMegasThisRun = 0;
 
         private List<string> _unseenMegaAnomalies = new List<string>();
@@ -73,6 +74,9 @@ namespace Managers
 
             Instance = this;
             _onNewWagon = new Subject<GameObject>().AddTo(this);
+            SaveManager.Load();
+
+            _completedMegasThisRun = SaveManager.Save.Session.CompletedMegasThisRun;
         }
         private void Start()
         {
@@ -81,6 +85,7 @@ namespace Managers
                 InitializeAnomalyPools();
             }
         }
+
         public async void LoadToMegaAnomaly()
         {
             await AnomalyTransitionAnimation.Instance.Play();
