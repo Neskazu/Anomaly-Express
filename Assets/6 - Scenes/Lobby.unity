@@ -196,6 +196,14 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1429284402227293732, guid: b46b95fc73454494b973a718587844a0, type: 3}
+      propertyPath: headBone
+      value: 
+      objectReference: {fileID: 58095764}
+    - target: {fileID: 1429284402227293732, guid: b46b95fc73454494b973a718587844a0, type: 3}
+      propertyPath: neckBone
+      value: 
+      objectReference: {fileID: 58095763}
+    - target: {fileID: 1429284402227293732, guid: b46b95fc73454494b973a718587844a0, type: 3}
       propertyPath: reactions.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -797,6 +805,16 @@ PrefabInstance:
 --- !u!4 &58095762 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5784155135022065524, guid: b46b95fc73454494b973a718587844a0, type: 3}
+  m_PrefabInstance: {fileID: 58095761}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &58095763 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6118757796489560866, guid: b46b95fc73454494b973a718587844a0, type: 3}
+  m_PrefabInstance: {fileID: 58095761}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &58095764 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1551906275344666178, guid: b46b95fc73454494b973a718587844a0, type: 3}
   m_PrefabInstance: {fileID: 58095761}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &103525239
