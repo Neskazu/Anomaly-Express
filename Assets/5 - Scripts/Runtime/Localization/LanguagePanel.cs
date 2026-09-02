@@ -16,9 +16,9 @@ public class LanguagePanel : MonoBehaviour
         foreach (Transform child in content)
             Destroy(child.gameObject);
 
-        foreach (Language language in LocalizationManager.Instance.GetLanguages())
+        foreach (var language in LocalizationManager.Instance.GetLanguages())
         {
-            LanguageItem item = Instantiate(itemPrefab, content);
+            var item = Instantiate(itemPrefab, content);
             item.Initialize(language);
         }
     }

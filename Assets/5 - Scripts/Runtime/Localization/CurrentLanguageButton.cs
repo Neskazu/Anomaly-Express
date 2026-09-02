@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Localization;
+using Nac.Extensions;
+using R3;
 using TMPro;
 
 public class CurrentLanguageButton : MonoBehaviour
@@ -8,18 +10,28 @@ public class CurrentLanguageButton : MonoBehaviour
     [SerializeField] private Image flag;
     [SerializeField] private TMP_Text languageName;
 
+    private readonly CompositeDisposable disposables = new();
+
+    private void OnDestroy()
+    {
+        disposables.Dispose();
+    }
+
     private void OnEnable()
     {
-        LocalizationManager.Instance.OnLanguageChanged += Refresh;
-        Refresh();
+        LocalizationManager.Language
+            .Subscribe(Refresh)
+            .AddTo(disposables);
     }
+
     private void OnDisable()
     {
-        LocalizationManager.Instance.OnLanguageChanged -= Refresh;
+        disposables.Clear();
     }
+
     public void Refresh()
     {
-        Language language = LocalizationManager.Instance.GetCurrentLanguage();
+        var language = LocalizationManager.Instance.GetCurrentLanguage();
 
         if (language != null)
         {
@@ -27,6 +39,5 @@ public class CurrentLanguageButton : MonoBehaviour
             languageName.text = language.Info.NativeName;
             languageName.font = LocalizationManager.Instance.GetFontForLanguage(language.Info.Code);
         }
-            
     }
 }

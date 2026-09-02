@@ -1,25 +1,26 @@
 using Newtonsoft.Json;
 using SaveSystem;
-using System;
 using System.Collections.Generic;
 using System.IO;
+using Nac.Singleton;
+using R3;
 using TMPro;
 using UnityEngine;
 
 namespace Localization
 {
-    public class LocalizationManager : MonoBehaviour
+    public class LocalizationManager : Service<LocalizationManager>
     {
-        public static LocalizationManager Instance;
+        private static readonly ReactiveProperty<Language> CurrentLanguage = new();
+        public static ReadOnlyReactiveProperty<Language> Language => CurrentLanguage;
 
+        [SerializeField] private LocalizationFontDatabase fontDatabase;
+
+        private readonly Dictionary<string, Texture2D> textureCache = new();
         private readonly Dictionary<string, string> localization = new();
         private readonly List<Language> languages = new();
 
         public IReadOnlyList<Language> AvailableLanguages => languages;
-
-        public Language CurrentLanguage { get; private set; }
-
-        public event Action OnLanguageChanged;
 
         private string LanguagesFolder
         {
@@ -32,23 +33,21 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
 #endif
             }
         }
-        private readonly Dictionary<string, Texture2D> textureCache = new();
 
-        [SerializeField] private LocalizationFontDatabase fontDatabase;
         public TMP_FontAsset CurrentFont { get; private set; }
 
-        private void Awake()
+        public override void Awake()
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            base.Awake();
 
             LoadLanguages();
+        }
+
+        public override void OnDestroy()
+        {
+            CurrentLanguage.Dispose();
+
+            base.OnDestroy();
         }
 
         private void LoadLanguages()
@@ -63,12 +62,12 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
 
             foreach (var folder in Directory.GetDirectories(LanguagesFolder))
             {
-                string languageInfoPath = Path.Combine(folder, "language.json");
+                var languageInfoPath = Path.Combine(folder, "language.json");
 
                 if (!File.Exists(languageInfoPath))
                     continue;
 
-                LanguageInfo info =
+                var info =
                     JsonConvert.DeserializeObject<LanguageInfo>(
                         File.ReadAllText(languageInfoPath));
 
@@ -85,7 +84,7 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
 
         public void LoadLanguage(string code)
         {
-            Language language =
+            var language =
                 languages.Find(x => x.Info.Code == code);
 
             if (language == null)
@@ -101,7 +100,7 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
             localization.Clear();
             textureCache.Clear();
 
-            foreach (string file in Directory.GetFiles(language.Folder, "*.json"))
+            foreach (var file in Directory.GetFiles(language.Folder, "*.json"))
             {
                 if (Path.GetFileName(file) == "language.json")
                     continue;
@@ -116,14 +115,11 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
                 }
             }
 
-            CurrentLanguage = language;
+            CurrentFont = fontDatabase.GetFont(language.Info.Code);
+            CurrentLanguage.Value = language;
 
             SaveManager.Save.Settings.Language = language.Info.Code;
             SaveManager.SaveGame();
-
-            CurrentFont = fontDatabase.GetFont(language.Info.Code);
-
-            OnLanguageChanged?.Invoke();
 
             Debug.Log($"Loaded language {language.Info.NativeName}");
         }
@@ -131,7 +127,9 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
         public string Get(string key)
         {
             if (localization.TryGetValue(key, out var value))
+            {
                 return value;
+            }
 
             return $"<{key}>";
         }
@@ -139,7 +137,9 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
         private Sprite LoadFlag(string path)
         {
             if (!File.Exists(path))
+            {
                 return null;
+            }
 
             Texture2D texture = new(2, 2);
 
@@ -182,19 +182,21 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
 
         public Texture2D GetTexture(string fileName)
         {
-            if (CurrentLanguage == null)
+            if (CurrentLanguage.CurrentValue == null)
+            {
                 return null;
+            }
 
-            string cacheKey = $"{CurrentLanguage.Info.Code}/{fileName}";
-
-            if (textureCache.TryGetValue(cacheKey, out Texture2D cached))
+            var cacheKey = $"{CurrentLanguage.CurrentValue.Info.Code}/{fileName}";
+            if (textureCache.TryGetValue(cacheKey, out var cached))
+            {
                 return cached;
+            }
 
-            string path = Path.Combine(CurrentLanguage.Folder, fileName);
-
+            var path = Path.Combine(CurrentLanguage.CurrentValue.Folder, fileName);
             if (!File.Exists(path))
             {
-                Language english = languages.Find(x => x.Info.Code == "en");
+                var english = languages.Find(x => x.Info.Code == "en");
 
                 if (english == null)
                     return null;
@@ -205,13 +207,13 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
                     return null;
             }
 
-            Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
-
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
             if (!texture.LoadImage(File.ReadAllBytes(path)))
+            {
                 return null;
+            }
 
             textureCache[cacheKey] = texture;
-
             return texture;
         }
     }

@@ -1,4 +1,5 @@
-using System.IO;
+using Nac.Extensions;
+using R3;
 using UnityEngine;
 
 namespace Localization
@@ -6,11 +7,13 @@ namespace Localization
     [RequireComponent(typeof(Renderer))]
     public class LocalizedTexture : MonoBehaviour
     {
-        [SerializeField]
-        private string fileName;
+        [SerializeField] private string fileName;
+        [SerializeField] private string textureProperty = "_BaseMap";
 
-        [SerializeField]
-        private string textureProperty = "_BaseMap";
+        private readonly CompositeDisposable disposables = new();
+
+        private Renderer targetRenderer;
+        private Material runtimeMaterial;
 
         public string FileName
         {
@@ -22,9 +25,6 @@ namespace Localization
             }
         }
 
-        private Renderer targetRenderer;
-        private Material runtimeMaterial;
-
         private void Awake()
         {
             targetRenderer = GetComponent<Renderer>();
@@ -32,29 +32,35 @@ namespace Localization
             runtimeMaterial = targetRenderer.material;
         }
 
+        private void OnDestroy()
+        {
+            disposables.Dispose();
+        }
+
         private void OnEnable()
         {
-            if (LocalizationManager.Instance != null)
-                LocalizationManager.Instance.OnLanguageChanged += Refresh;
-
-            Refresh();
+            LocalizationManager.Language
+                .Subscribe(Refresh)
+                .AddTo(disposables);
         }
 
         private void OnDisable()
         {
-            if (LocalizationManager.Instance != null)
-                LocalizationManager.Instance.OnLanguageChanged -= Refresh;
+            disposables.Clear();
         }
 
         public void Refresh()
         {
             if (LocalizationManager.Instance == null || runtimeMaterial == null)
+            {
                 return;
+            }
 
-            Texture2D texture = LocalizationManager.Instance.GetTexture(fileName);
-
+            var texture = LocalizationManager.Instance.GetTexture(fileName);
             if (texture != null)
+            {
                 runtimeMaterial.mainTexture = texture;
+            }
         }
 
 #if UNITY_EDITOR

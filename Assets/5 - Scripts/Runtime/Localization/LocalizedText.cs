@@ -1,13 +1,17 @@
 using TMPro;
 using UnityEngine;
+using R3;
+using Nac.Extensions;
 
 namespace Localization
 {
     [RequireComponent(typeof(TMP_Text))]
     public class LocalizedText : MonoBehaviour
     {
-        [SerializeField]
-        private string key;
+        [SerializeField] private string key;
+
+        private readonly CompositeDisposable disposable = new();
+
         public string Key
         {
             get => key;
@@ -27,25 +31,34 @@ namespace Localization
 
         private void OnEnable()
         {
-            LocalizationManager.Instance.OnLanguageChanged += Refresh;
+            LocalizationManager.Language
+                .Subscribe(Refresh)
+                .AddTo(disposable);
+        }
 
-            Refresh();
+        private void OnDestroy()
+        {
+            disposable.Dispose();
         }
 
         private void OnDisable()
         {
-            if (LocalizationManager.Instance != null)
-                LocalizationManager.Instance.OnLanguageChanged -= Refresh;
+            disposable.Clear();
         }
 
         public void Refresh()
         {
+            if (LocalizationManager.Instance == null)
+            {
+                return;
+            }
+
             text.font = LocalizationManager.Instance.CurrentFont;
             text.text = LocalizationManager.Instance.Get(key);
         }
 
 #if UNITY_EDITOR
-        public void SetKey(string value)
+        public void SetKey_Editor(string value)
         {
             key = value;
         }

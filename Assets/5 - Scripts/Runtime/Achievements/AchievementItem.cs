@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Localization;
+using Nac.Extensions;
+using R3;
 
 namespace Achievements
 {
@@ -14,19 +16,25 @@ namespace Achievements
         [SerializeField] private Image lockIcon;
         [SerializeField] private Image unlockIcon;
 
+        private readonly CompositeDisposable disposables = new();
         private AchievementDefinition definition;
         private AchievementProgress progress;
 
         private void OnEnable()
         {
-            if (LocalizationManager.Instance != null)
-                LocalizationManager.Instance.OnLanguageChanged += Refresh;
+            LocalizationManager.Language
+                .Subscribe(Refresh)
+                .AddTo(disposables);
         }
 
         private void OnDisable()
         {
-            if (LocalizationManager.Instance != null)
-                LocalizationManager.Instance.OnLanguageChanged -= Refresh;
+            disposables.Clear();
+        }
+
+        private void OnDestroy()
+        {
+            disposables.Dispose();
         }
 
         public void Initialize(AchievementDefinition definition, AchievementProgress progress)
