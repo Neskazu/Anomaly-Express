@@ -12,7 +12,10 @@ namespace Anomalies
 
         private readonly NetworkVariable<bool> _isActiveNet = new();
 
-        public string Id { get; private set; }
+        [SerializeField]
+        private string _id;
+
+        public string Id => _id;
 
         public bool IsActive
         {
@@ -26,11 +29,9 @@ namespace Anomalies
 
         private void OnValidate()
         {
-            if (string.IsNullOrEmpty(Id))
+            if (string.IsNullOrEmpty(_id))
             {
-                Id = Guid
-                    .NewGuid()
-                    .ToString();
+                _id = Guid.NewGuid().ToString();
             }
         }
 
