@@ -2,40 +2,24 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Localization;
-using Nac.Extensions;
-using R3;
 
 namespace Achievements
 {
     public class AchievementItem : MonoBehaviour
     {
         [SerializeField] private Image icon;
-        [SerializeField] private TMP_Text titleText;
-        [SerializeField] private TMP_Text descriptionText;
+
+        [SerializeField] private LocalizedText titleText;
+        [SerializeField] private LocalizedText descriptionText;
         [SerializeField] private TMP_Text progressText;
         [SerializeField] private Image lockIcon;
         [SerializeField] private Image unlockIcon;
 
-        private readonly CompositeDisposable disposables = new();
+        [SerializeField] private string hiddenTitleKey = "hidden_achievement_title";
+        [SerializeField] private string hiddenDescKey = "hidden_achievement_desc";
+
         private AchievementDefinition definition;
         private AchievementProgress progress;
-
-        private void OnEnable()
-        {
-            LocalizationManager.Language
-                .Subscribe(Refresh)
-                .AddTo(disposables);
-        }
-
-        private void OnDisable()
-        {
-            disposables.Clear();
-        }
-
-        private void OnDestroy()
-        {
-            disposables.Dispose();
-        }
 
         public void Initialize(AchievementDefinition definition, AchievementProgress progress)
         {
@@ -51,16 +35,15 @@ namespace Achievements
 
             if (hidden)
             {
-                titleText.text = "???";
-                descriptionText.text = "???";
+                titleText.Key = hiddenTitleKey;
+                descriptionText.Key = hiddenDescKey;
                 icon.sprite = null;
             }
             else
             {
+                titleText.Key = definition.TitleKey;
+                descriptionText.Key = definition.DescriptionKey;
                 icon.sprite = definition.Icon;
-
-                titleText.text = LocalizationManager.Instance.Get(definition.TitleKey);
-                descriptionText.text = LocalizationManager.Instance.Get(definition.DescriptionKey);
             }
 
             if (definition.MaxProgress > 1)

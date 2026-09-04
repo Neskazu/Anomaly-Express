@@ -157,10 +157,10 @@ RectTransform:
   - {fileID: 521938495}
   m_Father: {fileID: 233631966}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -30, y: -250}
-  m_SizeDelta: {x: -60, y: 600}
+  m_SizeDelta: {x: -50, y: -250}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &42344861
 MonoBehaviour:
@@ -830,9 +830,9 @@ RectTransform:
   m_Father: {fileID: 350753726}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 550, y: 0}
-  m_SizeDelta: {x: 1100, y: 1080}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &233631967
 MonoBehaviour:
@@ -1012,10 +1012,10 @@ RectTransform:
   - {fileID: 233631966}
   m_Father: {fileID: 776441001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -230, y: 0}
-  m_SizeDelta: {x: 1100, y: -200}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 200, y: 0}
+  m_SizeDelta: {x: 950, y: -300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &350753727
 MonoBehaviour:
@@ -2673,7 +2673,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -4176,10 +4176,10 @@ RectTransform:
   - {fileID: 550851842}
   m_Father: {fileID: 776441001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -25.000002, y: -200}
-  m_SizeDelta: {x: -1570.0001, y: 500}
+  m_AnchoredPosition: {x: -20, y: -150}
+  m_SizeDelta: {x: 360, y: -600}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1419049650
 MonoBehaviour:
@@ -5880,6 +5880,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4391242223292142879, guid: d1361735244652948913362f249d0653, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6115688435584734274, guid: d1361735244652948913362f249d0653, type: 3}
       propertyPath: m_SizeDelta.y
       value: 120
@@ -6902,7 +6906,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8735961968427252161, guid: a1a5cfc2b10e46e48b430b7f1572b561, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 996.0156
+      value: 856.0156
       objectReference: {fileID: 0}
     - target: {fileID: 8735961968427252161, guid: a1a5cfc2b10e46e48b430b7f1572b561, type: 3}
       propertyPath: m_SizeDelta.y
@@ -6938,7 +6942,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8735961968427252161, guid: a1a5cfc2b10e46e48b430b7f1572b561, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 498.0078
+      value: 428.0078
       objectReference: {fileID: 0}
     - target: {fileID: 8735961968427252161, guid: a1a5cfc2b10e46e48b430b7f1572b561, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -8090,7 +8094,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1616455524629162818, guid: b56ca2aa8d674a6489eedbad11608511, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 312
+      value: 322
       objectReference: {fileID: 0}
     - target: {fileID: 1616455524629162818, guid: b56ca2aa8d674a6489eedbad11608511, type: 3}
       propertyPath: m_SizeDelta.y
@@ -8126,7 +8130,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1616455524629162818, guid: b56ca2aa8d674a6489eedbad11608511, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 156
+      value: 161
       objectReference: {fileID: 0}
     - target: {fileID: 1616455524629162818, guid: b56ca2aa8d674a6489eedbad11608511, type: 3}
       propertyPath: m_AnchoredPosition.y
