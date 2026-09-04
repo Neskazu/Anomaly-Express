@@ -17,6 +17,9 @@ namespace Localization
         [SerializeField] private LocalizationFontDatabase fontDatabase;
 
         private readonly Dictionary<string, Texture2D> textureCache = new();
+
+        private readonly Dictionary<string, string> fallbackLocalization = new();
+
         private readonly Dictionary<string, string> localization = new();
         private readonly List<Language> languages = new();
 
@@ -41,6 +44,7 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
             base.Awake();
 
             LoadLanguages();
+            LoadFallbackLanguage();
         }
 
         public override void OnDestroy()
@@ -77,6 +81,24 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
                 };
 
                 languages.Add(language);
+            }
+        }
+        private void LoadFallbackLanguage()
+        {
+            fallbackLocalization.Clear();
+            var englishLanguage = languages.Find(x => x.Info.Code == "en");
+
+            if (englishLanguage == null) return;
+
+            foreach (var file in Directory.GetFiles(englishLanguage.Folder, "*.json"))
+            {
+                if (Path.GetFileName(file) == "language.json") continue;
+
+                var entries = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(file));
+                foreach (var pair in entries)
+                {
+                    fallbackLocalization[pair.Key] = pair.Value;
+                }
             }
         }
 
@@ -124,9 +146,15 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
 
         public string Get(string key)
         {
-            if (localization.TryGetValue(key, out var value))
+            if (localization.TryGetValue(key, out var value) && !string.IsNullOrEmpty(value))
             {
                 return value;
+            }
+
+            if (fallbackLocalization.TryGetValue(key, out var fallbackValue) && !string.IsNullOrEmpty(fallbackValue))
+            {
+                Debug.LogWarning($"[Localization] Missing translation for key '{key}' in {CurrentLanguage.CurrentValue?.Info.Code}. Using English fallback.");
+                return fallbackValue;
             }
 
             return $"<{key}>";

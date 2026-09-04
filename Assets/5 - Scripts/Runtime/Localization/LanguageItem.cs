@@ -22,9 +22,8 @@ public class LanguageItem : MonoBehaviour
         flag.sprite = lang.Flag;
         languageName.text = lang.Info.NativeName;
         languageName.font = LocalizationManager.Instance.GetFontForLanguage(lang.Info.Code);
-        var isCurrent =
-            LocalizationManager.Instance.GetCurrentLanguage().Info.Code == language.Info.Code;
 
+        var isCurrent = LocalizationManager.Instance.GetCurrentLanguage().Info.Code == language.Info.Code;
         selected.SetActive(isCurrent);
 
         button.onClick.RemoveListener(OnClick);
@@ -45,6 +44,11 @@ public class LanguageItem : MonoBehaviour
 
     private void RefreshSelected()
     {
+        if (language == null || LocalizationManager.Instance == null)
+        {
+            return;
+        }
+
         selected.SetActive(
             LocalizationManager.Instance.GetCurrentLanguage().Info.Code == language.Info.Code);
     }
