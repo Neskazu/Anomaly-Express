@@ -45,8 +45,6 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
 
         public override void OnDestroy()
         {
-            CurrentLanguage.Dispose();
-
             base.OnDestroy();
         }
 
