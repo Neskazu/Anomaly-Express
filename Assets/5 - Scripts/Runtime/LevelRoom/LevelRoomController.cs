@@ -25,6 +25,11 @@ public class LevelRoomController : NetworkBehaviour
         transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
 
+        if (NetworkObject != null)
+        {
+            NetworkObject.DestroyWithScene = false;
+        }
+
         if (!IsServer) return;
 
         door.SetLockServerRpc(false);
@@ -89,6 +94,7 @@ public class LevelRoomController : NetworkBehaviour
             }
         }
     }
+
     private void CheckDoorLockState()
     {
         if (_isTransitioning || _isNewLevelLoaded) return;
@@ -130,6 +136,10 @@ public class LevelRoomController : NetworkBehaviour
         return _clientsInside.Count == NetworkManager.Singleton.ConnectedClients.Count;
     }
 
+    /*
+     * Caches local positions of players relative to the room and starts the scene transition.
+     * Triggers are locked to prevent false exit events during the teleportation process.
+     */
     private async UniTaskVoid StartLevelTransition()
     {
         _isTransitioning = true;
@@ -164,6 +174,11 @@ public class LevelRoomController : NetworkBehaviour
         await SceneTransitionManager.Instance.Play(nextLevelSequence, showLoadingScreen: false);
     }
 
+    /*
+     * Called on the server when the scene finishes loading.
+     * Moves the room to origin, forces clients to sync the room position locally, 
+     * and teleports players back inside.
+     */
     private void OnSceneLoaded(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
         if (!IsServer || !_isTransitioning) return;
@@ -178,6 +193,8 @@ public class LevelRoomController : NetworkBehaviour
             transform.position = Vector3.zero;
             transform.rotation = Quaternion.identity;
         }
+
+        SyncRoomPositionClientRpc(Vector3.zero, Quaternion.identity);
 
         foreach (var kvp in _playerLocalPositions)
         {
@@ -199,13 +216,38 @@ public class LevelRoomController : NetworkBehaviour
         _isNewLevelLoaded = true;
         _isTransitioning = false;
 
-        CheckPositionsAfterFrames().Forget();
+        UnlockTriggersAfterDelayAsync().Forget();
+    }
+
+    [ClientRpc]
+    private void SyncRoomPositionClientRpc(Vector3 position, Quaternion rotation)
+    {
+        transform.position = position;
+        transform.rotation = rotation;
     }
 
     [ClientRpc]
     private void TeleportPlayerClientRpc(Vector3 position, Quaternion rotation, ClientRpcParams clientRpcParams = default)
     {
+        WaitAndTeleportPlayerAsync(position, rotation).Forget();
+    }
+
+    /*
+     * Waits for the local player object to be spawned by NGO on the client side after a scene load.
+     * Once found, teleports the player to the exact coordinates inside the room.
+     */
+    private async UniTaskVoid WaitAndTeleportPlayerAsync(Vector3 position, Quaternion rotation)
+    {
+        float timeout = 5f;
+
+        while (NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject() == null && timeout > 0)
+        {
+            await UniTask.Yield();
+            timeout -= Time.deltaTime;
+        }
+
         var localPlayer = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
+
         if (localPlayer != null)
         {
             var characterController = localPlayer.GetComponent<CharacterController>();
@@ -226,11 +268,13 @@ public class LevelRoomController : NetworkBehaviour
         }
     }
 
-    private async UniTaskVoid CheckPositionsAfterFrames()
+    /*
+     * Delays unlocking the triggers to ensure all clients have successfully spawned and teleported.
+     * Prevents false server-side OnTriggerExit events caused by network latency or scene loading times.
+     */
+    private async UniTaskVoid UnlockTriggersAfterDelayAsync()
     {
-        await UniTask.WaitForFixedUpdate();
-        await UniTask.WaitForFixedUpdate();
-
+        await UniTask.Delay(2000);
         _lockTriggerExits = false;
     }
 }
