@@ -56,8 +56,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Near Reversed
       objectReference: {fileID: 0}
+    - target: {fileID: 4594205316685182851, guid: d9333b06f7a6da64388780451e177be9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5069195575081516141, guid: d9333b06f7a6da64388780451e177be9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5069195575081516141, guid: d9333b06f7a6da64388780451e177be9, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9333b06f7a6da64388780451e177be9, type: 3}
