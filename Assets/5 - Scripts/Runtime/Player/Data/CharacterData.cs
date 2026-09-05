@@ -13,6 +13,7 @@ namespace Player
         [SerializeField] private ulong id;
         [Space]
         [SerializeField] private GameObject character;
+        [SerializeField] private GameObject ghost;
         [SerializeField] private GameObject chibi;
         [SerializeField] private GameObject hands;
         [Space]
@@ -21,6 +22,7 @@ namespace Player
 
         public ulong Id => id;
         public GameObject Character => character;
+        public GameObject Ghost => ghost;
         public GameObject Chibi => chibi;
         public GameObject Hands => hands;
         public Color Color => color;

@@ -27,24 +27,36 @@ public class PlayerAnimator : MonoBehaviour
     private static readonly int InteractHash = Animator.StringToHash("Interact");
     private float speed;
 
-    public void SetupNewCharacter(GameObject characterObj)
+    public void SetupCharacters(GameObject humanObj, GameObject ghostObj)
     {
-        Animator skinAnimator = characterObj.GetComponent<Animator>();
-
+        Animator skinAnimator = humanObj.GetComponent<Animator>();
         if (skinAnimator != null)
         {
-            animator.avatar = skinAnimator.avatar;
+            float currentSpeed = animator.GetFloat(SpeedHash);
+            float currentTurnSpeed = animator.GetFloat(TurnSpeedHash);
+            bool currentGrounded = animator.GetBool(IsGroundedHash);
 
+            animator.avatar = skinAnimator.avatar;
             Destroy(skinAnimator);
 
             animator.Rebind();
             animator.Update(0f);
+
+            animator.SetFloat(SpeedHash, currentSpeed);
+            animator.SetFloat(TurnSpeedHash, currentTurnSpeed);
+            animator.SetBool(IsGroundedHash, currentGrounded);
+        }
+
+        Animator ghostSkinAnimator = ghostObj.GetComponent<Animator>();
+        if (ghostSkinAnimator != null)
+        {
+            Destroy(ghostSkinAnimator);
         }
 
         if (animator != null && animator.isHuman)
             headBone = animator.GetBoneTransform(HumanBodyBones.Head);
         else
-            headBone = characterObj.transform.FindRecursive("Head");
+            headBone = humanObj.transform.FindRecursive("Head");
 
         _lastRotationY = motor.TransientRotation.eulerAngles.y;
     }
@@ -119,6 +131,14 @@ public class PlayerAnimator : MonoBehaviour
         {
             animator.SetTrigger(InteractHash);
         }
+    }
+    public void RefreshRig()
+    {
+        animator.Rebind();
+        animator.Update(0f);
+
+        if (animator.isHuman)
+            headBone = animator.GetBoneTransform(HumanBodyBones.Head);
     }
 }
 public static class TransformExtensions

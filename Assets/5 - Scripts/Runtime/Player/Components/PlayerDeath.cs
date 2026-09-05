@@ -86,12 +86,18 @@ namespace Player.Components
         {
             humanModel.SetActive(false);
             ghostModel.SetActive(true);
+            ghostModel.transform.SetAsFirstSibling();
+
+            GetComponent<PlayerAnimator>().RefreshRig();
         }
 
         private void Revive()
         {
             humanModel.SetActive(true);
             ghostModel.SetActive(false);
+            humanModel.transform.SetAsFirstSibling();
+
+            GetComponent<PlayerAnimator>().RefreshRig();
         }
     }
 }

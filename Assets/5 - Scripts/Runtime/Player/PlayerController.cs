@@ -28,7 +28,8 @@ namespace Player
         [SerializeField] private InputActionReference movementActionReference;
 
         //visual
-        public Transform MeshRoot;
+        [SerializeField] private Transform humanMeshRoot;
+        [SerializeField] private Transform ghostMeshRoot;
 
         public KinematicCharacterMotor Motor;
         [Header("Stable Movement")]
@@ -389,12 +390,12 @@ namespace Player
             {
                 if (isSplit && !IsServer)
                 {
-                    if (MeshRoot) MeshRoot.gameObject.SetActive(false);
+                    if (humanMeshRoot) humanMeshRoot.gameObject.SetActive(false);
                     Motor.SetCapsuleCollisionsActivation(false);
                 }
                 else
                 {
-                    if (MeshRoot) MeshRoot.gameObject.SetActive(true);
+                    if (humanMeshRoot) humanMeshRoot.gameObject.SetActive(true);
                     Motor.SetCapsuleCollisionsActivation(true);
                 }
             }
@@ -444,25 +445,25 @@ namespace Player
 
         private void ApplyCharacter(ulong id)
         {
-            foreach (Transform child in MeshRoot)
-                Destroy(child.gameObject);
+            foreach (Transform child in humanMeshRoot) Destroy(child.gameObject);
+            foreach (Transform child in ghostMeshRoot) Destroy(child.gameObject);
 
             var character = PlayersManager.Instance.GetCharacter(id);
-            if (character == null)
-            {
-                return;
-            }
+            if (character == null) return;
 
-            var newCharacter = Instantiate(character.Character, MeshRoot);
+            var newHuman = Instantiate(character.Character, humanMeshRoot);
+            var newGhost = Instantiate(character.Ghost, ghostMeshRoot);
+
             if (IsOwner)
             {
-                SetShadowsOnly(newCharacter);
+                SetShadowsOnly(newHuman);
+                SetShadowsOnly(newGhost);
             }
 
             var playerAnimator = GetComponent<PlayerAnimator>();
             if (playerAnimator != null)
             {
-                playerAnimator.SetupNewCharacter(newCharacter);
+                playerAnimator.SetupCharacters(newHuman, newGhost);
             }
 
             UpdateVisuals();
@@ -482,7 +483,7 @@ namespace Player
             bool hide = Anomalies.SplitControlAnomaly.IsSplitActive;
             if (hide)
             {
-                var renderers = MeshRoot.GetComponentsInChildren<Renderer>();
+                var renderers = humanMeshRoot.GetComponentsInChildren<Renderer>();
                 foreach (var r in renderers)
                 {
                     r.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
