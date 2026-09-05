@@ -22,19 +22,23 @@ namespace Train
 
                 if (netObj != null)
                 {
-                    HandlePlayerFall(netObj.OwnerClientId, motor);
+                    HandlePlayerFallServer(netObj.OwnerClientId);
+
+                    ClientRpcParams clientRpcParams = new ClientRpcParams
+                    {
+                        Send = new ClientRpcSendParams
+                        {
+                            TargetClientIds = new ulong[] { netObj.OwnerClientId }
+                        }
+                    };
+
+                    TeleportPlayerClientRpc(netObj.NetworkObjectId, respawnPoint.position, respawnPoint.rotation, clientRpcParams);
                 }
             }
         }
 
-        private void HandlePlayerFall(ulong clientId, KinematicCharacterMotor motor)
+        private void HandlePlayerFallServer(ulong clientId)
         {
-            if (respawnPoint != null)
-            {
-                motor.SetPositionAndRotation(respawnPoint.position, respawnPoint.rotation);
-                motor.BaseVelocity = Vector3.zero;
-            }
-
             int playerCount = NetworkManager.Singleton.ConnectedClients.Count;
             if (playerCount > 1)
             {
@@ -43,6 +47,21 @@ namespace Train
                 if (!data.IsDead)
                 {
                     GameManager.Instance.KillPlayerServerRpc(clientId);
+                }
+            }
+        }
+
+        [ClientRpc]
+        private void TeleportPlayerClientRpc(ulong networkObjectId, Vector3 position, Quaternion rotation, ClientRpcParams clientRpcParams = default)
+        {
+            if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
+            {
+                var motor = netObj.GetComponent<KinematicCharacterMotor>() ?? netObj.GetComponentInChildren<KinematicCharacterMotor>();
+
+                if (motor != null)
+                {
+                    motor.SetPositionAndRotation(position, rotation);
+                    motor.BaseVelocity = Vector3.zero;
                 }
             }
         }
