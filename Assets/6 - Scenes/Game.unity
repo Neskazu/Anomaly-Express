@@ -336,6 +336,7 @@ GameObject:
   - component: {fileID: 482414875}
   - component: {fileID: 482414878}
   - component: {fileID: 482414879}
+  - component: {fileID: 482414880}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -478,6 +479,21 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 6c1c0635a60602c4ba324875638c6e3f, type: 2}
+--- !u!114 &482414880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 482414874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bca17cda926b23848aa7a155c55d735b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainVolume: {fileID: 482414879}
+  normalProfile: {fileID: 11400000, guid: 6c1c0635a60602c4ba324875638c6e3f, type: 2}
+  deathProfile: {fileID: 11400000, guid: 726ee6d8adf63e04c9337ffe13e08834, type: 2}
 --- !u!1 &554621211
 GameObject:
   m_ObjectHideFlags: 0
@@ -896,8 +912,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: -6.1856384, y: -17.97731, z: 136.88248}
-    m_Extent: {x: 343.0053, y: 173.36209, z: 158.893}
+    m_Center: {x: -8.20752, y: 1.4875641, z: -153.78459}
+    m_Extent: {x: 313.25833, y: 182.77177, z: 155.20027}
 --- !u!1 &1027178276
 GameObject:
   m_ObjectHideFlags: 0
