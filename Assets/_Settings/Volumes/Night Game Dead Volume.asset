@@ -27,10 +27,10 @@ MonoBehaviour:
     m_Value: 0
   startLine:
     m_OverrideState: 1
-    m_Value: 20
+    m_Value: 1
   endLine:
     m_OverrideState: 1
-    m_Value: 150
+    m_Value: 15
   startHeight:
     m_OverrideState: 0
     m_Value: 5
@@ -70,14 +70,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 1
   color:
-    m_OverrideState: 0
-    m_Value: {r: 0, g: 0, b: 0, a: 1}
+    m_OverrideState: 1
+    m_Value: {r: 0.5707547, g: 0.78320956, b: 1, a: 1}
   center:
     m_OverrideState: 0
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.1
+    m_Value: 0.688
   smoothness:
     m_OverrideState: 1
     m_Value: 0.8
@@ -165,13 +165,13 @@ MonoBehaviour:
   active: 1
   postExposure:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 2
   contrast:
     m_OverrideState: 1
     m_Value: 15
   colorFilter:
-    m_OverrideState: 0
-    m_Value: {r: 0, g: 0.08218832, b: 0.11662913, a: 1}
+    m_OverrideState: 1
+    m_Value: {r: 0.5801887, g: 0.73885626, b: 1, a: 1}
   hueShift:
     m_OverrideState: 1
     m_Value: 0
