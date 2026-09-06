@@ -50,12 +50,12 @@ namespace MegaAnomalies
             // right
             seq.Append(camTransform.DOLocalRotate(new Vector3(5, 40, 5), 0.8f).SetEase(Ease.InOutSine));
             seq.AppendInterval(0.4f)
-                .AppendCallback(ShowCrackRpc);
+                .AppendCallback(ShowCrack);
 
             // down
             seq.Append(camTransform.DOLocalRotate(new Vector3(75, 0, 0), 0.5f).SetEase(Ease.InCubic));
             seq.AppendInterval(0.4f)
-                .AppendCallback(ShowHoleRpc);
+                .AppendCallback(ShowHole);
             seq.AppendInterval(0.1f);
 
             // fall
@@ -81,15 +81,22 @@ namespace MegaAnomalies
             InputManager.Instance.ActivatePreset(defaultInputPreset);
         }
 
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        private void ShowCrackRpc()
+        [Rpc(SendTo.NotMe, RequireOwnership = false)]
+        public void PlayRemoteRpc()
+        {
+            playerCamera = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerCamera>();
+            camTransform = Camera.main.transform;
+
+            Play().Forget();
+        }
+
+        private void ShowCrack()
         {
             crack.SetActive(true);
             hole.SetActive(false);
         }
 
-        [Rpc(SendTo.Everyone, RequireOwnership = false)]
-        private void ShowHoleRpc()
+        private void ShowHole()
         {
             crack.SetActive(false);
             hole.SetActive(true);
@@ -100,6 +107,7 @@ namespace MegaAnomalies
         {
             if (Input.GetKeyDown(KeyCode.T) && x)
             {
+                PlayRemoteRpc();
                 Play().Forget();
                 x = false;
             }

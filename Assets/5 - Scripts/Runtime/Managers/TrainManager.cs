@@ -19,7 +19,6 @@ namespace Managers
         public Observable<GameObject> OnNewWagon => _onNewWagon;
 
         [Header("Standard Anomalies")]
-
         [SerializeField] private GameObject defaultWagon;
 
         [SerializeField] private GameObject[] anomalyWagons;
@@ -51,6 +50,7 @@ namespace Managers
         [Header("Mega Anomalies")]
         [SerializeField] private SceneTransitionSequence[] megaAnomalySequences;
         [SerializeField, Range(0f, 1f)] private float unseenMegaAnomalyChance = 1.0f;
+
         //final 
         [Header("Final")]
         [SerializeField] private int megasBeforeWin = 2;
@@ -78,6 +78,7 @@ namespace Managers
 
             _completedMegasThisRun = SaveManager.Save.Session.CompletedMegasThisRun;
         }
+
         private void Start()
         {
             if (IsServer)
@@ -88,7 +89,9 @@ namespace Managers
 
         public async void LoadToMegaAnomaly()
         {
+            AnomalyTransitionAnimation.Instance.PlayRemoteRpc();
             await AnomalyTransitionAnimation.Instance.Play();
+
             if (IsServer)
             {
                 ClearAllWagons();
@@ -119,6 +122,7 @@ namespace Managers
                 Debug.LogError("No Mega Anomaly sequence found or assigned!");
             }
         }
+
         public async void LoadToFinal()
         {
             await AnomalyTransitionAnimation.Instance.Play();
@@ -146,6 +150,7 @@ namespace Managers
                 _currentWagonIndex = 0;
                 return;
             }
+
             if (_currentWagonIndex == WagonsBeforeMega)
             {
                 if (_completedMegasThisRun >= megasBeforeWin)
@@ -164,6 +169,7 @@ namespace Managers
                     return;
                 }
             }
+
             _currentWagonIndex += 1;
 
             // guaranteed
@@ -270,6 +276,7 @@ namespace Managers
                 trainPool.Reverse();
             }
         }
+
         private void InitializeAnomalyPools()
         {
             SaveManager.Load();
@@ -290,13 +297,15 @@ namespace Managers
             }
 
             _seenAnomalies = SaveManager.Save.Session.SeenAnomalies ?? new List<string>();
-            InitializePool(_allAnomalyIds, _seenAnomalies, _unseenAnomalies, () => {
+            InitializePool(_allAnomalyIds, _seenAnomalies, _unseenAnomalies, () =>
+            {
                 SaveManager.Save.Session.SeenAnomalies = _seenAnomalies;
                 SaveManager.SaveGame();
             });
 
             _seenMegaAnomalies = SaveManager.Save.Session.SeenMegaAnomalies ?? new List<string>();
-            InitializePool(_allMegaAnomalyIds, _seenMegaAnomalies, _unseenMegaAnomalies, () => {
+            InitializePool(_allMegaAnomalyIds, _seenMegaAnomalies, _unseenMegaAnomalies, () =>
+            {
                 SaveManager.Save.Session.SeenMegaAnomalies = _seenMegaAnomalies;
                 SaveManager.SaveGame();
             });
@@ -315,6 +324,7 @@ namespace Managers
                     unseen.Add(id);
                 }
             }
+
             if (unseen.Count == 0 && allIds.Count > 0)
             {
                 unseen.AddRange(allIds);
@@ -341,8 +351,10 @@ namespace Managers
                     return prefab;
                 }
             }
+
             return null;
         }
+
         private string GetNextId(List<string> allIds, List<string> unseen, List<string> seen, float unseenChance, Action saveCallback)
         {
             if (allIds.Count == 0) return null;
@@ -400,6 +412,7 @@ namespace Managers
 
             trainPool.Clear();
         }
+
         //helper good to be refactored
         public int GetExpectedNextIndex(bool playerWentBackward)
         {
