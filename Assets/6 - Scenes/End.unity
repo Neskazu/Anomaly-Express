@@ -757,8 +757,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: -38.48992, y: -200.28964, z: -2.0161133}
-    m_Extent: {x: 210.4595, y: 162.63684, z: 343.18536}
+    m_Center: {x: -4.878296, y: 1.1533508, z: 156.19066}
+    m_Extent: {x: 308.3436, y: 173.70384, z: 150.49501}
 --- !u!4 &1477615330
 Transform:
   m_ObjectHideFlags: 0
@@ -1825,6 +1825,14 @@ PrefabInstance:
     - target: {fileID: 5012337813583315393, guid: d61651e04151902408c21e5c6cd4f8ac, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1085840163
+      objectReference: {fileID: 0}
+    - target: {fileID: 5150483040307910103, guid: d61651e04151902408c21e5c6cd4f8ac, type: 3}
+      propertyPath: m_Volume
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5150483040307910103, guid: d61651e04151902408c21e5c6cd4f8ac, type: 3}
+      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5815990404310073399, guid: d61651e04151902408c21e5c6cd4f8ac, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
