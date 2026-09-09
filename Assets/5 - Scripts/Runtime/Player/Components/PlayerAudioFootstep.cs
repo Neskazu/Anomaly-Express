@@ -15,11 +15,16 @@ namespace Player.Components
         private void FixedUpdate()
         {
             float speed = motor.BaseVelocity.magnitude;
+            bool isGrounded = motor.GroundingStatus.IsStableOnGround;
 
-            if (speed > threshold && !footAudioSource.isPlaying)
+            if (speed > threshold && isGrounded && !footAudioSource.isPlaying)
+            {
                 footAudioSource.Play();
-            else if (speed < threshold && footAudioSource.isPlaying)
+            }
+            else if ((speed <= threshold || !isGrounded) && footAudioSource.isPlaying)
+            {
                 footAudioSource.Stop();
+            }
         }
     }
 }
