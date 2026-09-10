@@ -1,10 +1,9 @@
-using UnityEngine;
 using System;
 
 namespace SaveSystem
 {
     [Serializable]
-    public class SettingsSave
+    public class GeneralSettingsSave
     {
         public float MusicVolume = 1f;
         public string Language = "en";

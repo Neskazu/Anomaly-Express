@@ -83,6 +83,7 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
                 languages.Add(language);
             }
         }
+
         private void LoadFallbackLanguage()
         {
             fallbackLocalization.Clear();
@@ -138,7 +139,7 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
             CurrentFont = fontDatabase.GetFont(language.Info.Code);
             CurrentLanguage.Value = language;
 
-            SaveManager.Save.Settings.Language = language.Info.Code;
+            SaveManager.Save.GeneralSettings.Language = language.Info.Code;
             SaveManager.SaveGame();
 
             Debug.Log($"Loaded language {language.Info.NativeName}");
@@ -179,7 +180,7 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
 
         public void SetLanguage(string code)
         {
-            SaveManager.Save.Settings.Language = code;
+            SaveManager.Save.GeneralSettings.Language = code;
             SaveManager.SaveGame();
 
             LoadLanguage(code);
@@ -193,7 +194,7 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
         public Language GetCurrentLanguage()
         {
             return languages.Find(x =>
-                x.Info.Code == SaveManager.Save.Settings.Language);
+                x.Info.Code == SaveManager.Save.GeneralSettings.Language);
         }
 
         public TMP_FontAsset GetFontForLanguage(string code)
@@ -203,7 +204,7 @@ return Path.Combine(Application.dataPath, "..", "Data", "Languages");
 
         public void Initialize()
         {
-            LoadLanguage(SaveManager.Save.Settings.Language);
+            LoadLanguage(SaveManager.Save.GeneralSettings.Language);
         }
 
         public Texture2D GetTexture(string fileName)

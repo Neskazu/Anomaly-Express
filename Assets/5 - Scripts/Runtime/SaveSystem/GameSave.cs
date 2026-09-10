@@ -1,13 +1,22 @@
 using System;
-
+using Nac;
+using UnityEngine;
 
 namespace SaveSystem
 {
     [Serializable]
     public class GameSave
     {
-        public AchievementSave Achievements = new();
-        public SettingsSave Settings = new();
-        public SessionSave Session = new();
+        [SerializeField] private AchievementSave achievementsSave = new();
+        [SerializeField] private SessionSave sessionSave = new();
+        [Space]
+        [SerializeField] private GeneralSettingsSave generalSettingsSave = new();
+        [SerializeField] private GraphicsSettingsSave graphicsSettingsSave = new();
+
+        public AchievementSave Achievements => achievementsSave;
+        public SessionSave Session => sessionSave;
+
+        public GeneralSettingsSave GeneralSettings => generalSettingsSave;
+        public GraphicsSettingsSave GraphicsSettings => graphicsSettingsSave;
     }
 }
