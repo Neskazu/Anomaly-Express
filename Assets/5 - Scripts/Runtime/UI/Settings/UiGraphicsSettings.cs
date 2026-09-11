@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nac;
@@ -49,7 +50,37 @@ namespace UI.Settings
                 new("SMAA"),
                 new("TAA"),
             };
+        }
 
+        private void Start()
+        {
+            resolution.OnValueChangedAsObservable()
+                .Subscribe(ApplyResolution)
+                .AddTo(this);
+
+            fullScreen.OnValueChangedAsObservable()
+                .Subscribe(ApplyFullScreen)
+                .AddTo(this);
+
+            vsync.OnValueChangedAsObservable()
+                .Subscribe(ApplyVSync)
+                .AddTo(this);
+
+            brightness.OnValueChangedAsObservable()
+                .Subscribe(ApplyBrightness)
+                .AddTo(this);
+
+            shadow.OnValueChangedAsObservable()
+                .Subscribe(ApplyShadow)
+                .AddTo(this);
+
+            antiAliasing.OnValueChangedAsObservable()
+                .Subscribe(ApplyAntiAliasing)
+                .AddTo(this);
+        }
+
+        private void OnEnable()
+        {
             var currentResIndex = resolutions.FindIndex(r =>
                 r.width == Screen.width &&
                 r.height == Screen.height);
@@ -94,33 +125,6 @@ namespace UI.Settings
 
             antiAliasing.RefreshShownValue();
             fullScreen.isOn = Screen.fullScreen;
-        }
-
-        private void Start()
-        {
-            resolution.OnValueChangedAsObservable()
-                .Subscribe(ApplyResolution)
-                .AddTo(this);
-
-            fullScreen.OnValueChangedAsObservable()
-                .Subscribe(ApplyFullScreen)
-                .AddTo(this);
-
-            vsync.OnValueChangedAsObservable()
-                .Subscribe(ApplyVSync)
-                .AddTo(this);
-
-            brightness.OnValueChangedAsObservable()
-                .Subscribe(ApplyBrightness)
-                .AddTo(this);
-
-            shadow.OnValueChangedAsObservable()
-                .Subscribe(ApplyShadow)
-                .AddTo(this);
-
-            antiAliasing.OnValueChangedAsObservable()
-                .Subscribe(ApplyAntiAliasing)
-                .AddTo(this);
         }
 
         private void ApplyResolution(int index)

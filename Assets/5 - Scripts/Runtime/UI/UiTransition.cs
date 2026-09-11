@@ -34,13 +34,22 @@ namespace UI
         private LayoutElement _layoutElement;
         private int _transitionSequence;
 
+        private LayoutGroup[] layoutGroups;
+        private ContentSizeFitter[] sizeFitters;
+
         private void Awake()
         {
             container.TryGetComponent(out _layoutGroup);
             container.TryGetComponent(out _fitter);
             TryGetComponent(out _layoutElement);
 
-            Prepare().Forget();
+            layoutGroups = container.GetComponentsInChildren<LayoutGroup>();
+            sizeFitters = container.GetComponentsInChildren<ContentSizeFitter>();
+        }
+
+        private async void Start()
+        {
+            await Prepare();
         }
 
         private async UniTask Prepare()
@@ -48,21 +57,49 @@ namespace UI
             if (_initial != null)
                 return;
 
-            LayoutRebuilder.ForceRebuildLayoutImmediate(container);
-            await UniTask.DelayFrame(1);
+            layoutGroups ??= container.GetComponentsInChildren<LayoutGroup>();
+            sizeFitters ??= container.GetComponentsInChildren<ContentSizeFitter>();
 
-            _initial = new Vector2[targets.Length];
-
-            for (int i = 0; i < targets.Length; i++)
+            var wasActive = gameObject.activeSelf;
+            if (!wasActive)
             {
-                _initial[i] = targets[i].anchoredPosition;
+                gameObject.SetActive(true);
             }
+
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(container);
+
+            await UniTask.DelayFrame(5);
+
+            gameObject.SetActive(wasActive);
 
             if (_fitter)
                 _fitter.enabled = false;
 
             if (_layoutGroup)
                 _layoutGroup.enabled = false;
+
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(container);
+
+            await UniTask.DelayFrame(5);
+
+            foreach (var group in layoutGroups)
+            {
+                group.enabled = false;
+            }
+
+            foreach (var fitter in sizeFitters)
+            {
+                fitter.enabled = false;
+            }
+
+            _initial = new Vector2[targets.Length];
+
+            for (var i = 0; i < targets.Length; i++)
+            {
+                _initial[i] = targets[i].anchoredPosition;
+            }
         }
 
         private Vector2 GetShowStartOffset()
@@ -92,14 +129,13 @@ namespace UI
         {
             if (_layoutElement) _layoutElement.ignoreLayout = false;
             _transitionSequence++;
+
             await Prepare();
 
-            // Если объект был полностью выключен, мгновенно сдвигаем его на стартовую позицию,
-            // чтобы анимация красиво выезжала, а не начиналась из центра
             if (!gameObject.activeSelf)
             {
-                Vector2 startOffset = GetShowStartOffset();
-                for (int i = 0; i < targets.Length; i++)
+                var startOffset = GetShowStartOffset();
+                for (var i = 0; i < targets.Length; i++)
                 {
                     targets[i].anchoredPosition = _initial[i] + startOffset;
                     if (targetsGroups[i] != null)
@@ -109,7 +145,7 @@ namespace UI
 
             gameObject.SetActive(true);
 
-            for (int i = 0; i < targets.Length; i++)
+            for (var i = 0; i < targets.Length; i++)
             {
                 targets[i].DOKill();
 
@@ -124,7 +160,7 @@ namespace UI
 
                 targetsGroups[i].DOKill();
 
-                int index = i;
+                var index = i;
 
                 targetsGroups[i]
                     .DOFade(1, duration)
@@ -145,13 +181,13 @@ namespace UI
         {
             if (_layoutElement) _layoutElement.ignoreLayout = true;
             _transitionSequence++;
-            int currentSequence = _transitionSequence;
+            var currentSequence = _transitionSequence;
 
             await Prepare();
 
-            Vector2 endOffset = GetHideEndOffset();
+            var endOffset = GetHideEndOffset();
 
-            for (int i = 0; i < targets.Length; i++)
+            for (var i = 0; i < targets.Length; i++)
             {
                 targets[i].DOKill();
 
@@ -172,7 +208,7 @@ namespace UI
                     .SetDelay(i * delay);
             }
 
-            float totalDuration = duration + delay * Mathf.Max(0, targets.Length - 1);
+            var totalDuration = duration + delay * Mathf.Max(0, targets.Length - 1);
 
             await UniTask.Delay(TimeSpan.FromSeconds(totalDuration));
 
@@ -196,7 +232,7 @@ namespace UI
             targets = GetComponentsInDirectChildren<RectTransform>(container).ToArray();
             targetsGroups = new CanvasGroup[targets.Length];
 
-            for (int i = 0; i < targets.Length; i++)
+            for (var i = 0; i < targets.Length; i++)
                 targets[i].TryGetComponent(out targetsGroups[i]);
         }
 
@@ -206,7 +242,7 @@ namespace UI
 
             foreach (Transform child in parent)
             {
-                T component = child.GetComponent<T>();
+                var component = child.GetComponent<T>();
 
                 if (component != null)
                     results.Add(component);
