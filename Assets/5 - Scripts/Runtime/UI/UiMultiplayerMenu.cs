@@ -64,17 +64,15 @@ namespace UI
 
             busy = true;
 
+            await SceneTransitionWindow.Instance.Show();
+
             NetworkManager.Singleton
                 .GetComponent<UnityTransport>()
                 .SetConnectionData(Address, Port);
 
-            var connected = await NetworkController.Instance.ConnectAsync();
-            if (connected)
-            {
-                SceneTransitionManager.Instance
-                    .Play(toLobby)
-                    .Forget();
-            }
+            await NetworkController.Instance.ConnectAsync();
+
+            await SceneTransitionWindow.Instance.Hide();
 
             busy = false;
         }

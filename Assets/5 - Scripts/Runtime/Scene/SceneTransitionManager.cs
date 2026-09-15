@@ -38,9 +38,24 @@ namespace Scene
                 {
                     await SceneManager.LoadSceneAsync(sceneTransitionStep.scene.Path, sceneTransitionStep.loadMode).ToUniTask();
                 }
-                else
+                else if (NetworkManager.Singleton.IsServer)
                 {
+                    var completionSource = new UniTaskCompletionSource();
+
+                    void OnSceneEvent(SceneEvent sceneEvent)
+                    {
+                        if (sceneEvent.SceneEventType == SceneEventType.LoadComplete &&
+                            sceneEvent.ClientId == NetworkManager.Singleton.LocalClientId)
+                        {
+                            NetworkManager.Singleton.SceneManager.OnSceneEvent -= OnSceneEvent;
+                            completionSource.TrySetResult();
+                        }
+                    }
+
+                    NetworkManager.Singleton.SceneManager.OnSceneEvent += OnSceneEvent;
                     NetworkManager.Singleton.SceneManager.LoadScene(sceneTransitionStep.scene.Path, sceneTransitionStep.loadMode);
+
+                    await completionSource.Task;
                 }
             }
 
