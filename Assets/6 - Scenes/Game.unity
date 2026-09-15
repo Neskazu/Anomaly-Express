@@ -872,6 +872,7 @@ Transform:
   m_Children:
   - {fileID: 1797541501}
   - {fileID: 755624818}
+  - {fileID: 1956188565}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &957361791
@@ -912,8 +913,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: 109.21525, y: -169.94691, z: 6.7631836}
-    m_Extent: {x: 185.7085, y: 172.07423, z: 388.57516}
+    m_Center: {x: 193.60858, y: -63.4408, z: 80.569046}
+    m_Extent: {x: 201.60297, y: 169.3568, z: 250.2459}
 --- !u!1 &1027178276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1687,6 +1688,57 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3114211637938451385, guid: cc55bf7280daa9047ba01a8cb5490d49, type: 3}
   m_PrefabInstance: {fileID: 1917009939}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1956188564
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1956188565}
+  - component: {fileID: 1956188566}
+  m_Layer: 0
+  m_Name: Center
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1956188565
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956188564}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 957361790}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1956188566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956188564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4822ec8f4fe711644ac60fc0d7db6968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chunkPrefab: {fileID: 3917763905153536126, guid: 814faf11335ef2f4381106d4f2bcfb54, type: 3}
+  chunkSize: {x: 1, y: 1, z: 140}
+  size: 800
+  time: 8
+  prefabRotationOffset: {x: 0, y: 0, z: 0}
+  chunkSizeZ: 140
+  isFarPlane: 0
 --- !u!1 &2107680207
 GameObject:
   m_ObjectHideFlags: 0
