@@ -26,6 +26,13 @@ namespace Train
         // local flag for door
         private bool _forwardIsOpen = false;
         private bool _backwardIsOpen = false;
+        private bool _isLevelLoading = false;
+
+        private NetworkVariable<int> _syncedWagonIndex = new NetworkVariable<int>(0,
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        private NetworkVariable<int> _syncedCompletedMegas = new NetworkVariable<int>(0,
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         public VestibuleType VestibuleDirection
         {
@@ -35,15 +42,56 @@ namespace Train
 
         public override void OnNetworkSpawn()
         {
-            if (!IsServer) return;
+            if (IsServer)
+            {
+                _syncedWagonIndex.Value = TrainManager.Instance.CurrentWagonIndex;
+                _syncedCompletedMegas.Value = TrainManager.Instance.CompletedMegasThisRun;
 
-            doorForward.OnDoorStateChanged += OnDoorStateChanged;
-            doorBackward.OnDoorStateChanged += OnDoorStateChanged;
+                doorForward.OnDoorStateChanged += OnDoorStateChanged;
+                doorBackward.OnDoorStateChanged += OnDoorStateChanged;
 
-            _forwardIsOpen = doorForward.IsOpenNetwork();
-            _backwardIsOpen = doorBackward.IsOpenNetwork();
+                _forwardIsOpen = doorForward.IsOpenNetwork();
+                _backwardIsOpen = doorBackward.IsOpenNetwork();
+
+                if (vestibuleDirection == VestibuleType.Forward)
+                {
+                    doorBackward.ForceInteract(gameObject);
+                }
+                else
+                {
+                    doorForward.ForceInteract(gameObject);
+                }
+            }
+            UpdateVisuals(_syncedWagonIndex.Value, _syncedCompletedMegas.Value);
+
+            _syncedWagonIndex.OnValueChanged += (oldValue, newValue) =>
+            {
+                UpdateVisuals(newValue, _syncedCompletedMegas.Value);
+            };
+
+            _syncedCompletedMegas.OnValueChanged += (oldValue, newValue) =>
+            {
+                UpdateVisuals(_syncedWagonIndex.Value, newValue);
+            };
         }
+        private void UpdateVisuals(int wagonIndex, int completedMegas)
+        {
+            foreach (var animator in wagonNumberAnimators)
+            {
+                if (animator != null)
+                {
+                    animator.SetWagon(wagonIndex);
+                }
+            }
 
+            foreach (var indicator in megaIndicators)
+            {
+                if (indicator != null)
+                {
+                    indicator.SetIndicator(completedMegas);
+                }
+            }
+        }
         private void OnDoorStateChanged(DoorController doorController, bool isOpen)
         {
             if (doorController == doorForward)
@@ -55,8 +103,9 @@ namespace Train
                 _backwardIsOpen = isOpen;
             }
 
-            if (!_forwardIsOpen && !_backwardIsOpen && IsAllPlayerInVestibule())
+            if (!_forwardIsOpen && !_backwardIsOpen && IsAllPlayerInVestibule() && !_isLevelLoading)
             {
+                _isLevelLoading = true;
                 ReviveAllDeadPlayers();
                 LoadNextLevel();
             }
@@ -83,6 +132,7 @@ namespace Train
 
                 doorForward.ToggleLockServerRpc();
                 SwapDoors();
+                _isLevelLoading = false;
             });
         }
 
@@ -108,37 +158,6 @@ namespace Train
                 {
                     indicator.SetIndicator(completedMegas);
                 }
-            }
-        }
-
-        private void Start()
-        {
-            foreach (var animator in wagonNumberAnimators)
-            {
-                if (animator != null)
-                {
-                    animator.SetWagon(TrainManager.Instance.CurrentWagonIndex);
-                }
-            }
-            foreach (var indicator in megaIndicators)
-            {
-                if (indicator != null)
-                {
-                    indicator.SetIndicator(TrainManager.Instance.CompletedMegasThisRun);
-                }
-            }
-            if (!IsServer)
-            {
-                return;
-            }
-
-            if (vestibuleDirection == VestibuleType.Forward)
-            {
-                doorBackward.ForceInteract(gameObject);
-            }
-            else
-            {
-                doorForward.ForceInteract(gameObject);
             }
         }
 

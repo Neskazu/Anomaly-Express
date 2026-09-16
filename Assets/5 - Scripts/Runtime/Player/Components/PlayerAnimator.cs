@@ -112,7 +112,7 @@ public class PlayerAnimator : MonoBehaviour
 
         float relativeYaw = Mathf.DeltaAngle(bodyYaw, yaw);
         relativeYaw = Mathf.Clamp(relativeYaw, -80f, 80f);
-        float clampedPitch = Mathf.Clamp(pitch, -50f, 50f);
+        float clampedPitch = Mathf.Clamp(pitch, -30f, 30f);
         Quaternion targetHeadRot = Quaternion.Euler(clampedPitch, relativeYaw, 0);
 
         _smoothedHeadRot = Quaternion.Slerp(_smoothedHeadRot, targetHeadRot, Time.deltaTime * headSmoothSpeed);

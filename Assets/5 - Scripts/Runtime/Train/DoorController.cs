@@ -20,15 +20,15 @@ namespace Train
         public event Action<DoorController, bool> OnDoorStateChanged;
         public event Action OnDoorShaken;
 
-        // Сетевой флаг заблокированости двери
         private NetworkVariable<bool> _netIsLocked = new NetworkVariable<bool>(true);
-
-        // Сетевой флаг состояния двери
         private NetworkVariable<bool> _netIsOpen = new NetworkVariable<bool>();
 
         private Quaternion _closedRotationMesh;
-
         private Quaternion _closedRotationCollider;
+
+        private bool _isAnimating = false;
+
+        private float _lastServerInteractionTime = 0f;
 
         private void Awake()
         {
@@ -58,40 +58,39 @@ namespace Train
 
         public void Interact(GameObject interactor)
         {
+            if (_isAnimating) return;
+
             float angleSign = DetermineSignedAngle(interactor.transform.position);
+
             if (doorType == DoorType.Ordinary)
             {
                 float signedAngle = angleSign * openAngle;
-
-                if (IsServer)
-                {
-                    ChangeStateServerLogic(signedAngle);
-                }
-                else
-                {
-                    ChangeStateServerRpc(signedAngle);
-                }
+                SendStateChangeRequest(signedAngle);
             }
             else
             {
                 if (!_netIsLocked.Value)
                 {
                     float signedAngle = angleSign * openAngle;
-
-                    if (IsServer)
-                    {
-                        ChangeStateServerLogic(signedAngle);
-                    }
-                    else
-                    {
-                        ChangeStateServerRpc(signedAngle);
-                    }
+                    SendStateChangeRequest(signedAngle);
                 }
                 else
                 {
                     float signedShakeAngle = angleSign * shakeAngle;
                     ShakeDoor(signedShakeAngle);
                 }
+            }
+        }
+
+        private void SendStateChangeRequest(float signedAngle)
+        {
+            if (IsServer)
+            {
+                ChangeStateServerLogic(signedAngle);
+            }
+            else
+            {
+                ChangeStateServerRpc(signedAngle);
             }
         }
 
@@ -117,6 +116,9 @@ namespace Train
 
         private void ChangeStateServerLogic(float signedAngle)
         {
+            if (Time.time - _lastServerInteractionTime < tweenDuration * 0.9f) return;
+            _lastServerInteractionTime = Time.time;
+
             bool newState = !_netIsOpen.Value;
             _netIsOpen.Value = newState;
 
@@ -153,16 +155,33 @@ namespace Train
 
         private void ApplyOpenVisual(float signedAngle)
         {
+            _isAnimating = true;
+            KillCurrentTweens();
+
             Vector3 targetEulerMesh = _closedRotationMesh.eulerAngles + new Vector3(0f, signedAngle, 0f);
             Vector3 targetEulerCollider = _closedRotationCollider.eulerAngles + new Vector3(0f, signedAngle, 0f);
-            doorMesh.DOLocalRotate(targetEulerMesh, tweenDuration).SetEase(Ease.OutCubic);
+
+            doorMesh.DOLocalRotate(targetEulerMesh, tweenDuration).SetEase(Ease.OutCubic)
+                .OnComplete(() => _isAnimating = false);
+
             doorCollider.transform.DOLocalRotate(targetEulerCollider, tweenDuration).SetEase(Ease.OutCubic);
         }
 
         private void ApplyCloseVisual()
         {
-            doorMesh.DOLocalRotate(_closedRotationMesh.eulerAngles, tweenDuration).SetEase(Ease.OutCubic);
+            _isAnimating = true;
+            KillCurrentTweens();
+
+            doorMesh.DOLocalRotate(_closedRotationMesh.eulerAngles, tweenDuration).SetEase(Ease.OutCubic)
+                .OnComplete(() => _isAnimating = false);
+
             doorCollider.transform.DOLocalRotate(_closedRotationCollider.eulerAngles, tweenDuration).SetEase(Ease.OutCubic);
+        }
+
+        private void KillCurrentTweens()
+        {
+            doorMesh.DOKill();
+            doorCollider.transform.DOKill();
         }
 
         private float DetermineSignedAngle(Vector3 interactorWorldPos)
@@ -189,7 +208,12 @@ namespace Train
 
         private void ShakeDoor(float shakeAngle)
         {
+            if (_isAnimating) return;
+
+            _isAnimating = true;
+            KillCurrentTweens();
             OnDoorShaken?.Invoke();
+
             Sequence seq = DOTween.Sequence();
             seq.Append(doorMesh.DOLocalRotate(
                     _closedRotationMesh.eulerAngles + new Vector3(0f, shakeAngle, 0f), shakeDuration))
@@ -198,7 +222,9 @@ namespace Train
                 .Append(doorMesh.DOLocalRotate(_closedRotationMesh.eulerAngles, shakeDuration));
 
             seq.SetEase(Ease.InOutSine);
+            seq.OnComplete(() => _isAnimating = false);
         }
+
         [ServerRpc(RequireOwnership = false)]
         public void SetLockServerRpc(bool lockState)
         {
@@ -211,7 +237,8 @@ namespace Train
         }
     }
 
-    public enum DoorType
+
+public enum DoorType
     {
         Ordinary,
         Level,
