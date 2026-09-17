@@ -1,5 +1,6 @@
 using System;
 using Nac;
+using UI;
 using UnityEngine;
 
 namespace SaveSystem
@@ -12,11 +13,14 @@ namespace SaveSystem
         [Space]
         [SerializeField] private GeneralSettingsSave generalSettingsSave = new();
         [SerializeField] private GraphicsSettingsSave graphicsSettingsSave = new();
+        [Space]
+        [SerializeField] private UiSave uiSave = new();
 
         public AchievementSave Achievements => achievementsSave;
         public SessionSave Session => sessionSave;
 
         public GeneralSettingsSave GeneralSettings => generalSettingsSave;
         public GraphicsSettingsSave GraphicsSettings => graphicsSettingsSave;
+        public UiSave Ui => uiSave;
     }
 }

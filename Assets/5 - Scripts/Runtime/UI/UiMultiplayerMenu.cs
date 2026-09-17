@@ -1,5 +1,7 @@
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Nac.Network;
+using SaveSystem;
 using Scene;
 using TMPro;
 using Unity.Netcode;
@@ -25,10 +27,16 @@ namespace UI
 
         private string Address => addressField.text;
 
+        private UiSave Config => SaveManager.Save.Ui;
+
         private void Start()
         {
             hostButton.onClick.AddListener(OnHostClicked);
             joinButton.onClick.AddListener(OnJoinClicked);
+
+            playerNameField.text = Config.NetworkMenu.Username;
+            addressField.text = Config.NetworkMenu.Ip;
+            portField.text = Config.NetworkMenu.Port.ToString();
         }
 
         private async void OnHostClicked()
@@ -39,6 +47,10 @@ namespace UI
             }
 
             busy = true;
+
+            Config.NetworkMenu.SetIp(addressField.text);
+            Config.NetworkMenu.SetPort(portField.text);
+            SaveManager.SaveGame();
 
             NetworkManager.Singleton
                 .GetComponent<UnityTransport>()
@@ -64,6 +76,10 @@ namespace UI
 
             busy = true;
 
+            Config.NetworkMenu.SetIp(addressField.text);
+            Config.NetworkMenu.SetPort(portField.text);
+            SaveManager.SaveGame();
+
             await SceneTransitionWindow.Instance.Show();
 
             NetworkManager.Singleton
@@ -71,7 +87,6 @@ namespace UI
                 .SetConnectionData(Address, Port);
 
             await NetworkController.Instance.ConnectAsync();
-
             await SceneTransitionWindow.Instance.Hide();
 
             busy = false;
