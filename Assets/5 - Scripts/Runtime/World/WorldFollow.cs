@@ -11,7 +11,6 @@ namespace World
         private void Start()
         {
             TrainManager.Instance.OnNewWagon
-                .Select(wagon => wagon.transform.position)
                 .Subscribe(Move)
                 .AddTo(this);
         }

@@ -16,53 +16,50 @@ namespace Managers
     {
         public static TrainManager Instance { get; private set; }
 
-        public Observable<GameObject> OnNewWagon => _onNewWagon;
-
         [Header("Standard Anomalies")]
         [SerializeField] private GameObject defaultWagon;
 
         [SerializeField] private GameObject[] anomalyWagons;
-        private List<string> _unseenAnomalies = new List<string>();
-        private List<string> _seenAnomalies = new List<string>();
-
         [SerializeField] private GameObject vestibulePrefab;
-
-        [SerializeField] private List<GameObject> trainPool = new List<GameObject>();
-
+        [SerializeField] private List<GameObject> trainPool;
         [SerializeField] private bool currentWagonHasAnomaly = false;
 
         [SerializeField, Range(0f, 1f)] private float baseAnomalyChance = 0.6f;
         [SerializeField] private float anomalyChanceIncrease = 0.05f;
         [SerializeField] private int maxMissStreak = 5;
         [SerializeField, Range(0f, 1f)] private float unseenAnomalyChance = 0.8f;
-        [SerializeField] private int WagonsBeforeMega = 1;
+        [SerializeField] private int wagonsBeforeMega = 1;
 
-        // Offsets for wagon and vestibule positioning
-        private Vector3 _wagonOffset;
-        private Vector3 _wagonReversedOffset;
-        private Vector3 _vestibuleOffset;
-        public int CurrentWagonIndex => _currentWagonIndex;
-        private int _currentWagonIndex = 0;
-        private int _passedAnomalyWagons = 0;
-        private AnomalyBase _currentAnomaly = null;
-
-        private Subject<GameObject> _onNewWagon;
         [Header("Mega Anomalies")]
         [SerializeField] private SceneTransitionSequence[] megaAnomalySequences;
         [SerializeField, Range(0f, 1f)] private float unseenMegaAnomalyChance = 1.0f;
 
-        //final 
         [Header("Final")]
         [SerializeField] private int megasBeforeWin = 2;
         [SerializeField] private SceneTransitionSequence finalSequence;
-        public int CompletedMegasThisRun => _completedMegasThisRun;
         [SerializeField] private int _completedMegasThisRun = 0;
 
-        private List<string> _unseenMegaAnomalies = new List<string>();
-        private List<string> _seenMegaAnomalies = new List<string>();
+        private readonly Subject<Vector3> onNewWagon = new();
 
-        private List<string> _allAnomalyIds = new List<string>();
-        private List<string> _allMegaAnomalyIds = new List<string>();
+        private readonly List<string> _allMegaAnomalyIds = new();
+        private readonly List<string> _allAnomalyIds = new();
+        private readonly List<string> _unseenMegaAnomalies = new();
+        private readonly List<string> _unseenAnomalies = new();
+
+        private List<string> _seenMegaAnomalies = new();
+        private List<string> _seenAnomalies = new();
+
+        private AnomalyBase _currentAnomaly = null;
+        private Vector3 _wagonOffset;
+        private Vector3 _wagonReversedOffset;
+        private Vector3 _vestibuleOffset;
+        private int _currentWagonIndex = 0;
+        private int _passedAnomalyWagons = 0;
+
+        public int CurrentWagonIndex => _currentWagonIndex;
+        public int CompletedMegasThisRun => _completedMegasThisRun;
+
+        public Observable<Vector3> OnNewWagon => onNewWagon;
 
         private void Awake()
         {
@@ -73,7 +70,6 @@ namespace Managers
             }
 
             Instance = this;
-            _onNewWagon = new Subject<GameObject>().AddTo(this);
             SaveManager.Load();
 
             _completedMegasThisRun = SaveManager.Save.Session.CompletedMegasThisRun;
@@ -151,7 +147,7 @@ namespace Managers
                 return;
             }
 
-            if (_currentWagonIndex == WagonsBeforeMega)
+            if (_currentWagonIndex == wagonsBeforeMega)
             {
                 if (_completedMegasThisRun >= megasBeforeWin)
                 {
@@ -246,7 +242,7 @@ namespace Managers
 
             currentWagonHasAnomaly = wagonController.hasAnomaly;
 
-            _onNewWagon.OnNext(wagon);
+            OnWagonSpawnRpc(wagon.transform.position);
             return wagon;
         }
 
@@ -426,6 +422,12 @@ namespace Managers
             {
                 return _currentWagonIndex + 1;
             }
+        }
+
+        [Rpc(SendTo.Everyone, RequireOwnership = true)]
+        private void OnWagonSpawnRpc(Vector3 position)
+        {
+            onNewWagon.OnNext(position);
         }
     }
 }
