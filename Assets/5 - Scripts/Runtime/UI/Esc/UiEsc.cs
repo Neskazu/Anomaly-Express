@@ -17,6 +17,7 @@ namespace UI
         private static readonly TimeSpan SafeThrottle = TimeSpan.FromMilliseconds(300);
 
         [SerializeField] private GameObject cursor;
+        [SerializeField] private Button continueButton;
         [SerializeField] private Button disconnectButton;
         [SerializeField] private Button quitButton;
         [SerializeField] private UISoundPlayer uiSoundPlayer;
@@ -31,6 +32,16 @@ namespace UI
 
         private void Awake()
         {
+            continueButton
+                .OnPointerEnterAsObservable()
+                .Subscribe(uiSoundPlayer.PlayHover)
+                .AddTo(this);
+
+            continueButton
+                .OnClickAsObservable()
+                .Subscribe(ShowHideCallback)
+                .AddTo(this);
+
             disconnectButton
                 .OnPointerEnterAsObservable()
                 .Subscribe(uiSoundPlayer.PlayHover)
@@ -50,11 +61,6 @@ namespace UI
                 .OnPointerEnterAsObservable()
                 .Subscribe(uiSoundPlayer.PlayHover)
                 .AddTo(this);
-
-            SceneTransitionManager.Instance.PreLoading
-                .Where(_ => isOpen)
-                .Subscribe(Reset)
-                .AddTo(this);
         }
 
         private void Start()
@@ -63,6 +69,11 @@ namespace UI
                 .Observe(escAction, InputPhaseFlags.Performed)
                 .ThrottleFirst(SafeThrottle)
                 .Subscribe(ShowHideCallback)
+                .AddTo(this);
+
+            SceneTransitionManager.Instance.PreLoading
+                .Where(_ => isOpen)
+                .Subscribe(Reset)
                 .AddTo(this);
         }
 

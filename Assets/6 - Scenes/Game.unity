@@ -766,7 +766,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &791887662
 RectTransform:
   m_ObjectHideFlags: 0
@@ -913,8 +913,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: 193.60858, y: -63.4408, z: 80.569046}
-    m_Extent: {x: 201.60297, y: 169.3568, z: 250.2459}
+    m_Center: {x: 575.0499, y: 550.49207, z: -1029.8628}
+    m_Extent: {x: 1897.5607, y: 590.4396, z: 150.48486}
 --- !u!1 &1027178276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1231,7 +1231,7 @@ MonoBehaviour:
   anomalyChanceIncrease: 0.05
   maxMissStreak: 5
   unseenAnomalyChance: 1
-  WagonsBeforeMega: 1
+  wagonsBeforeMega: 1
   megaAnomalySequences:
   - {fileID: 11400000, guid: 149179e9b98cca7409a893a977d1120d, type: 2}
   unseenMegaAnomalyChance: 1
