@@ -12,9 +12,11 @@ namespace Scene
     {
         [SerializeField] private SceneTransitionSequence toMainMenu;
 
-        private readonly Subject<SceneTransitionSequence> loaded = new();
+        private readonly Subject<SceneTransitionSequence> preLoading = new();
+        private readonly Subject<SceneTransitionSequence> postLoading = new();
 
-        public Observable<SceneTransitionSequence> Loaded => loaded;
+        public Observable<SceneTransitionSequence> PreLoading => preLoading;
+        public Observable<SceneTransitionSequence> PostLoading => postLoading;
 
         private void Start()
         {
@@ -31,6 +33,8 @@ namespace Scene
             {
                 await SceneTransitionWindow.Instance.Show();
             }
+
+            preLoading.OnNext(sequence);
 
             foreach (var sceneTransitionStep in sequence.steps)
             {
@@ -64,7 +68,7 @@ namespace Scene
                 await SceneTransitionWindow.Instance.Hide();
             }
 
-            loaded.OnNext(sequence);
+            postLoading.OnNext(sequence);
         }
 
         private void ReturnToMainMenu(bool _)

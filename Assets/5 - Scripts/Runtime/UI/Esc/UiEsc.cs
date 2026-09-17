@@ -4,6 +4,7 @@ using Nac.Extensions;
 using Nac.Network;
 using R3;
 using R3.Triggers;
+using Scene;
 using Tween.Base;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -49,6 +50,11 @@ namespace UI
                 .OnPointerEnterAsObservable()
                 .Subscribe(uiSoundPlayer.PlayHover)
                 .AddTo(this);
+
+            SceneTransitionManager.Instance.PreLoading
+                .Where(_ => isOpen)
+                .Subscribe(Reset)
+                .AddTo(this);
         }
 
         private void Start()
@@ -78,6 +84,14 @@ namespace UI
 #else
             Application.Quit();
 #endif
+        }
+
+        private void Reset()
+        {
+            showHideSequence.Play(isOpen);
+
+            savedPreset = null;
+            isOpen = false;
         }
 
         private void ShowHideCallback()
