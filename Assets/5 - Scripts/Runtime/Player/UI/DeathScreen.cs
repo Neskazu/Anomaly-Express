@@ -24,6 +24,7 @@ namespace Player.UI
 
         public async UniTask Show()
         {
+            canvas.enabled = true;
             await DOTween.Sequence()
                 .Append(targetGraphic.material
                     .DOFloat(0.0f, InvertProperty, 0))
@@ -41,7 +42,8 @@ namespace Player.UI
                 .Append(targetGraphic.material
                     .DOFloat(1.0f, DissolveProperty, duration)
                     .From(0.0f)
-                    .SetEase(Ease.InOutSine));
+                    .SetEase(Ease.InOutSine))
+                .OnComplete(() => canvas.enabled = false);
         }
     }
 }
