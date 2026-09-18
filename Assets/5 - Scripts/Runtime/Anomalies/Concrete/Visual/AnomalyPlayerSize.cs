@@ -12,7 +12,7 @@ public class AnomalyPlayerSize : AnomalyBase
     [SerializeField] private string visualsNodeName = "Root";
 
     [Header("Physics Settings")]
-    [SerializeField] private float targetPhysicsMultiplier = 0.82f;
+    [SerializeField] private float targetYOffset = 0.75f;
 
     [Header("Animation Settings")]
     [SerializeField] private float duration = 5f;
@@ -49,22 +49,25 @@ public class AnomalyPlayerSize : AnomalyBase
                         OriginalVisualScale = visualRoot.localScale,
                         Height = motor.Capsule.height,
                         Radius = motor.Capsule.radius,
-                        YOffset = motor.Capsule.center.y
+                        YOffset = motor.Capsule.center.y // По дефолту здесь 0
                     };
 
                     var state = _initialStates[clientId];
+
                     visualRoot.DOScale(state.OriginalVisualScale * targetVisualMultiplier, duration)
                         .SetId($"VisualScale_{clientId}");
-                    float lerpVal = 1f;
-                    DOTween.To(() => lerpVal, x =>
+
+                    // Твиним от текущего (0) до targetYOffset (0.75f)
+                    float currentOffset = state.YOffset;
+                    DOTween.To(() => currentOffset, x =>
                     {
-                        lerpVal = x;
+                        currentOffset = x;
                         motor.SetCapsuleDimensions(
-                            state.Radius * lerpVal,
-                            state.Height * lerpVal,
-                            state.YOffset * lerpVal
+                            state.Radius,
+                            state.Height,
+                            currentOffset
                         );
-                    }, targetPhysicsMultiplier, duration)
+                    }, targetYOffset, duration)
                     .SetId($"PhysScale_{clientId}");
                 }
             }
@@ -83,23 +86,27 @@ public class AnomalyPlayerSize : AnomalyBase
 
                 DOTween.Kill($"VisualScale_{clientId}");
                 DOTween.Kill($"PhysScale_{clientId}");
+
                 if (state.VisualTransform != null)
                 {
                     state.VisualTransform.DOScale(state.OriginalVisualScale, durationBack);
                 }
+
                 if (motor != null)
                 {
-                    float currentPhysMultiplier = motor.Capsule.height / state.Height;
+                    // Берем текущий Y Offset (на случай, если анимация прервалась на середине)
+                    // и плавно возвращаем к изначальному (state.YOffset, то есть к 0)
+                    float currentOffset = motor.Capsule.center.y;
 
-                    DOTween.To(() => currentPhysMultiplier, x =>
+                    DOTween.To(() => currentOffset, x =>
                     {
-                        currentPhysMultiplier = x;
+                        currentOffset = x;
                         motor.SetCapsuleDimensions(
-                            state.Radius * currentPhysMultiplier,
-                            state.Height * currentPhysMultiplier,
-                            state.YOffset * currentPhysMultiplier
+                            state.Radius,
+                            state.Height,
+                            currentOffset
                         );
-                    }, 1f, durationBack);
+                    }, state.YOffset, durationBack);
                 }
             }
         }
