@@ -164,6 +164,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sasha
       objectReference: {fileID: 0}
+    - target: {fileID: 524486236701156224, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+      propertyPath: m_jointRadius
+      value: 0.01177603
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473625405396327861, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+      propertyPath: m_jointRadius
+      value: 0.01177603
+      objectReference: {fileID: 0}
     - target: {fileID: 1565731282509924034, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
       propertyPath: m_DirtyAABB
       value: 0
@@ -191,6 +199,14 @@ PrefabInstance:
     - target: {fileID: 1565731282509924034, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.099419
+      objectReference: {fileID: 0}
+    - target: {fileID: 2210444976946387593, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+      propertyPath: m_jointRadius
+      value: 0.01177603
+      objectReference: {fileID: 0}
+    - target: {fileID: 2918882812908020202, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
+      propertyPath: m_jointRadius
+      value: 0.01177603
       objectReference: {fileID: 0}
     - target: {fileID: 2953604236389334553, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
       propertyPath: m_DirtyAABB
