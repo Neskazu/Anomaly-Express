@@ -84,7 +84,7 @@ namespace Player
 
         private void OnEnable()
         {
-            AnomalyBase.OnAnomalyStateChanged += RefreshPermissions;
+            AnomalyBase.OnAnyAnomalyStateChanged += RefreshPermissions;
 
             if (NetworkManager.Singleton != null)
             {
@@ -97,7 +97,7 @@ namespace Player
 
         private void OnDisable()
         {
-            AnomalyBase.OnAnomalyStateChanged -= RefreshPermissions;
+            AnomalyBase.OnAnyAnomalyStateChanged -= RefreshPermissions;
 
             if (NetworkManager.Singleton != null)
             {
@@ -110,6 +110,8 @@ namespace Player
         {
             CharacterId.OnValueChanged += OnCharacterChanged;
             ApplyCharacter(CharacterId.Value);
+
+            RefreshPermissions();
         }
 
         private void Start()

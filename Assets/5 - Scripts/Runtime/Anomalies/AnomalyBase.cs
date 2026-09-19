@@ -1,6 +1,4 @@
 using System;
-using Nac.Extensions;
-using R3;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,7 +6,8 @@ namespace Anomalies
 {
     public abstract class AnomalyBase : NetworkBehaviour, IAnomaly
     {
-        public static event Action OnAnomalyStateChanged;
+        public event Action OnAnomalyStateChanged;
+        public static event Action OnAnyAnomalyStateChanged;
 
         private readonly NetworkVariable<bool> _isActiveNet = new();
 
@@ -22,8 +21,10 @@ namespace Anomalies
             get => _isActiveNet.Value;
             set
             {
-                if (value) Activate();
-                else Deactivate();
+                if (value)
+                    Activate();
+                else
+                    Deactivate();
             }
         }
 
@@ -39,11 +40,8 @@ namespace Anomalies
         {
             _isActiveNet.OnValueChanged += HandleStateChanged;
 
-            if (_isActiveNet.Value)
-            {
-                OnActivate();
-                OnAnomalyStateChanged?.Invoke();
-            }
+            // ѕримен€ем уже существующее состо€ние.
+            ApplyState(_isActiveNet.Value);
         }
 
         public override void OnNetworkDespawn()
@@ -55,28 +53,39 @@ namespace Anomalies
 
         private void HandleStateChanged(bool previousValue, bool newValue)
         {
-            if (newValue)
-            {
+            ApplyState(newValue);
+            OnAnomalyStateChanged?.Invoke();
+        }
+
+        private void ApplyState(bool active)
+        {
+            if (active)
                 OnActivate();
-            }
             else
-            {
                 OnDeactivate();
-            }
+
+            OnStateApplied(active);
 
             OnAnomalyStateChanged?.Invoke();
+            OnAnyAnomalyStateChanged?.Invoke();
+        }
+
+        protected virtual void OnStateApplied(bool active)
+        {
         }
 
         public void Activate()
         {
-            if (!IsServer || _isActiveNet.Value) return;
+            if (!IsServer || _isActiveNet.Value)
+                return;
 
             _isActiveNet.Value = true;
         }
 
         public void Deactivate()
         {
-            if (!IsServer || !_isActiveNet.Value) return;
+            if (!IsServer || !_isActiveNet.Value)
+                return;
 
             _isActiveNet.Value = false;
         }

@@ -41,25 +41,38 @@ public class DropperAnomaly : AnomalyBase, IKccHitReceiver
             {
                 _startPositions[i] = _obstacles[i].transform.position;
                 _phaseOffsets[i] = Random.Range(0f, 100f);
-                var router = _obstacles[i].AddComponent<DropperHitRouter>();
+
+                var router = _obstacles[i].GetComponent<DropperHitRouter>();
+
+                if (router == null)
+                    router = _obstacles[i].AddComponent<DropperHitRouter>();
+
                 router.Anomaly = this;
             }
         }
-        count = _floor.Length;
-        for (int i = 0; i < count; i++)
+
+        for (int i = 0; i < _floor.Length; i++)
         {
             if (_floor[i] != null)
             {
-                var router = _floor[i].AddComponent<DropperHitRouter>();
+                var router = _floor[i].GetComponent<DropperHitRouter>();
+
+                if (router == null)
+                    router = _floor[i].AddComponent<DropperHitRouter>();
+
                 router.Anomaly = this;
             }
         }
+
         if (_finishPool != null)
         {
-            var finishRouter = _finishPool.AddComponent<DropperFinishRouter>();
-            finishRouter.Anomaly = this;
+            var router = _finishPool.GetComponent<DropperFinishRouter>();
+
+            if (router == null)
+                router = _finishPool.AddComponent<DropperFinishRouter>();
+
+            router.Anomaly = this;
         }
-        OnAnomalyStateChanged += OnAnomalyToggled;
     }
 
     private void Start()
@@ -70,9 +83,8 @@ public class DropperAnomaly : AnomalyBase, IKccHitReceiver
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
-        OnAnomalyStateChanged -= OnAnomalyToggled;
     }
-    private void OnAnomalyToggled()
+    protected override void OnStateApplied(bool active)
     {
         StartCoroutine(WaitAndChangeJumpState());
     }

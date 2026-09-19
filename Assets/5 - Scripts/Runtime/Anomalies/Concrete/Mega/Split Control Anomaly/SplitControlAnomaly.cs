@@ -8,25 +8,16 @@ namespace Anomalies
 {
     public class SplitControlAnomaly : AnomalyBase
     {
-        
-        [SerializeField]private Transform StartPoint;
+        [SerializeField] private Transform StartPoint;
 
         public static bool IsSplitActive { get; private set; } = false;
-        
-        public override void OnNetworkSpawn()
-        {
-            base.OnNetworkSpawn();
-            OnAnomalyStateChanged += OnAnomalyToggled;
-        }
-        public override void OnNetworkDespawn()
-        {
-            base.OnNetworkSpawn();
-            OnAnomalyStateChanged -= OnAnomalyToggled;
-        }
+
         private void Start()
         {
-            if (IsServer) Activate();
+            if (IsServer)
+                Activate();
         }
+
         protected override void OnActivate()
         {
             IsSplitActive = true;
@@ -36,15 +27,12 @@ namespace Anomalies
         {
             IsSplitActive = false;
         }
-        public override void OnDestroy()
-        {
-            base.OnDestroy();
-            IsSplitActive = false;
-        }
-        private void OnAnomalyToggled()
+
+        protected override void OnStateApplied(bool active)
         {
             StartCoroutine(WaitAndChangeJumpState());
         }
+
         private IEnumerator WaitAndChangeJumpState()
         {
             while (NetworkManager.Singleton.LocalClient?.PlayerObject == null)
@@ -58,13 +46,24 @@ namespace Anomalies
                 jumpComp.IsJumpEnabled = IsActive;
             }
         }
+
         public void HandlePlayerFall(KinematicCharacterMotor motor)
         {
             if (StartPoint != null)
             {
-                motor.SetPositionAndRotation(StartPoint.position, StartPoint.rotation);
+                motor.SetPositionAndRotation(
+                    StartPoint.position,
+                    StartPoint.rotation
+                );
+
                 motor.BaseVelocity = Vector3.zero;
             }
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            IsSplitActive = false;
         }
     }
 }
