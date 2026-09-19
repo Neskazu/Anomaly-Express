@@ -1,3 +1,4 @@
+using System;
 using Nac.Extensions;
 using Nac.Singleton;
 using R3;
@@ -11,27 +12,48 @@ namespace Scene
         {
             base.OnNetworkSpawn();
 
-            if (!IsServer) return;
+            if (IsServer)
+            {
+                SceneTransitionManager.Instance.PreLoading
+                    .Subscribe(PreLoadingRpc)
+                    .AddTo(this);
+            }
+            else
+            {
+                NetworkManager.Singleton.SceneManager.OnSceneEvent += OnClientSceneEvent;
+            }
+        }
 
-            SceneTransitionManager.Instance.PreLoading
-                .Subscribe(PreLoadingRpc)
-                .AddTo(this);
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
 
-            SceneTransitionManager.Instance.PostLoading
-                .Subscribe(PostLoadingRpc)
-                .AddTo(this);
+            if (NetworkManager.Singleton && NetworkManager.Singleton.SceneManager != null)
+            {
+                NetworkManager.Singleton.SceneManager.OnSceneEvent -= OnClientSceneEvent;
+            }
+        }
+
+        private void OnClientSceneEvent(SceneEvent sceneEvent)
+        {
+            switch (sceneEvent.SceneEventType)
+            {
+                case SceneEventType.LoadComplete:
+                case SceneEventType.SynchronizeComplete:
+                    if (sceneEvent.ClientId != NetworkManager.Singleton.LocalClientId)
+                        break;
+
+                    SceneTransitionWindow.Instance.Hide();
+                    break;
+                default:
+                    return;
+            }
         }
 
         [Rpc(SendTo.NotMe, RequireOwnership = true)]
         private void PreLoadingRpc()
         {
             SceneTransitionWindow.Instance.Show();
-        }
-
-        [Rpc(SendTo.NotMe, RequireOwnership = true)]
-        private void PostLoadingRpc()
-        {
-            SceneTransitionWindow.Instance.Hide();
         }
     }
 }
