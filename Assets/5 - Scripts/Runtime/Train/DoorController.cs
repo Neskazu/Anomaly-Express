@@ -16,6 +16,7 @@ namespace Train
         [SerializeField] private DoorType doorType;
         [SerializeField] private VestibuleController vestibuleController;
         [SerializeField] private bool isLocked = true;
+        private float _currentSignedAngle = 0f;
 
         public event Action<DoorController, bool> OnDoorStateChanged;
         public event Action OnDoorShaken;
@@ -38,14 +39,6 @@ namespace Train
 
         public override void OnNetworkSpawn()
         {
-            _netIsOpen.OnValueChanged += (_, newIsOpen) =>
-            {
-                if (newIsOpen)
-                    return;
-                else
-                    ApplyCloseVisual();
-            };
-
             if (_netIsOpen.Value)
             {
                 RequestCurrentAngleServerRpc();
@@ -116,7 +109,12 @@ namespace Train
 
         private void ChangeStateServerLogic(float signedAngle)
         {
-            if (Time.time - _lastServerInteractionTime < tweenDuration * 0.9f) return;
+            if (Time.time - _lastServerInteractionTime < tweenDuration * 0.9f)
+                return;
+
+            if (doorType == DoorType.Level && _netIsLocked.Value)
+                return;
+
             _lastServerInteractionTime = Time.time;
 
             bool newState = !_netIsOpen.Value;
@@ -155,27 +153,46 @@ namespace Train
 
         private void ApplyOpenVisual(float signedAngle)
         {
+            _currentSignedAngle = signedAngle;
+
             _isAnimating = true;
             KillCurrentTweens();
 
-            Vector3 targetEulerMesh = _closedRotationMesh.eulerAngles + new Vector3(0f, signedAngle, 0f);
-            Vector3 targetEulerCollider = _closedRotationCollider.eulerAngles + new Vector3(0f, signedAngle, 0f);
+            Vector3 targetEulerMesh =
+                _closedRotationMesh.eulerAngles +
+                new Vector3(0f, signedAngle, 0f);
 
-            doorMesh.DOLocalRotate(targetEulerMesh, tweenDuration).SetEase(Ease.OutCubic)
+            Vector3 targetEulerCollider =
+                _closedRotationCollider.eulerAngles +
+                new Vector3(0f, signedAngle, 0f);
+
+            doorMesh.DOLocalRotate(targetEulerMesh, tweenDuration)
+                .SetEase(Ease.OutCubic)
                 .OnComplete(() => _isAnimating = false);
 
-            doorCollider.transform.DOLocalRotate(targetEulerCollider, tweenDuration).SetEase(Ease.OutCubic);
+            doorCollider.transform.DOLocalRotate(
+                targetEulerCollider,
+                tweenDuration)
+                .SetEase(Ease.OutCubic);
         }
 
         private void ApplyCloseVisual()
         {
+            _currentSignedAngle = 0f;
+
             _isAnimating = true;
             KillCurrentTweens();
 
-            doorMesh.DOLocalRotate(_closedRotationMesh.eulerAngles, tweenDuration).SetEase(Ease.OutCubic)
+            doorMesh.DOLocalRotate(
+                _closedRotationMesh.eulerAngles,
+                tweenDuration)
+                .SetEase(Ease.OutCubic)
                 .OnComplete(() => _isAnimating = false);
 
-            doorCollider.transform.DOLocalRotate(_closedRotationCollider.eulerAngles, tweenDuration).SetEase(Ease.OutCubic);
+            doorCollider.transform.DOLocalRotate(
+                _closedRotationCollider.eulerAngles,
+                tweenDuration)
+                .SetEase(Ease.OutCubic);
         }
 
         private void KillCurrentTweens()
@@ -208,21 +225,42 @@ namespace Train
 
         private void ShakeDoor(float shakeAngle)
         {
-            if (_isAnimating) return;
+            if (_isAnimating)
+            {
+                return;
+            }
 
             _isAnimating = true;
+
             KillCurrentTweens();
+
             OnDoorShaken?.Invoke();
 
+            Vector3 baseRotation =
+                _closedRotationMesh.eulerAngles +
+                new Vector3(0f, _currentSignedAngle, 0f);
+
             Sequence seq = DOTween.Sequence();
-            seq.Append(doorMesh.DOLocalRotate(
-                    _closedRotationMesh.eulerAngles + new Vector3(0f, shakeAngle, 0f), shakeDuration))
-                .Append(doorMesh.DOLocalRotate(
-                    _closedRotationMesh.eulerAngles - new Vector3(0f, shakeAngle, 0f), shakeDuration))
-                .Append(doorMesh.DOLocalRotate(_closedRotationMesh.eulerAngles, shakeDuration));
+
+            seq.Append(
+                    doorMesh.DOLocalRotate(
+                        baseRotation + new Vector3(0f, shakeAngle, 0f),
+                        shakeDuration))
+                .Append(
+                    doorMesh.DOLocalRotate(
+                        baseRotation - new Vector3(0f, shakeAngle, 0f),
+                        shakeDuration))
+                .Append(
+                    doorMesh.DOLocalRotate(
+                        baseRotation,
+                        shakeDuration));
 
             seq.SetEase(Ease.InOutSine);
-            seq.OnComplete(() => _isAnimating = false);
+
+            seq.OnComplete(() =>
+            {
+                _isAnimating = false;
+            });
         }
 
         [ServerRpc(RequireOwnership = false)]

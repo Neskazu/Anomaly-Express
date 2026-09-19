@@ -97,30 +97,37 @@ public class LevelRoomController : NetworkBehaviour
 
     private void CheckDoorLockState()
     {
-        if (_isTransitioning || _isNewLevelLoaded) return;
+        if (_isTransitioning || _isNewLevelLoaded)
+            return;
 
-        if (IsAllPlayersInside())
+        if (!door.IsOpenNetwork())
         {
             door.SetLockServerRpc(false);
+            return;
         }
+
+        bool allPlayersInside = IsAllPlayersInside();
+
+        door.SetLockServerRpc(!allPlayersInside);
     }
 
     private void HandleDoorState(DoorController doorController, bool isOpen)
     {
-        if (!IsServer) return;
+        if (!IsServer)
+            return;
+
+        if (_isTransitioning || _isNewLevelLoaded)
+            return;
 
         if (isOpen)
         {
-            door.SetLockServerRpc(true);
             CheckDoorLockState();
+            return;
         }
-        else
+        if (IsAllPlayersInside())
         {
-            if (!_isTransitioning && !_isNewLevelLoaded && IsAllPlayersInside())
-            {
-                door.SetLockServerRpc(true);
-                StartLevelTransition().Forget();
-            }
+            door.SetLockServerRpc(true);
+            StartLevelTransition().Forget();
         }
     }
 
