@@ -23,8 +23,8 @@ namespace Scene
             if (_sequence != null && _sequence.IsPlaying())
                 _sequence.Kill();
 
+            _active = true;
             _sequence = tweenSequence.Play();
-            _sequence.AppendCallback(() => _active = true);
 
             return _sequence.AsyncWaitForCompletion().AsUniTask();
         }
@@ -37,8 +37,8 @@ namespace Scene
             if (_sequence != null && _sequence.IsPlaying())
                 _sequence.Kill();
 
+            _active = false;
             _sequence = tweenSequence.Play(true);
-            _sequence.AppendCallback(() => _active = false);
 
             return _sequence.AsyncWaitForCompletion().AsUniTask();
         }

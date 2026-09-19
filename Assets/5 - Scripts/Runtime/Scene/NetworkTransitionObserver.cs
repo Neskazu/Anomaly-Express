@@ -1,4 +1,3 @@
-using System;
 using Nac.Extensions;
 using Nac.Singleton;
 using R3;
@@ -17,9 +16,7 @@ namespace Scene
                 SceneTransitionManager.Instance.PreLoading
                     .Subscribe(PreLoadingRpc)
                     .AddTo(this);
-            }
-            else
-            {
+
                 NetworkManager.Singleton.SceneManager.OnSceneEvent += OnClientSceneEvent;
             }
         }
@@ -40,10 +37,8 @@ namespace Scene
             {
                 case SceneEventType.LoadComplete:
                 case SceneEventType.SynchronizeComplete:
-                    if (sceneEvent.ClientId != NetworkManager.Singleton.LocalClientId)
-                        break;
-
-                    SceneTransitionWindow.Instance.Hide();
+                    var target = RpcTarget.Single(sceneEvent.ClientId, RpcTargetUse.Temp);
+                    PostLoadingRpc(target);
                     break;
                 default:
                     return;
@@ -54,6 +49,12 @@ namespace Scene
         private void PreLoadingRpc()
         {
             SceneTransitionWindow.Instance.Show();
+        }
+
+        [Rpc(SendTo.SpecifiedInParams, RequireOwnership = true)]
+        private void PostLoadingRpc(RpcParams rpcParams = default)
+        {
+            SceneTransitionWindow.Instance.Hide();
         }
     }
 }

@@ -36,6 +36,9 @@ namespace Scene
 
             preLoading.OnNext(sequence);
 
+            // Fix: host waits half a second for the client to bring up the loading screen.
+            await UniTask.WaitForSeconds(0.5f);
+
             foreach (var sceneTransitionStep in sequence.steps)
             {
                 if (sceneTransitionStep.networkMode == SceneTransitionSequence.NetworkMode.Solo)
