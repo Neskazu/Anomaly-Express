@@ -9,6 +9,7 @@ using UnityEngine;
 
 public class LevelRoomController : NetworkBehaviour
 {
+    private static LevelRoomController _instance;
     [SerializeField] private DoorController door;
     [SerializeField] private SceneTransitionSequence nextLevelSequence;
 
@@ -22,6 +23,18 @@ public class LevelRoomController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        if (_instance != null && _instance != this)
+        {
+            if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
+            {
+                NetworkObject.Despawn(true);
+            }
+
+            return;
+        }
+
+        _instance = this;
+
         transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
 
@@ -30,7 +43,8 @@ public class LevelRoomController : NetworkBehaviour
             NetworkObject.DestroyWithScene = false;
         }
 
-        if (!IsServer) return;
+        if (!IsServer)
+            return;
 
         door.SetLockServerRpc(false);
         door.OnDoorStateChanged += HandleDoorState;
@@ -39,14 +53,14 @@ public class LevelRoomController : NetworkBehaviour
         {
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
         }
+
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
     }
 
     public override void OnNetworkDespawn()
     {
-        if (!IsServer) return;
-
-        if (door != null) door.OnDoorStateChanged -= HandleDoorState;
+        if (door != null)
+            door.OnDoorStateChanged -= HandleDoorState;
 
         if (NetworkManager.Singleton != null)
         {
@@ -54,8 +68,11 @@ public class LevelRoomController : NetworkBehaviour
             {
                 NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnSceneLoaded;
             }
+
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
         }
+
+        Destroy(gameObject);
     }
 
     private void OnClientDisconnect(ulong clientId)
