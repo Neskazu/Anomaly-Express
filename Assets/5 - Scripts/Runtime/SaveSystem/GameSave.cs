@@ -13,6 +13,7 @@ namespace SaveSystem
         [Space]
         [SerializeField] private GeneralSettingsSave generalSettingsSave = new();
         [SerializeField] private GraphicsSettingsSave graphicsSettingsSave = new();
+        [SerializeField] private AudioSettingSave audioSettingSave = new();
         [Space]
         [SerializeField] private UiSave uiSave = new();
 
@@ -21,6 +22,7 @@ namespace SaveSystem
 
         public GeneralSettingsSave GeneralSettings => generalSettingsSave;
         public GraphicsSettingsSave GraphicsSettings => graphicsSettingsSave;
+        public AudioSettingSave AudioSettingSave => audioSettingSave;
         public UiSave Ui => uiSave;
     }
 }

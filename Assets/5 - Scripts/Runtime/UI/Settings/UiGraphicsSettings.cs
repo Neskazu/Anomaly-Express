@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using Nac;
 using Nac.Extensions;
 using R3;
 using SaveSystem;
@@ -8,7 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI.Settings
+namespace Nac
 {
     public class UiGraphicsSettings : MonoBehaviour
     {
