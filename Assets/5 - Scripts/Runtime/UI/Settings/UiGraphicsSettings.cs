@@ -63,7 +63,7 @@ namespace UI.Settings
                 .AddTo(this);
 
             Graphics.OnSettingsChanged
-                .Delay(TimeSpan.FromMilliseconds(500f))
+                .Delay(TimeSpan.FromSeconds(1))
                 .Subscribe(Sync)
                 .AddTo(this);
         }

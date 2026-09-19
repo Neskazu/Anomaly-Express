@@ -77,9 +77,32 @@ namespace Nac
 
         public int GetResolutionIndex()
         {
-            return resolutions.FindIndex(r =>
+            var index = resolutions.FindIndex(r =>
                 r.height == Screen.height &&
                 r.width == Screen.width);
+
+            if (index == -1)
+            {
+                var currentPixels = Screen.width * Screen.height;
+                var closestDifference = int.MaxValue;
+                var closestIndex = 0;
+
+                for (var i = 0; i < resolutions.Count; i++)
+                {
+                    var resPixels = resolutions[i].width * resolutions[i].height;
+                    var difference = Mathf.Abs(resPixels - currentPixels);
+
+                    if (difference < closestDifference)
+                    {
+                        closestDifference = difference;
+                        closestIndex = i;
+                    }
+                }
+
+                return closestIndex;
+            }
+
+            return index;
         }
 
         public bool GetFullScreen()
