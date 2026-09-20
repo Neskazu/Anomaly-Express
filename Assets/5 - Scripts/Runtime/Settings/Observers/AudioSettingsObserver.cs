@@ -17,6 +17,8 @@ namespace Nac
             SaveManager.OnLoaded
                 .Subscribe(ApplySoundSettings)
                 .AddTo(this);
+
+            ApplySoundSettings();
         }
 
         private void ApplySoundSettings()
