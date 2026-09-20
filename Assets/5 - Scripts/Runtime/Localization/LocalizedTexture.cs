@@ -49,14 +49,14 @@ namespace Localization
             disposables.Clear();
         }
 
-        public void Refresh()
+        public async void Refresh()
         {
             if (LocalizationManager.Instance == null || runtimeMaterial == null)
             {
                 return;
             }
 
-            var texture = LocalizationManager.Instance.GetTexture(fileName);
+            var texture = await LocalizationManager.Instance.GetTextureAsync(fileName);
             if (texture != null)
             {
                 runtimeMaterial.mainTexture = texture;

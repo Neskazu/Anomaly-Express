@@ -8,12 +8,16 @@ namespace Scene
     {
         [SerializeField] private SceneTransitionSequence sequence;
         [SerializeField] private uint targetFrameRate = 60;
+        [SerializeField] private GameObject LoadingText;
 
         private async void Start()
         {
+            if (LoadingText != null) LoadingText.SetActive(false);
+
             SaveManager.Load();
 
-            LocalizationManager.Instance.Initialize();
+            await LocalizationManager.Instance.InitializeAsync();
+            if (LoadingText != null) LoadingText.SetActive(true);
 
             Application.targetFrameRate = (int)targetFrameRate;
 
