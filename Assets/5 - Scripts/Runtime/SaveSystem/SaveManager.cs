@@ -1,4 +1,5 @@
 using System.IO;
+using R3;
 using UnityEngine;
 
 namespace SaveSystem
@@ -11,6 +12,12 @@ namespace SaveSystem
 
         private static string SavePath =>
             Path.Combine(Application.persistentDataPath, SaveFileName);
+
+        private static readonly Subject<Unit> saved = new();
+        private static readonly Subject<Unit> loaded = new();
+
+        public static Observable<Unit> OnSaved => saved;
+        public static Observable<Unit> OnLoaded => loaded;
 
         public static void Load()
         {
@@ -26,7 +33,7 @@ namespace SaveSystem
 
             try
             {
-                string json = File.ReadAllText(SavePath);
+                var json = File.ReadAllText(SavePath);
 
                 Save = JsonUtility.FromJson<GameSave>(json);
 
@@ -36,6 +43,8 @@ namespace SaveSystem
 
                     Save = CreateNewSave();
                 }
+
+                loaded.OnNext(Unit.Default);
             }
             catch
             {
@@ -49,10 +58,11 @@ namespace SaveSystem
         {
             try
             {
-                string json = JsonUtility.ToJson(Save, true);
+                var json = JsonUtility.ToJson(Save, true);
 
                 File.WriteAllText(SavePath, json);
 
+                saved.OnNext(Unit.Default);
                 Debug.Log("Game saved.");
             }
             catch

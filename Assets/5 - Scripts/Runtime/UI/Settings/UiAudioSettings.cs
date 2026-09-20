@@ -10,7 +10,7 @@ namespace Nac
 {
     public class UiAudioSettings : MonoBehaviour
     {
-        private static AudioSettingSave Config => SaveManager.Save.AudioSettingSave;
+        private static AudioSettingSave Config => SaveManager.Save.AudioSetting;
 
         [SerializeField] private AudioMixer mixer;
         [Space]
@@ -18,14 +18,6 @@ namespace Nac
         [SerializeField] private Slider musicSlider;
         [SerializeField] private Slider effectSlider;
         [SerializeField] private Slider anomaliesSlider;
-
-        private void Awake()
-        {
-            mixer.SetFloat("Master", Config.Master);
-            mixer.SetFloat("Music", Config.Music);
-            mixer.SetFloat("Effects", Config.Effects);
-            mixer.SetFloat("Anomalies", Config.Anomalies);
-        }
 
         public void Start()
         {

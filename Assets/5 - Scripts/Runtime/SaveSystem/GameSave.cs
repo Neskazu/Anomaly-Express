@@ -22,7 +22,7 @@ namespace SaveSystem
 
         public GeneralSettingsSave GeneralSettings => generalSettingsSave;
         public GraphicsSettingsSave GraphicsSettings => graphicsSettingsSave;
-        public AudioSettingSave AudioSettingSave => audioSettingSave;
+        public AudioSettingSave AudioSetting => audioSettingSave;
         public UiSave Ui => uiSave;
     }
 }

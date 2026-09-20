@@ -4590,6 +4590,7 @@ GameObject:
   - component: {fileID: 3123431818421745802}
   - component: {fileID: 3050395576864895673}
   - component: {fileID: 4240905229886349216}
+  - component: {fileID: 8675920951059856566}
   m_Layer: 0
   m_Name: '[ Theme Manager ]'
   m_TagString: Untagged
@@ -4597,6 +4598,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8675920951059856566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8675920951059856565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16abd1783b274d918b3542461316ac71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mixer: {fileID: 24100000, guid: 49c3e72c071e9fb42b04677c971119eb, type: 2}
 --- !u!114 &8843208573858235270
 MonoBehaviour:
   m_ObjectHideFlags: 0
