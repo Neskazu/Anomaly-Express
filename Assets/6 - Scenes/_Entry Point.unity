@@ -1075,6 +1075,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sequence: {fileID: 11400000, guid: 4bf2d81e61335f94fa83820acc915733, type: 2}
   targetFrameRate: 0
+  LoadingText: {fileID: 1167707969}
 --- !u!224 &1162304410 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7126112890301246738, guid: 9184d3e92ee3229459e81a7b1d1bd012, type: 3}
@@ -1198,6 +1199,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 92122c8d19e0d8043abcb7409f2863e5, type: 3}
+--- !u!1 &1167707969 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7555656987286603476, guid: 92122c8d19e0d8043abcb7409f2863e5, type: 3}
+  m_PrefabInstance: {fileID: 1167707968}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1440700847
 GameObject:
   m_ObjectHideFlags: 0
