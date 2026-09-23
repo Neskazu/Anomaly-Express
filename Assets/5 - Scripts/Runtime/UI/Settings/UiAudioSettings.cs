@@ -1,4 +1,3 @@
-using System;
 using Nac.Extensions;
 using R3;
 using SaveSystem;
@@ -13,10 +12,9 @@ namespace Nac
         private static AudioSettingSave Config => SaveManager.Save.AudioSetting;
 
         [SerializeField] private AudioMixer mixer;
-        [Space]
         [SerializeField] private Slider masterSlider;
         [SerializeField] private Slider musicSlider;
-        [SerializeField] private Slider effectSlider;
+        [SerializeField] private Slider ambientSlider;
         [SerializeField] private Slider anomaliesSlider;
 
         public void Start()
@@ -33,9 +31,9 @@ namespace Nac
                 .Subscribe(ApplyMusic)
                 .AddTo(this);
 
-            effectSlider
+            ambientSlider
                 .OnValueChangedAsObservable()
-                .Subscribe(ApplyEffects)
+                .Subscribe(ApplyAmbient)
                 .AddTo(this);
 
             anomaliesSlider
@@ -52,12 +50,12 @@ namespace Nac
         {
             mixer.SetFloat("Master", Config.Master);
             mixer.SetFloat("Music", Config.Music);
-            mixer.SetFloat("Effects", Config.Effects);
+            mixer.SetFloat("Ambient", Config.Ambient);
             mixer.SetFloat("Anomalies", Config.Anomalies);
 
             masterSlider.SetValueWithoutNotify(Config.Master);
             musicSlider.SetValueWithoutNotify(Config.Music);
-            effectSlider.SetValueWithoutNotify(Config.Effects);
+            ambientSlider.SetValueWithoutNotify(Config.Ambient);
             anomaliesSlider.SetValueWithoutNotify(Config.Anomalies);
         }
 
@@ -73,9 +71,9 @@ namespace Nac
             SaveManager.SaveGame();
         }
 
-        private void ApplyEffects(float value)
+        private void ApplyAmbient(float value)
         {
-            Config.SetEffectsVolume(value);
+            Config.SetAmbientVolume(value);
             SaveManager.SaveGame();
         }
 

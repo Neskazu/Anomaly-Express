@@ -9,41 +9,41 @@ namespace Nac
     {
         [SerializeField] private float master;
         [SerializeField] private float music;
-        [SerializeField] private float effects;
+        [SerializeField] private float ambient;
         [SerializeField] private float anomalies;
 
         [NonSerialized] private readonly Subject<Unit> changed = new();
-        
+
         public float Master => master;
         public float Music => music;
-        public float Effects => effects;
+        public float Ambient => ambient;
         public float Anomalies => anomalies;
 
         public Observable<Unit> Changed => changed;
 
         public void SetMasterVolume(float volume)
         {
-            master = Mathf.Clamp(20, -80,volume);
+            master = Mathf.Clamp(20, -80, volume);
             changed.OnNext(Unit.Default);
         }
 
         public void SetMusicVolume(float volume)
         {
-            music = Mathf.Clamp(20, -80,volume);
+            music = Mathf.Clamp(20, -80, volume);
 
             changed.OnNext(Unit.Default);
         }
 
-        public void SetEffectsVolume(float volume)
+        public void SetAmbientVolume(float volume)
         {
-            effects = Mathf.Clamp(20, -80,volume);
+            ambient = Mathf.Clamp(20, -80, volume);
 
             changed.OnNext(Unit.Default);
         }
 
         public void SetAnomalies(float volume)
         {
-            anomalies = Mathf.Clamp(20, -80,volume);
+            anomalies = Mathf.Clamp(20, -80, volume);
 
             changed.OnNext(Unit.Default);
         }

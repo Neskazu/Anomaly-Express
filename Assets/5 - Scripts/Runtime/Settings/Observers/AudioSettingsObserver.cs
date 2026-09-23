@@ -25,7 +25,7 @@ namespace Nac
         {
             mixer.SetFloat("Master", Config.Master);
             mixer.SetFloat("Music", Config.Music);
-            mixer.SetFloat("Effects", Config.Effects);
+            mixer.SetFloat("Ambient", Config.Ambient);
             mixer.SetFloat("Anomalies", Config.Anomalies);
         }
     }

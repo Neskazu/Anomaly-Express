@@ -586,13 +586,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6239276658047489244, guid: ab241d5225b457e42b4b6874d0f57c77, type: 3}
       propertyPath: m_text
-      value: 'Effects
-
-'
+      value: Ambient
       objectReference: {fileID: 0}
     - target: {fileID: 7129083184634421402, guid: ab241d5225b457e42b4b6874d0f57c77, type: 3}
       propertyPath: m_Name
-      value: Effects Slider
+      value: Ambient Slider
       objectReference: {fileID: 0}
     - target: {fileID: 7305099179876052263, guid: ab241d5225b457e42b4b6874d0f57c77, type: 3}
       propertyPath: m_AnchorMax.x
@@ -608,7 +606,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8619309872678845183, guid: ab241d5225b457e42b4b6874d0f57c77, type: 3}
       propertyPath: key
-      value: MENU_AUDIO_EFFECTS
+      value: MENU_AUDIO_AMBIENT
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1056,7 +1054,7 @@ MonoBehaviour:
   mixer: {fileID: 24100000, guid: 49c3e72c071e9fb42b04677c971119eb, type: 2}
   masterSlider: {fileID: 4719979555619163565}
   musicSlider: {fileID: 8882343476835232870}
-  effectSlider: {fileID: 764608937132114025}
+  ambientSlider: {fileID: 764608937132114025}
   anomaliesSlider: {fileID: 8677508543081464975}
 --- !u!114 &7388911795927080392
 MonoBehaviour:
