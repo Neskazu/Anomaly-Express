@@ -14,12 +14,12 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  m_FogMode: 3
+  m_Fog: 1
+  m_FogColor: {r: 0.054901965, g: 0.2509804, b: 0.4901961, a: 1}
+  m_FogMode: 1
   m_FogDensity: 0.01
   m_LinearFogStart: 0
-  m_LinearFogEnd: 300
+  m_LinearFogEnd: 150
   m_AmbientSkyColor: {r: 0.76052475, g: 0.7156938, b: 0.597202, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
@@ -757,8 +757,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: 157.96959, y: -242.68591, z: 8.311386}
-    m_Extent: {x: 192.39217, y: 173.93652, z: 324.26855}
+    m_Center: {x: -195.11923, y: -61.077415, z: 210.28183}
+    m_Extent: {x: 280.87924, y: 169.574, z: 284.02695}
 --- !u!4 &1477615330
 Transform:
   m_ObjectHideFlags: 0
@@ -814,25 +814,32 @@ MonoBehaviour:
       m_Calls: []
   m_text: '<size=150%><b>THANK YOU FOR PLAYING</b></size>
 
+    
 
+    This is where
+    the web demo ends.
 
-    This is where the
-    demo ends.
+    
 
+    Keep in mind that the web version looks significantly
+    worse and is less stable than the standalone desktop build.
 
+    <b>A fully
+    polished demo is coming soon to Steam!</b>
 
-    The full game will feature<br> <b>at least 4 times more anomalies.</b>
+    
 
+    The full game will feature<br>
+    <b>at least 4 times more anomalies.</b>
 
+    
 
-    <b>Please
-    add the game to your wishlist.</b>
+    <b>Please add the game to
+    your wishlist.</b>
 
+    
 
-
-    See you in the full game.
-
-'
+    See you in the full game.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 23e707d88a59cf147822e6fe0e968f7b, type: 2}
   m_sharedMaterial: {fileID: 7852834817246919525, guid: 23e707d88a59cf147822e6fe0e968f7b, type: 2}
@@ -959,16 +966,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1518007406}
-  m_LocalRotation: {x: -0.024566595, y: 0.1639686, z: 0.0041618687, w: 0.98615086}
-  m_LocalPosition: {x: 0, y: 0, z: 15.922838}
+  m_LocalRotation: {x: -0.051092368, y: 0.16379726, z: 0.008572318, w: 0.98513275}
+  m_LocalPosition: {x: 0, y: 0, z: 15.89}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -2.856, y: 18.88, z: 0.009}
+  m_LocalEulerAnglesHint: {x: -5.939, y: 18.88, z: 0.009}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6.2951393, y: 3.5663142}
+  m_AnchoredPosition: {x: 6.28, y: 4.28}
   m_SizeDelta: {x: 10, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1565608691

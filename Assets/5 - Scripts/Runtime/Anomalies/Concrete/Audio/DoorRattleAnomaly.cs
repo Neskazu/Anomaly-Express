@@ -17,13 +17,31 @@ namespace Anomalies.Concrete.Audio
 
         private Vector3 _initialLocalPos;
         private float _shakeTimer;
+        private bool _isInitialized;
+
+        private void Awake()
+        {
+            // 1. Захватываем стартовую позицию в самом начале, ДО любых Update
+            if (doorTransform != null)
+            {
+                _initialLocalPos = doorTransform.localPosition;
+                _isInitialized = true;
+            }
+        }
 
         protected override void OnActivate()
         {
-            if (doorTransform != null)
-                _initialLocalPos = doorTransform.localPosition;
-
-            mixer.SetFloat(anomaliesParameterName, IAudioAnomaly.Unmute);
+            // Оборачиваем AudioMixer в try-catch для WebGL, чтобы скрипт не крашился, 
+            // если браузер еще не дал разрешение на звук
+            try
+            {
+                if (mixer != null)
+                    mixer.SetFloat(anomaliesParameterName, IAudioAnomaly.Unmute);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("AudioMixer blocked by WebGL: " + e.Message);
+            }
 
             if (source != null)
             {
@@ -34,10 +52,13 @@ namespace Anomalies.Concrete.Audio
 
         protected override void OnUpdate()
         {
-            if (doorTransform == null) return;
+            // Если позиция не инициализирована — ничего не делаем, чтобы не улететь в (0,0,0)
+            if (doorTransform == null || !_isInitialized) return;
 
-            _shakeTimer += Time.deltaTime * shakeSpeed;
+            // 2. Защита от лагов WebGL. Если дельта времени огромная (лаг), ограничиваем ее.
+            float dt = Mathf.Min(Time.deltaTime, 0.1f);
 
+            _shakeTimer += dt * shakeSpeed;
             float shakeValue = Mathf.Sin(_shakeTimer) * Mathf.Sin(_shakeTimer * 0.7f);
 
             if (shakeValue > 0.5f)
@@ -47,7 +68,7 @@ namespace Anomalies.Concrete.Audio
             }
             else
             {
-                doorTransform.localPosition = Vector3.Lerp(doorTransform.localPosition, _initialLocalPos, Time.deltaTime * 10f);
+                doorTransform.localPosition = Vector3.Lerp(doorTransform.localPosition, _initialLocalPos, dt * 10f);
             }
         }
 
@@ -56,9 +77,14 @@ namespace Anomalies.Concrete.Audio
             if (source != null)
                 source.Stop();
 
-            mixer.SetFloat(anomaliesParameterName, IAudioAnomaly.Mute);
+            try
+            {
+                if (mixer != null)
+                    mixer.SetFloat(anomaliesParameterName, IAudioAnomaly.Mute);
+            }
+            catch { /* Игнорируем ошибки миксера */ }
 
-            if (doorTransform != null)
+            if (doorTransform != null && _isInitialized)
                 doorTransform.localPosition = _initialLocalPos;
         }
     }

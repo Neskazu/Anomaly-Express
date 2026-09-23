@@ -382,9 +382,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -1728013695380148634, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2165492064780529861}
-    - targetCorrespondingSourceObject: {fileID: -1728013695380148634, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8818861059641527827}
   m_SourcePrefab: {fileID: -3956505258223990651, guid: afdb1465109bd9845be4374bfe8d63fe, type: 3}
 --- !u!4 &669331322910841136 stripped
 Transform:
@@ -440,24 +437,6 @@ MonoBehaviour:
   emotionLerpSpeed: 7
   defaultReactionId: nose
   reactions: []
---- !u!114 &8818861059641527827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7140913627159581200}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45f09693559c43b29b753264b88ae688, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handAnimator: {fileID: 547772227126823989, guid: 06b545d785060b74aa04be63d1667ea5, type: 3}
-  phone: {fileID: 9063577369731872955}
-  handsRestOffset: {x: 0, y: -1.4, z: 0}
-  handsPhotoOffset: {x: 0, y: -1.39, z: -0.08}
-  phoneRestOffset: {x: -0.005, y: 0, z: -0.01}
-  phonePhotoOffset: {x: 0.0045, y: -0.015, z: 0.005}
 --- !u!1001 &8430387538599899045
 PrefabInstance:
   m_ObjectHideFlags: 0

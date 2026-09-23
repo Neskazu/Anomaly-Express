@@ -20,6 +20,7 @@ namespace UI
         [SerializeField] private TMP_InputField portField;
         [SerializeField] private Button hostButton;
         [SerializeField] private Button joinButton;
+        [SerializeField] private GameObject multiplayerMenuRoot;
 
         private bool busy;
 
@@ -31,6 +32,15 @@ namespace UI
 
         private void Start()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            // Multiplayer is disabled in WebGL build
+            if (multiplayerMenuRoot != null)
+            {
+                multiplayerMenuRoot.SetActive(false);
+            }
+            gameObject.SetActive(false);
+            return;
+#endif
             hostButton.onClick.AddListener(OnHostClicked);
             joinButton.onClick.AddListener(OnJoinClicked);
 
@@ -52,9 +62,11 @@ namespace UI
             Config.NetworkMenu.SetPort(portField.text);
             SaveManager.SaveGame();
 
-            NetworkManager.Singleton
-                .GetComponent<UnityTransport>()
-                .SetConnectionData(Address, Port);
+            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+#if UNITY_WEBGL && !UNITY_EDITOR
+            transport.UseWebSockets = true;
+#endif
+            transport.SetConnectionData(Address, Port);
 
             var hosted = await NetworkController.Instance.HostAsync();
             if (hosted)
@@ -82,9 +94,11 @@ namespace UI
 
             await SceneTransitionWindow.Instance.Show();
 
-            NetworkManager.Singleton
-                .GetComponent<UnityTransport>()
-                .SetConnectionData(Address, Port);
+            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+#if UNITY_WEBGL && !UNITY_EDITOR
+            transport.UseWebSockets = true;
+#endif
+            transport.SetConnectionData(Address, Port);
 
             await NetworkController.Instance.ConnectAsync();
             await SceneTransitionWindow.Instance.Hide();

@@ -71,8 +71,8 @@ namespace Nac
         {
             antiAliasing.SetValueWithoutNotify(Graphics.GetAntiAliasingIndex());
             resolution.SetValueWithoutNotify(Graphics.GetResolutionIndex());
-
             fullScreen.SetIsOnWithoutNotify(Graphics.GetFullScreen());
+
             vsync.SetIsOnWithoutNotify(Graphics.GetVsync());
 
             brightness.SetValueWithoutNotify(Graphics.GetBrightness());

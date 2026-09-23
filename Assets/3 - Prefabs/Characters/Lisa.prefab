@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1.0000006, z: 1.0000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 518653686992280688}
+  m_Father: {fileID: 4827480826922710342}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3773627482287448226
 GameObject:
@@ -61,7 +61,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6739392211164038664}
-  m_Father: {fileID: 2302413393540415063}
+  m_Father: {fileID: 4827480826922710342}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &389018356746254646
 PrefabInstance:
@@ -234,30 +234,17 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: -9055416251393219258, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 5159078012444724336, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1161911025564508292}
-    - targetCorrespondingSourceObject: {fileID: 1915651526876235617, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 5159078012444724336, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2898327630859366162}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -1728013695380148634, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1453410920191123164}
-    - targetCorrespondingSourceObject: {fileID: -1728013695380148634, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6897022232151819547}
   m_SourcePrefab: {fileID: -3956505258223990651, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
---- !u!4 &518653686992280688 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -9055416251393219258, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
-  m_PrefabInstance: {fileID: 389018356746254646}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &2302413393540415063 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1915651526876235617, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
-  m_PrefabInstance: {fileID: 389018356746254646}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4700198165881694569 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -4297446187249348513, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
@@ -269,14 +256,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfba4ccd3f854e64f868ce83553071a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &5067090004219056400 stripped
+--- !u!4 &4827480826922710342 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4843614395330177062, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
-  m_PrefabInstance: {fileID: 389018356746254646}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &5112077966398277431 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4870552773557632513, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5159078012444724336, guid: e90f2e11b25ec80458bdb7685ac1cffe, type: 3}
   m_PrefabInstance: {fileID: 389018356746254646}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &7882089421815437136 stripped
@@ -297,8 +279,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vrm10: {fileID: 4700198165881694569}
-  headBone: {fileID: 518653686992280688}
-  neckBone: {fileID: 5067090004219056400}
+  headBone: {fileID: 0}
+  neckBone: {fileID: 0}
   enableBlink: 1
   blinkDelayRange: {x: 2.5, y: 5}
   blinkCloseTime: 0.07
@@ -307,24 +289,6 @@ MonoBehaviour:
   emotionLerpSpeed: 7
   defaultReactionId: nose
   reactions: []
---- !u!114 &6897022232151819547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7882089421815437136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45f09693559c43b29b753264b88ae688, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handAnimator: {fileID: 5112077966398277431}
-  phone: {fileID: 2898327630859366162}
-  handsRestOffset: {x: 0, y: -1.4, z: 0}
-  handsPhotoOffset: {x: 0, y: -1.39, z: -0.13}
-  phoneRestOffset: {x: 0, y: 0, z: -0.0125}
-  phonePhotoOffset: {x: 0.005, y: -0.02, z: 0.008}
 --- !u!1001 &6745506253768936989
 PrefabInstance:
   m_ObjectHideFlags: 0

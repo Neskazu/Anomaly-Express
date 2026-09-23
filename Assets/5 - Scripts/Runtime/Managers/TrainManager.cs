@@ -70,7 +70,6 @@ namespace Managers
             }
 
             Instance = this;
-            SaveManager.Load();
 
             _completedMegasThisRun = SaveManager.Save.Session.CompletedMegasThisRun;
         }
@@ -275,7 +274,6 @@ namespace Managers
 
         private void InitializeAnomalyPools()
         {
-            SaveManager.Load();
 
             _allAnomalyIds.Clear();
             foreach (var prefab in anomalyWagons)

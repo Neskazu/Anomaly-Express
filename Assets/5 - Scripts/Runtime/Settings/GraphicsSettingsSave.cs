@@ -11,10 +11,47 @@ namespace Nac
     [Serializable]
     public class GraphicsSettingsSave : ISerializationCallbackReceiver
     {
-        private static List<Resolution> resolutions = Screen.resolutions
-            .GroupBy(res => new { res.width, res.height })
-            .Select(group => group.Last())
-            .ToList();
+        private static List<Resolution> resolutions;
+
+        private static void InitResolutions()
+        {
+            if (resolutions != null) return;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+            resolutions = new List<Resolution>
+            {
+                new Resolution { width = 960, height = 540, refreshRateRatio = new RefreshRate { numerator = 60, denominator = 1 } },
+                new Resolution { width = 1280, height = 720, refreshRateRatio = new RefreshRate { numerator = 60, denominator = 1 } },
+                new Resolution { width = 1366, height = 768, refreshRateRatio = new RefreshRate { numerator = 60, denominator = 1 } },
+                new Resolution { width = 1600, height = 900, refreshRateRatio = new RefreshRate { numerator = 60, denominator = 1 } },
+                new Resolution { width = 1920, height = 1080, refreshRateRatio = new RefreshRate { numerator = 60, denominator = 1 } },
+                new Resolution { width = 2560, height = 1440, refreshRateRatio = new RefreshRate { numerator = 60, denominator = 1 } }
+            };
+#else
+            var screenResolutions = Screen.resolutions;
+            if (screenResolutions != null && screenResolutions.Length > 0)
+            {
+                resolutions = screenResolutions
+                    .GroupBy(res => new { res.width, res.height })
+                    .Select(group => group.Last())
+                    .ToList();
+            }
+            else
+            {
+                resolutions = new List<Resolution>();
+            }
+
+            if (resolutions.Count == 0)
+            {
+                resolutions = new List<Resolution>
+                {
+                    new Resolution { width = 1280, height = 720, refreshRateRatio = new RefreshRate { numerator = 60, denominator = 1 } },
+                    new Resolution { width = 1600, height = 900, refreshRateRatio = new RefreshRate { numerator = 60, denominator = 1 } },
+                    new Resolution { width = 1920, height = 1080, refreshRateRatio = new RefreshRate { numerator = 60, denominator = 1 } }
+                };
+            }
+#endif
+        }
 
         private static List<string> antiAliasingNames = new()
         {
@@ -77,6 +114,7 @@ namespace Nac
 
         public int GetResolutionIndex()
         {
+            InitResolutions();
             var index = resolutions.FindIndex(r =>
                 r.height == Screen.height &&
                 r.width == Screen.width);
@@ -127,6 +165,7 @@ namespace Nac
 
         public void SetResolution(int index)
         {
+            InitResolutions();
             if (index >= resolutions.Count)
             {
                 return;
@@ -215,6 +254,7 @@ namespace Nac
 
         public List<Resolution> GetAllResolutions()
         {
+            InitResolutions();
             return resolutions;
         }
 

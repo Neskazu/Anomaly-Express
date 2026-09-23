@@ -248,6 +248,11 @@ namespace Anomalies
 
             string currentFen = _gameLogic.GetFen();
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+            // WebGL is single-threaded; evaluate synchronously
+            ChessGame threadSafeGame = new ChessGame(currentFen);
+            Move bestMove = _ai.GetBestMove(threadSafeGame);
+#else
             Task<Move> aiTask = Task.Run(() =>
             {
                 ChessGame threadSafeGame = new ChessGame(currentFen);
@@ -259,6 +264,7 @@ namespace Anomalies
             if (!IsServer || _gameLogic == null) yield break;
 
             Move bestMove = aiTask.Result;
+#endif
 
             if (bestMove != null)
             {

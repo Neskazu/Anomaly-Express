@@ -19,7 +19,6 @@ namespace UI
         [SerializeField] private GameObject cursor;
         [SerializeField] private Button continueButton;
         [SerializeField] private Button disconnectButton;
-        [SerializeField] private Button quitButton;
         [SerializeField] private UISoundPlayer uiSoundPlayer;
         [Space]
         [SerializeField] private InputActionReference escAction;
@@ -50,16 +49,6 @@ namespace UI
             disconnectButton
                 .OnClickAsObservable()
                 .Subscribe(OnDisconnectCallback)
-                .AddTo(this);
-
-            quitButton
-                .OnClickAsObservable()
-                .Subscribe(OnQuitCallback)
-                .AddTo(this);
-
-            quitButton
-                .OnPointerEnterAsObservable()
-                .Subscribe(uiSoundPlayer.PlayHover)
                 .AddTo(this);
         }
 

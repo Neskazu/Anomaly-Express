@@ -23,8 +23,7 @@ AudioMixerGroupController:
   m_Name: Music
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: fe30046eb51e5c04cb3bb24ab99f32f9
-  m_Children:
-  - {fileID: -3176697092649291267}
+  m_Children: []
   m_Volume: 4a98d2dbd246e344cb0a757116f40354
   m_Pitch: f4b38f54fabb3a54fa953b65a5e32a86
   m_Send: 00000000000000000000000000000000
@@ -43,8 +42,7 @@ AudioMixerGroupController:
   m_Name: Effects
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: 9e302406ba52dba49b31018aadd20798
-  m_Children:
-  - {fileID: 5914466421474405089}
+  m_Children: []
   m_Volume: 2991f8fea2a5e8941a9a245b2e8b548f
   m_Pitch: 123d9954d8ac3e0488b11d6c5bcf4863
   m_Send: 00000000000000000000000000000000
@@ -63,7 +61,9 @@ AudioMixerGroupController:
   m_Name: Ambient
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: ce24900e57f9bc641ac72e8e8ba7bfc1
-  m_Children: []
+  m_Children:
+  - {fileID: 5914466421474405089}
+  - {fileID: -7314791492888308794}
   m_Volume: 020a54240812952429d98a288106ce3d
   m_Pitch: e99678cc747eadd4dab696ed94b435b4
   m_Send: 00000000000000000000000000000000
@@ -117,10 +117,10 @@ AudioMixerController:
   m_EnableSuspend: 1
   m_UpdateMode: 0
   m_ExposedParameters:
+  - guid: 020a54240812952429d98a288106ce3d
+    name: Ambient
   - guid: 7f0e29ba5c71c474f8dfc437935095a8
     name: Anomalies
-  - guid: 2991f8fea2a5e8941a9a245b2e8b548f
-    name: Effects
   - guid: d73a62d5e96544c4da22b5969fcd0676
     name: Master
   - guid: 4a98d2dbd246e344cb0a757116f40354
@@ -146,8 +146,8 @@ AudioMixerGroupController:
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: 1a4d8da22d7ceb749bd99d7cd09e602e
   m_Children:
+  - {fileID: -3176697092649291267}
   - {fileID: -8716842586792463470}
-  - {fileID: -7314791492888308794}
   - {fileID: 1093585743668554421}
   m_Volume: d73a62d5e96544c4da22b5969fcd0676
   m_Pitch: 02d591215b7202c44b9e935d6193356c
@@ -182,8 +182,9 @@ AudioMixerSnapshotController:
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: b7d8ce1d17270b44dada3457286cdf59
   m_FloatValues:
+    020a54240812952429d98a288106ce3d: 0
     7f0e29ba5c71c474f8dfc437935095a8: 0
-    4a98d2dbd246e344cb0a757116f40354: -0.019825999
+    4a98d2dbd246e344cb0a757116f40354: -0.15355259
     e99678cc747eadd4dab696ed94b435b4: 1
   m_TransitionOverrides: {}
 --- !u!243 &1093585743668554421
