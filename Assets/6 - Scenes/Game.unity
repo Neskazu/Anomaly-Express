@@ -930,6 +930,7 @@ GameObject:
   - component: {fileID: 482414878}
   - component: {fileID: 482414879}
   - component: {fileID: 482414880}
+  - component: {fileID: 482414881}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1087,6 +1088,18 @@ MonoBehaviour:
   mainVolume: {fileID: 482414879}
   normalProfile: {fileID: 11400000, guid: 6c1c0635a60602c4ba324875638c6e3f, type: 2}
   deathProfile: {fileID: 11400000, guid: 726ee6d8adf63e04c9337ffe13e08834, type: 2}
+--- !u!114 &482414881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 482414874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfb0e1ce3aaf4ad5a96a0eb0b534ae37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &554621211
 GameObject:
   m_ObjectHideFlags: 0
@@ -1506,8 +1519,8 @@ MonoBehaviour:
   maxBufferCount: 2
   previewVisibleGrassCount: 0
   cameraBounds:
-    m_Center: {x: 61.42508, y: 4.9365845, z: -189.41316}
-    m_Extent: {x: 353.5965, y: 173.8249, z: 185.66277}
+    m_Center: {x: 1466.7852, y: 836.18823, z: -2001.1229}
+    m_Extent: {x: 356.0219, y: 172.58957, z: 199.07556}
 --- !u!1 &1002812097
 GameObject:
   m_ObjectHideFlags: 0

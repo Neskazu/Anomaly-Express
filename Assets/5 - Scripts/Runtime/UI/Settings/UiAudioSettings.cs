@@ -1,3 +1,4 @@
+using System;
 using Nac.Extensions;
 using R3;
 using SaveSystem;
@@ -21,37 +22,25 @@ namespace Nac
         {
             Sync();
 
-            masterSlider
-                .OnValueChangedAsObservable()
-                .Subscribe(ApplyMaster)
-                .AddTo(this);
+            masterSlider.OnValueChangedAsObservable().Subscribe(ApplyMaster).AddTo(this);
+            musicSlider.OnValueChangedAsObservable().Subscribe(ApplyMusic).AddTo(this);
+            ambientSlider.OnValueChangedAsObservable().Subscribe(ApplyAmbient).AddTo(this);
+            anomaliesSlider.OnValueChangedAsObservable().Subscribe(ApplyAnomalies).AddTo(this);
 
-            musicSlider
-                .OnValueChangedAsObservable()
-                .Subscribe(ApplyMusic)
-                .AddTo(this);
-
-            ambientSlider
-                .OnValueChangedAsObservable()
-                .Subscribe(ApplyAmbient)
-                .AddTo(this);
-
-            anomaliesSlider
-                .OnValueChangedAsObservable()
-                .Subscribe(ApplyAnomalies)
-                .AddTo(this);
+            Config.Changed.Subscribe(_ => Sync()).AddTo(this);
 
             Config.Changed
-                .Subscribe(Sync)
+                .Debounce(TimeSpan.FromSeconds(0.5f))
+                .Subscribe(_ => SaveManager.SaveGame())
                 .AddTo(this);
         }
 
         private void Sync()
         {
-            mixer.SetFloat("Master", Config.Master);
-            mixer.SetFloat("Music", Config.Music);
-            mixer.SetFloat("Ambient", Config.Ambient);
-            mixer.SetFloat("Anomalies", Config.Anomalies);
+            mixer.SetFloat("Master", Mathf.Log10(Config.Master) * 20f);
+            mixer.SetFloat("Music", Mathf.Log10(Config.Music) * 20f);
+            mixer.SetFloat("Ambient", Mathf.Log10(Config.Ambient) * 20f);
+            mixer.SetFloat("Anomalies", Mathf.Log10(Config.Anomalies) * 20f);
 
             masterSlider.SetValueWithoutNotify(Config.Master);
             musicSlider.SetValueWithoutNotify(Config.Music);
@@ -59,28 +48,9 @@ namespace Nac
             anomaliesSlider.SetValueWithoutNotify(Config.Anomalies);
         }
 
-        private void ApplyMaster(float value)
-        {
-            Config.SetMasterVolume(value);
-            SaveManager.SaveGame();
-        }
-
-        private void ApplyMusic(float value)
-        {
-            Config.SetMusicVolume(value);
-            SaveManager.SaveGame();
-        }
-
-        private void ApplyAmbient(float value)
-        {
-            Config.SetAmbientVolume(value);
-            SaveManager.SaveGame();
-        }
-
-        private void ApplyAnomalies(float value)
-        {
-            Config.SetAnomalies(value);
-            SaveManager.SaveGame();
-        }
+        private void ApplyMaster(float value) => Config.SetMasterVolume(value);
+        private void ApplyMusic(float value) => Config.SetMusicVolume(value);
+        private void ApplyAmbient(float value) => Config.SetAmbientVolume(value);
+        private void ApplyAnomalies(float value) => Config.SetAnomalies(value);
     }
 }

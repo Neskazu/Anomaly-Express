@@ -1,3 +1,4 @@
+using System.Collections;
 using R3;
 using SaveSystem;
 using UnityEngine;
@@ -10,32 +11,33 @@ namespace Nac
     {
         private static GraphicsSettingsSave Graphics => SaveManager.Save.GraphicsSettings;
 
-        [SerializeField] private Camera cam;
-        [SerializeField] private Volume volume;
-
+        private Camera cam;
+        private Volume volume;
         private UniversalAdditionalCameraData settigns;
-        private ColorAdjustments colorAdjustments;
 
         private void Awake()
         {
-            settigns = cam.GetComponent<UniversalAdditionalCameraData>();
+            cam = GetComponent<Camera>();
+            volume = GetComponent<Volume>();
 
-            if (volume)
+            if (cam)
             {
-                volume.profile.TryGet(out colorAdjustments);
+                settigns = cam.GetComponent<UniversalAdditionalCameraData>();
+                if (settigns) settigns.renderPostProcessing = true;
             }
 
-            Graphics.Msaa
-                .Subscribe(ApplyMsaa)
-                .AddTo(this);
+            Graphics.Msaa.Subscribe(ApplyMsaa).AddTo(this);
+            Graphics.Antialiasing.Subscribe(ApplyAA).AddTo(this);
+            Graphics.Brightness.Subscribe(ApplyBrightness).AddTo(this);
+        }
 
-            Graphics.Antialiasing
-                .Subscribe(ApplyAA)
-                .AddTo(this);
+        private IEnumerator Start()
+        {
+            yield return new WaitForSeconds(0.1f);
 
-            Graphics.Brightness
-                .Subscribe(ApplyBrightness)
-                .AddTo(this);
+            ApplyBrightness(Graphics.Brightness.CurrentValue);
+            ApplyMsaa(Graphics.Msaa.CurrentValue);
+            ApplyAA(Graphics.Antialiasing.CurrentValue);
         }
 
         private void ApplyMsaa(MsaaQuality quality)
@@ -46,29 +48,25 @@ namespace Nac
                 return;
             }
 
-            cam.allowMSAA = true;
+            if (cam) cam.allowMSAA = true;
             QualitySettings.antiAliasing = (int)quality;
-            settigns.antialiasing = AntialiasingMode.None;
+            if (settigns) settigns.antialiasing = AntialiasingMode.None;
         }
 
         private void ApplyAA(AntialiasingMode mode)
         {
-            if (!settigns)
-            {
-                return;
-            }
-
-            settigns.antialiasing = mode;
+            if (settigns) settigns.antialiasing = mode;
         }
 
         private void ApplyBrightness(float val)
         {
-            if (!colorAdjustments)
-            {
-                return;
-            }
+            if (!volume || !volume.profile) return;
 
-            colorAdjustments.postExposure.value = val;
+            if (volume.profile.TryGet(out ColorAdjustments ca))
+            {
+                ca.active = true;
+                ca.postExposure.Override(val);
+            }
         }
 
         private void OnValidate()
