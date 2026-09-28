@@ -141,9 +141,9 @@ namespace Managers
 
             if (shouldSpawnDefault)
             {
-                SpawnFirstWagon(vestibuleType, position);
                 _passedAnomalyWagons = 0;
                 _currentWagonIndex = 0;
+                SpawnFirstWagon(vestibuleType, position);
                 return;
             }
 
