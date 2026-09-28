@@ -1,4 +1,3 @@
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using Nac.Network;
 using SaveSystem;
@@ -63,6 +62,12 @@ namespace UI
                     .Play(toLobby)
                     .Forget();
             }
+            else
+            {
+                var ex = NetworkController.Instance.LastException;
+
+                await UiPopup.Instance.Show(ex.Message, ex.HResult.ToString(), ex.StackTrace);
+            }
 
             busy = false;
         }
@@ -86,7 +91,14 @@ namespace UI
                 .GetComponent<UnityTransport>()
                 .SetConnectionData(Address, Port);
 
-            await NetworkController.Instance.ConnectAsync();
+            var connected = await NetworkController.Instance.ConnectAsync();
+            if (!connected)
+            {
+                var ex = NetworkController.Instance.LastException;
+
+                await UiPopup.Instance.Show("ex.Message", ex.HResult.ToString(), "sa");
+            }
+
             await SceneTransitionWindow.Instance.Hide();
 
             busy = false;

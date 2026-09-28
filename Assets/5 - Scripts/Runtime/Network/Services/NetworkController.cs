@@ -19,10 +19,13 @@ namespace Nac.Network
         private readonly Subject<ulong> onClientDisconnected = new();
 
         private UniTaskCompletionSource<bool> networkSource;
+        private Exception lastException;
 
         public ReadOnlyReactiveProperty<bool> Online => online;
         public Observable<ulong> OnClientConnected => onClientConnected;
         public Observable<ulong> OnClientDisconnected => onClientDisconnected;
+
+        public Exception LastException => lastException;
 
         #region Unity
 
@@ -88,18 +91,25 @@ namespace Nac.Network
                 Debug.LogError($"[{Tag}] StartClient failed immediately (check transport configuration).");
                 return false;
             }
-            catch (TimeoutException)
+            catch (TimeoutException exception)
             {
                 CleanupConnection();
+                lastException = exception;
 
                 Debug.LogWarning($"[{Tag}] Connection timed out.");
                 return false;
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException exception)
             {
                 CleanupConnection();
+                lastException = exception;
 
                 Debug.LogWarning($"[{Tag}] Connection canceled.");
+                return false;
+            }
+            catch (Exception exception)
+            {
+                lastException = exception;
                 return false;
             }
             finally
@@ -133,18 +143,25 @@ namespace Nac.Network
                 Debug.LogError($"[{Tag}] StartHost failed immediately.");
                 return false;
             }
-            catch (TimeoutException)
+            catch (TimeoutException exception)
             {
                 CleanupConnection();
+                lastException = exception;
 
                 Debug.LogWarning($"[{Tag}] Host startup timed out.");
                 return false;
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException exception)
             {
                 CleanupConnection();
+                lastException = exception;
 
                 Debug.LogWarning($"[{Tag}] Host startup canceled.");
+                return false;
+            }
+            catch (Exception exception)
+            {
+                lastException = exception;
                 return false;
             }
             finally

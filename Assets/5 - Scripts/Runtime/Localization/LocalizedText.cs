@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using R3;
@@ -11,6 +12,7 @@ namespace Localization
         [SerializeField] private string key;
 
         private readonly CompositeDisposable disposable = new();
+        private object[] args;
 
         public string Key
         {
@@ -29,16 +31,16 @@ namespace Localization
             text = GetComponent<TMP_Text>();
         }
 
+        private void OnDestroy()
+        {
+            disposable.Dispose();
+        }
+
         private void OnEnable()
         {
             LocalizationManager.Language
                 .Subscribe(Refresh)
                 .AddTo(disposable);
-        }
-
-        private void OnDestroy()
-        {
-            disposable.Dispose();
         }
 
         private void OnDisable()
@@ -54,7 +56,25 @@ namespace Localization
             }
 
             text.font = LocalizationManager.Instance.CurrentFont;
-            text.text = LocalizationManager.Instance.Get(key);
+
+            var str = LocalizationManager.Instance.Get(key);
+            try
+            {
+                text.text = args is { Length: > 0 } ? string.Format(str, args) : str;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Issue with formatted localization: " + e.Message);
+                text.text = str;
+            }
+        }
+
+        public void SetKey(string newKey, params object[] newArgs)
+        {
+            key = newKey;
+            args = newArgs;
+
+            Refresh();
         }
 
 #if UNITY_EDITOR
