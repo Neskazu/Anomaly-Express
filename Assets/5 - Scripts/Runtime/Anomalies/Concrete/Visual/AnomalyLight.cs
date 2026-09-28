@@ -17,18 +17,45 @@ namespace Anomalies.Concrete.Visual
 
         protected override void OnActivate()
         {
+            _lampsDisposable.Clear();
+
             foreach (var lamp in lamps)
             {
-                Observable.Interval(
-                        TimeSpan.FromSeconds(UnityEngine.Random.Range(minTimeBetweenFlash, maxTimeBetweenFlash)))
-                    .Subscribe(_ => lamp.SetActive(!lamp.activeInHierarchy))
+                if (lamp == null) continue;
+
+                float timer = UnityEngine.Random.Range(minTimeBetweenFlash, maxTimeBetweenFlash);
+
+                Observable.EveryUpdate()
+                    .Subscribe(_ =>
+                    {
+                        if (lamp == null) return;
+
+                        timer -= Time.deltaTime;
+                        if (timer <= 0f)
+                        {
+                            lamp.SetActive(!lamp.activeSelf);
+                            timer = UnityEngine.Random.Range(minTimeBetweenFlash, maxTimeBetweenFlash);
+                        }
+                    })
                     .AddTo(_lampsDisposable);
             }
         }
 
         protected override void OnDeactivate()
         {
+            _lampsDisposable.Clear();
+
+            foreach (var lamp in lamps)
+            {
+                if (lamp != null)
+                    lamp.SetActive(true);
+            }
+        }
+
+        public override void OnDestroy()
+        {
             _lampsDisposable.Dispose();
+            base.OnDestroy();
         }
     }
 }
