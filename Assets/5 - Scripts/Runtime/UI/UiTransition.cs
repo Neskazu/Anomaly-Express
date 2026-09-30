@@ -22,6 +22,7 @@ namespace UI
         [SerializeField] private CanvasGroup[] targetsGroups;
 
         [Header("Settings")]
+        [SerializeField] private bool playOnStart = false;
         [SerializeField] private TransitionDirection direction = TransitionDirection.LeftToRight;
         [SerializeField] private float offsetDistance = 150f;
         [SerializeField] private float duration = 0.5f;
@@ -29,91 +30,187 @@ namespace UI
 
         private VerticalLayoutGroup _layoutGroup;
         private ContentSizeFitter _fitter;
-        private Vector2[] _initial;
-
         private LayoutElement _layoutElement;
-        private int _transitionSequence;
 
-        private LayoutGroup[] layoutGroups;
-        private ContentSizeFitter[] sizeFitters;
+        private Vector2[] _initial;
+        private bool _isPrepared;
+        private bool _isPreparing;
+        private int _transitionSequence;
 
         private void Awake()
         {
-            container.TryGetComponent(out _layoutGroup);
-            container.TryGetComponent(out _fitter);
-            TryGetComponent(out _layoutElement);
-
-            layoutGroups = container.GetComponentsInChildren<LayoutGroup>();
-            sizeFitters = container.GetComponentsInChildren<ContentSizeFitter>();
+            EnsureInitialized();
         }
 
-        private async void Start()
+        private void Start()
         {
-            await Prepare();
+            if (playOnStart)
+            {
+                Show().Forget();
+            }
+            else if (gameObject.activeInHierarchy)
+            {
+                PrepareAsync().Forget();
+            }
         }
 
-        private async UniTask Prepare()
+        private void EnsureInitialized()
         {
-            if (_initial != null)
+            if (!container)
+            {
+                container = GetComponent<RectTransform>();
+            }
+
+            if (container)
+            {
+                if (!_layoutGroup) container.TryGetComponent(out _layoutGroup);
+                if (!_fitter) container.TryGetComponent(out _fitter);
+            }
+
+            if (!_layoutElement) TryGetComponent(out _layoutElement);
+
+            ValidateTargets();
+        }
+
+        private void ValidateTargets()
+        {
+            if (targets == null || targets.Length == 0)
+            {
+                if (container)
+                {
+                    targets = GetComponentsInDirectChildren<RectTransform>(container).ToArray();
+                }
+            }
+
+            if (targets == null || targets.Length == 0)
                 return;
 
-            layoutGroups ??= container.GetComponentsInChildren<LayoutGroup>();
-            sizeFitters ??= container.GetComponentsInChildren<ContentSizeFitter>();
+            if (targetsGroups == null || targetsGroups.Length != targets.Length)
+            {
+                targetsGroups = new CanvasGroup[targets.Length];
+            }
 
-            var wasActive = gameObject.activeSelf;
+            for (int i = 0; i < targets.Length; i++)
+            {
+                if (!targets[i]) continue;
+
+                if (!targetsGroups[i])
+                {
+                    if (!targets[i].TryGetComponent(out targetsGroups[i]))
+                    {
+                        targetsGroups[i] = targets[i].gameObject.AddComponent<CanvasGroup>();
+                    }
+                }
+            }
+        }
+
+        private async UniTask PrepareAsync()
+        {
+            if (_isPrepared)
+                return;
+
+            if (_isPreparing)
+            {
+                while (_isPreparing)
+                    await UniTask.Yield();
+                return;
+            }
+
+            _isPreparing = true;
+
+            try
+            {
+                await PrepareInternal();
+            }
+            finally
+            {
+                _isPreparing = false;
+            }
+        }
+
+        private async UniTask PrepareInternal()
+        {
+            EnsureInitialized();
+
+            bool wasActive = gameObject.activeSelf;
+
             if (!wasActive)
             {
+                SetTargetsAlpha(0f, false);
                 gameObject.SetActive(true);
             }
-
-            Canvas.ForceUpdateCanvases();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(container);
-
-            await UniTask.DelayFrame(5);
-
-            gameObject.SetActive(wasActive);
-
-            if (_fitter)
-                _fitter.enabled = false;
-
-            if (_layoutGroup)
-                _layoutGroup.enabled = false;
-
-            Canvas.ForceUpdateCanvases();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(container);
-
-            await UniTask.DelayFrame(5);
-
-            foreach (var group in layoutGroups)
+            else
             {
-                group.enabled = false;
+                SetTargetsAlpha(1f, true);
             }
 
-            foreach (var fitter in sizeFitters)
+            if (_layoutGroup) _layoutGroup.enabled = true;
+            if (_fitter) _fitter.enabled = true;
+
+            for (int i = 0; i < targets.Length; i++)
             {
-                fitter.enabled = false;
+                if (targets[i])
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(targets[i]);
             }
+
+            Canvas.ForceUpdateCanvases();
+            if (container)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(container);
+
+            await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+
+            Canvas.ForceUpdateCanvases();
+            if (container)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(container);
 
             _initial = new Vector2[targets.Length];
-
-            for (var i = 0; i < targets.Length; i++)
+            for (int i = 0; i < targets.Length; i++)
             {
+                if (!targets[i]) continue;
                 _initial[i] = targets[i].anchoredPosition;
             }
+
+            if (_fitter) _fitter.enabled = false;
+            if (_layoutGroup) _layoutGroup.enabled = false;
+
+            if (!wasActive)
+            {
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                SetTargetsAlpha(1f, true);
+            }
+
+            _isPrepared = true;
         }
 
         private Vector2 GetShowStartOffset()
         {
             return direction == TransitionDirection.LeftToRight
-                ? new Vector2(-offsetDistance, 0)
-                : new Vector2(0, offsetDistance);
+                ? new Vector2(-offsetDistance, 0f)
+                : new Vector2(0f, offsetDistance);
         }
 
         private Vector2 GetHideEndOffset()
         {
             return direction == TransitionDirection.LeftToRight
-                ? new Vector2(offsetDistance, 0)
-                : new Vector2(0, -offsetDistance);
+                ? new Vector2(offsetDistance, 0f)
+                : new Vector2(0f, -offsetDistance);
+        }
+
+        private void SetTargetsAlpha(float alpha, bool blocksRaycasts)
+        {
+            if (targetsGroups == null) return;
+
+            for (int i = 0; i < targetsGroups.Length; i++)
+            {
+                if (targetsGroups[i] != null)
+                {
+                    targetsGroups[i].alpha = alpha;
+                    targetsGroups[i].blocksRaycasts = blocksRaycasts;
+                }
+            }
         }
 
         public void Toggle()
@@ -127,96 +224,149 @@ namespace UI
         [Button]
         public async UniTask Show()
         {
-            if (_layoutElement) _layoutElement.ignoreLayout = false;
+            EnsureInitialized();
+
             _transitionSequence++;
+            int currentSequence = _transitionSequence;
 
-            await Prepare();
+            await PrepareAsync();
 
-            if (!gameObject.activeSelf)
+            Vector2 startOffset = GetShowStartOffset();
+
+            for (int i = 0; i < targets.Length; i++)
             {
-                var startOffset = GetShowStartOffset();
-                for (var i = 0; i < targets.Length; i++)
+                if (!targets[i]) continue;
+
+                targets[i].DOKill();
+                targets[i].anchoredPosition = _initial[i] + startOffset;
+
+                if (targetsGroups[i] != null)
                 {
-                    targets[i].anchoredPosition = _initial[i] + startOffset;
-                    if (targetsGroups[i] != null)
-                        targetsGroups[i].alpha = 0;
+                    targetsGroups[i].DOKill();
+                    targetsGroups[i].alpha = 0f;
+                    targetsGroups[i].blocksRaycasts = false;
                 }
             }
 
+            if (_layoutElement)
+                _layoutElement.ignoreLayout = false;
+
             gameObject.SetActive(true);
 
-            for (var i = 0; i < targets.Length; i++)
+            for (int i = 0; i < targets.Length; i++)
             {
-                targets[i].DOKill();
+                if (!targets[i]) continue;
 
-                // Анимируем ИЗ текущей позиции В изначальную (без использования .From)
-                targets[i]
-                    .DOAnchorPos(_initial[i], duration)
+                int index = i;
+                float itemDelay = index * delay;
+
+                targets[index]
+                    .DOAnchorPos(_initial[index], duration)
                     .SetEase(Ease.InOutSine)
-                    .SetDelay(i * delay);
+                    .SetDelay(itemDelay);
 
-                if (targetsGroups[i] == null)
-                    continue;
+                CanvasGroup group = targetsGroups[index];
+                if (group != null)
+                {
+                    group
+                        .DOFade(1f, duration)
+                        .SetEase(Ease.InOutSine)
+                        .SetDelay(itemDelay)
+                        .OnComplete(() =>
+                        {
+                            if (currentSequence != _transitionSequence)
+                                return;
 
-                targetsGroups[i].DOKill();
+                            group.blocksRaycasts = true;
+                        });
+                }
+            }
 
-                var index = i;
+            float totalDuration = duration + delay * Mathf.Max(0, targets.Length - 1);
 
-                targetsGroups[i]
-                    .DOFade(1, duration)
-                    .SetEase(Ease.InOutSine)
-                    .SetDelay(i * delay)
-                    .OnComplete(() =>
-                    {
-                        targetsGroups[index].blocksRaycasts = true;
+            await UniTask.Delay(
+                TimeSpan.FromSeconds(totalDuration),
+                cancellationToken: this.GetCancellationTokenOnDestroy());
 
-                        LayoutRebuilder.ForceRebuildLayoutImmediate(
-                            targetsGroups[index].transform as RectTransform);
-                    });
+            if (currentSequence != _transitionSequence)
+                return;
+
+            for (int i = 0; i < targets.Length; i++)
+            {
+                if (!targets[i]) continue;
+
+                targets[i].anchoredPosition = _initial[i];
+
+                if (targetsGroups[i] != null)
+                {
+                    targetsGroups[i].alpha = 1f;
+                    targetsGroups[i].blocksRaycasts = true;
+                }
             }
         }
 
         [Button]
         public async UniTask Hide()
         {
-            if (_layoutElement) _layoutElement.ignoreLayout = true;
+            EnsureInitialized();
+
             _transitionSequence++;
-            var currentSequence = _transitionSequence;
+            int currentSequence = _transitionSequence;
 
-            await Prepare();
+            await PrepareAsync();
 
-            var endOffset = GetHideEndOffset();
+            if (_layoutElement)
+                _layoutElement.ignoreLayout = true;
 
-            for (var i = 0; i < targets.Length; i++)
+            Vector2 endOffset = GetHideEndOffset();
+
+            for (int i = 0; i < targets.Length; i++)
             {
-                targets[i].DOKill();
+                if (!targets[i]) continue;
 
-                targets[i]
-                    .DOAnchorPos(_initial[i] + endOffset, duration)
+                int index = i;
+                float itemDelay = index * delay;
+
+                targets[index].DOKill();
+                targets[index]
+                    .DOAnchorPos(_initial[index] + endOffset, duration)
                     .SetEase(Ease.InOutSine)
-                    .SetDelay(i * delay);
+                    .SetDelay(itemDelay);
 
-                if (targetsGroups[i] == null)
-                    continue;
-
-                targetsGroups[i].DOKill();
-                targetsGroups[i].blocksRaycasts = false;
-
-                targetsGroups[i]
-                    .DOFade(0, duration)
-                    .SetEase(Ease.InOutSine)
-                    .SetDelay(i * delay);
+                CanvasGroup group = targetsGroups[index];
+                if (group != null)
+                {
+                    group.DOKill();
+                    group.blocksRaycasts = false;
+                    group
+                        .DOFade(0f, duration)
+                        .SetEase(Ease.InOutSine)
+                        .SetDelay(itemDelay);
+                }
             }
 
-            var totalDuration = duration + delay * Mathf.Max(0, targets.Length - 1);
+            float totalDuration = duration + delay * Mathf.Max(0, targets.Length - 1);
 
-            await UniTask.Delay(TimeSpan.FromSeconds(totalDuration));
+            await UniTask.Delay(
+                TimeSpan.FromSeconds(totalDuration),
+                cancellationToken: this.GetCancellationTokenOnDestroy());
 
-            // Выключаем объект ТОЛЬКО если с момента начала Hide() не запустили Show()
-            if (currentSequence == _transitionSequence)
+            if (currentSequence != _transitionSequence)
+                return;
+
+            gameObject.SetActive(false);
+        }
+
+        private static List<T> GetComponentsInDirectChildren<T>(Transform parent) where T : Component
+        {
+            List<T> results = new();
+            foreach (Transform child in parent)
             {
-                gameObject.SetActive(false);
+                T component = child.GetComponent<T>();
+                if (component != null)
+                    results.Add(component);
             }
+            return results;
         }
 
 #if UNITY_EDITOR
@@ -225,30 +375,17 @@ namespace UI
         {
             if (!container)
             {
-                Debug.LogWarning("Missing container");
-                return;
+                container = GetComponent<RectTransform>();
             }
 
             targets = GetComponentsInDirectChildren<RectTransform>(container).ToArray();
             targetsGroups = new CanvasGroup[targets.Length];
 
-            for (var i = 0; i < targets.Length; i++)
-                targets[i].TryGetComponent(out targetsGroups[i]);
-        }
-
-        private static List<T> GetComponentsInDirectChildren<T>(Transform parent) where T : Component
-        {
-            List<T> results = new();
-
-            foreach (Transform child in parent)
+            for (int i = 0; i < targets.Length; i++)
             {
-                var component = child.GetComponent<T>();
-
-                if (component != null)
-                    results.Add(component);
+                if (targets[i])
+                    targets[i].TryGetComponent(out targetsGroups[i]);
             }
-
-            return results;
         }
 #endif
     }
