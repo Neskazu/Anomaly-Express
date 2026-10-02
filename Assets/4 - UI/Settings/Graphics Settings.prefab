@@ -894,6 +894,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dropdown
       objectReference: {fileID: 0}
+    - target: {fileID: 3743133360386470734, guid: 6d55c661157739a4e8bf64241ee142a1, type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 4529140590778017211, guid: 6d55c661157739a4e8bf64241ee142a1, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1253,6 +1257,10 @@ PrefabInstance:
     - target: {fileID: 3355132799127755517, guid: 6d55c661157739a4e8bf64241ee142a1, type: 3}
       propertyPath: m_Name
       value: Resolutions Dropdown
+      objectReference: {fileID: 0}
+    - target: {fileID: 3743133360386470734, guid: 6d55c661157739a4e8bf64241ee142a1, type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4529140590778017211, guid: 6d55c661157739a4e8bf64241ee142a1, type: 3}
       propertyPath: m_IsActive
@@ -2027,6 +2035,7 @@ MonoBehaviour:
   - {fileID: 336612511697557033}
   - {fileID: 7818457391403846344}
   - {fileID: 4438680343088701758}
+  playOnStart: 0
   direction: 0
   offsetDistance: 150
   duration: 0.3
