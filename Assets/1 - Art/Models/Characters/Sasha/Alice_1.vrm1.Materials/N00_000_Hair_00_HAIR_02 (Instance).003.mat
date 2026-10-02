@@ -31,7 +31,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 3577e371c371aef4a9b8abdc63025e88, type: 3}
+        m_Texture: {fileID: 2800000, guid: 3cd50a9bc1d7c5a4cb5604a6f86431e8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -87,7 +87,7 @@ Material:
     - _AdditionalLightIgnoreCelShade: 0.9
     - _AlphaMode: 1
     - _BumpScale: 1
-    - _CelShadeMidPoint: -0.5
+    - _CelShadeMidPoint: 1
     - _CelShadeSoftness: 0.05
     - _Cutoff: 0.001
     - _DirectLightMultiplier: 1
@@ -114,7 +114,7 @@ Material:
     - _OutlineZOffset: 0.0001
     - _OutlineZOffsetMaskRemapEnd: 1
     - _OutlineZOffsetMaskRemapStart: 0
-    - _ReceiveShadowMappingAmount: 0.65
+    - _ReceiveShadowMappingAmount: 0.8
     - _ReceiveShadowMappingPosOffset: 0
     - _RenderQueueOffset: 0
     - _RimFresnelPower: 100

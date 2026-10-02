@@ -88,7 +88,7 @@ Material:
     - _AdditionalLightIgnoreCelShade: 0.9
     - _AlphaMode: 1
     - _BumpScale: 1
-    - _CelShadeMidPoint: -0.5
+    - _CelShadeMidPoint: 1
     - _CelShadeSoftness: 0.05
     - _Cutoff: 0
     - _DirectLightMultiplier: 1
@@ -115,7 +115,7 @@ Material:
     - _OutlineZOffset: 0.0001
     - _OutlineZOffsetMaskRemapEnd: 1
     - _OutlineZOffsetMaskRemapStart: 0
-    - _ReceiveShadowMappingAmount: 0.65
+    - _ReceiveShadowMappingAmount: 0.8
     - _ReceiveShadowMappingPosOffset: 0
     - _RenderQueueOffset: 0
     - _RimFresnelPower: 100
