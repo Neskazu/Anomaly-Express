@@ -17,12 +17,19 @@ namespace Anomalies.Concrete.Audio
 
         private Vector3 _initialLocalPos;
         private float _shakeTimer;
+        private bool _isInitialized;
+
+        private void Awake()
+        {
+            if (doorTransform != null)
+            {
+                _initialLocalPos = doorTransform.localPosition;
+                _isInitialized = true;
+            }
+        }
 
         protected override void OnActivate()
         {
-            if (doorTransform != null)
-                _initialLocalPos = doorTransform.localPosition;
-
             mixer.SetFloat(anomaliesParameterName, IAudioAnomaly.Unmute);
 
             if (source != null)
@@ -34,10 +41,9 @@ namespace Anomalies.Concrete.Audio
 
         protected override void OnUpdate()
         {
-            if (doorTransform == null) return;
+            if (doorTransform == null || !_isInitialized) return;
 
             _shakeTimer += Time.deltaTime * shakeSpeed;
-
             float shakeValue = Mathf.Sin(_shakeTimer) * Mathf.Sin(_shakeTimer * 0.7f);
 
             if (shakeValue > 0.5f)
@@ -58,7 +64,7 @@ namespace Anomalies.Concrete.Audio
 
             mixer.SetFloat(anomaliesParameterName, IAudioAnomaly.Mute);
 
-            if (doorTransform != null)
+            if (doorTransform != null && _isInitialized)
                 doorTransform.localPosition = _initialLocalPos;
         }
     }
