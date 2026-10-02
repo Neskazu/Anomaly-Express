@@ -62,24 +62,33 @@ namespace Player.Components
 
         private async UniTask OwnerDeath()
         {
-            await DeathScreen.Show();
+            if (DeathScreen != null)
+                await DeathScreen.Show();
+            else
+                Debug.LogWarning("[PlayerDeath] DeathScreen.Instance is null!");
 
-            if (Camera.main)
+            if (Camera.main != null)
                 Camera.main.cullingMask = ghostLayers;
+
             Death();
 
-            await DeathScreen.Hide();
+            if (DeathScreen != null)
+                await DeathScreen.Hide();
         }
 
         private async UniTask OwnerRevive()
         {
-            await DeathScreen.Show();
+            if (DeathScreen != null)
+                await DeathScreen.Show();
+            else
+                Debug.LogWarning("[PlayerDeath] DeathScreen.Instance is null!");
 
             if (Camera.main)
                 Camera.main.cullingMask = humanLayers;
             Revive();
 
-            await DeathScreen.Hide();
+            if (DeathScreen != null)
+                await DeathScreen.Hide();
         }
 
         private void Death()
