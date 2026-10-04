@@ -121,6 +121,7 @@ namespace Managers
 
         public async void LoadToFinal()
         {
+            AnomalyTransitionAnimation.Instance.PlayRemoteRpc();
             await AnomalyTransitionAnimation.Instance.Play();
             if (IsServer)
             {
